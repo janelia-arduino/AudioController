@@ -18,9 +18,9 @@ namespace audio_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{FIELD_COUNT_MAX=2};
-enum{PARAMETER_COUNT_MAX=8};
-enum{METHOD_COUNT_MAX=12};
+enum{FIELD_COUNT_MAX=1};
+enum{PARAMETER_COUNT_MAX=4};
+enum{METHOD_COUNT_MAX=11};
 
 extern ConstantString device_name;
 
@@ -29,12 +29,6 @@ extern const modular_server::FirmwareInfo firmware_info;
 
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
-
-enum Polarity
-  {
-    POSITIVE=1,
-    NEGATIVE=-1
-  };
 
 enum{EVENT_COUNT_MAX=8};
 enum{INDEXED_PULSES_COUNT_MAX=4};
@@ -47,60 +41,63 @@ struct PulseInfo
   EventIdPair event_id_pair;
 };
 
+extern const char * const audio_ext_raw;
+extern const char * const audio_ext_wav;
+extern const char * const audio_exts[AUDIO_EXT_COUNT];
+enum audio_t
+  {
+    RAW_TYPE,
+    WAV_TYPE,
+    TONE_TYPE,
+    NOISE_TYPE,
+  };
+
+extern const char * const sd_prefix;
+
 // Units
 extern ConstantString ms_unit;
+extern ConstantString hz_unit;
 
 // Fields
 // Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern ConstantString polarity_reversed_field_name;
-
-extern ConstantString channels_enabled_field_name;
+extern ConstantString volume_field_name;
+extern const double volume_min;
+extern const double volume_max;
+extern const double volume_default;
 
 // Parameters
-extern ConstantString channel_parameter_name;
+extern ConstantString audio_path_parameter_name;
 
-extern ConstantString channels_parameter_name;
+extern ConstantString percent_parameter_name;
+extern const int percent_min;
+extern const int percent_max;
 
-extern ConstantString polarity_parameter_name;
-enum{POLARITY_SUBSET_LENGTH=2};
-extern ConstantString polarity_positive;
-extern ConstantString polarity_negative;
-extern const modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH];
+extern ConstantString frequency_parameter_name;
+extern const int frequency_min;
+extern const int frequency_max;
 
-extern ConstantString delay_parameter_name;
-extern const long delay_min;
-extern const long delay_max;
-
-extern ConstantString period_parameter_name;
-extern const long period_min;
-extern const long period_max;
-
-extern ConstantString on_duration_parameter_name;
-extern const long on_duration_min;
-extern const long on_duration_max;
-
-extern ConstantString count_parameter_name;
-extern const long count_min;
-extern const long count_max;
-
-extern ConstantString pwm_index_parameter_name;
+extern ConstantString speaker_field_name;
+enum{SPEAKER_SUBSET_LENGTH=3};
+extern ConstantString speaker_all;
+extern ConstantString speaker_left;
+extern ConstantString speaker_right;
+extern const modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH];
+extern const ConstantString * const speaker_ptr_default;
 
 // Methods
-extern ConstantString set_channel_on_method_name;
-extern ConstantString set_channel_off_method_name;
-extern ConstantString set_channels_on_method_name;
-extern ConstantString set_channels_off_method_name;
-extern ConstantString set_all_channels_on_method_name;
-extern ConstantString set_all_channels_off_method_name;
-extern ConstantString add_pwm_method_name;
-extern ConstantString start_pwm_method_name;
-extern ConstantString add_toggle_pwm_method_name;
-extern ConstantString start_toggle_pwm_method_name;
-extern ConstantString stop_pwm_method_name;
-extern ConstantString stop_all_pwm_method_name;
+extern ConstantString get_sd_card_info_method_name;
+extern ConstantString get_audio_paths_method_name;
+extern ConstantString play_path_method_name;
+extern ConstantString play_tone_method_name;
+extern ConstantString play_noise_method_name;
+extern ConstantString stop_method_name;
+extern ConstantString is_playing_method_name;
+extern ConstantString get_last_audio_path_played_method_name;
+extern ConstantString get_position_method_name;
+extern ConstantString get_length_method_name;
+extern ConstantString get_percent_complete_method_name;
 
 // Errors
-extern ConstantString pwm_error;
 }
 }
 #include "5x3.h"

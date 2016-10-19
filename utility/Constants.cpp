@@ -28,61 +28,58 @@ CONSTANT_STRING(hardware_name,"audio_controller");
 
 const int bad_index = -1;
 
+const char * const audio_ext_raw = ".RAW";
+const char * const audio_ext_wav = ".WAV";
+const char * const audio_exts[AUDIO_EXT_COUNT] = {audio_ext_raw, audio_ext_wav};
+
+const char * const sd_prefix = "/SD/";
+
 // Units
 CONSTANT_STRING(ms_unit,"ms");
+CONSTANT_STRING(hz_unit,"Hz");
 
 // Fields
-CONSTANT_STRING(polarity_reversed_field_name,"polarity_reversed");
-
-CONSTANT_STRING(channels_enabled_field_name,"channels_enabled");
+CONSTANT_STRING(volume_field_name,"volume");
+const double volume_min = 0.0;
+const double volume_max = 1.0;
+const double volume_default = 0.25;
 
 // Parameters
-CONSTANT_STRING(channel_parameter_name,"channel");
+CONSTANT_STRING(audio_path_parameter_name,"audio_path");
 
-CONSTANT_STRING(channels_parameter_name,"channels");
+CONSTANT_STRING(percent_parameter_name,"percent");
+const int percent_min = 0;
+const int percent_max = 100;
 
-CONSTANT_STRING(polarity_parameter_name,"polarity");
-CONSTANT_STRING(polarity_positive,"+");
-CONSTANT_STRING(polarity_negative,"-");
-const modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
+CONSTANT_STRING(frequency_parameter_name,"frequency");
+const int frequency_min = 0;
+const int frequency_max = 22000;
+
+CONSTANT_STRING(speaker_field_name,"speaker");
+CONSTANT_STRING(speaker_all,"ALL");
+CONSTANT_STRING(speaker_left,"LEFT");
+CONSTANT_STRING(speaker_right,"RIGHT");
+const modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH] =
   {
-    {.cs_ptr=&polarity_positive},
-    {.cs_ptr=&polarity_negative},
+    {.cs_ptr=&speaker_all},
+    {.cs_ptr=&speaker_left},
+    {.cs_ptr=&speaker_right},
   };
-
-CONSTANT_STRING(delay_parameter_name,"delay");
-const long delay_min = 0;
-const long delay_max = 1000000;
-
-CONSTANT_STRING(period_parameter_name,"period");
-const long period_min = 2;
-const long period_max = 1000000;
-
-CONSTANT_STRING(on_duration_parameter_name,"on_duration");
-const long on_duration_min = 1;
-const long on_duration_max = 1000000;
-
-CONSTANT_STRING(count_parameter_name,"count");
-const long count_min = 1;
-const long count_max = 1000000;
-
-CONSTANT_STRING(pwm_index_parameter_name,"pwm_index");
+const ConstantString * const speaker_ptr_default = &speaker_all;
 
 // Methods
-CONSTANT_STRING(set_channel_on_method_name,"setChannelOn");
-CONSTANT_STRING(set_channel_off_method_name,"setChannelOff");
-CONSTANT_STRING(set_channels_on_method_name,"setChannelsOn");
-CONSTANT_STRING(set_channels_off_method_name,"setChannelsOff");
-CONSTANT_STRING(set_all_channels_on_method_name,"setAllChannelsOn");
-CONSTANT_STRING(set_all_channels_off_method_name,"setAllChannelsOff");
-CONSTANT_STRING(add_pwm_method_name,"addPwm");
-CONSTANT_STRING(start_pwm_method_name,"startPwm");
-CONSTANT_STRING(add_toggle_pwm_method_name,"addTogglePwm");
-CONSTANT_STRING(start_toggle_pwm_method_name,"startTogglePwm");
-CONSTANT_STRING(stop_pwm_method_name,"stopPwm");
-CONSTANT_STRING(stop_all_pwm_method_name,"stopAllPwm");
+CONSTANT_STRING(get_sd_card_info_method_name,"getSDCardInfo");
+CONSTANT_STRING(get_audio_paths_method_name,"getAudioPaths");
+CONSTANT_STRING(play_path_method_name,"playPath");
+CONSTANT_STRING(play_tone_method_name,"playTone");
+CONSTANT_STRING(play_noise_method_name,"playNoise");
+CONSTANT_STRING(stop_method_name,"stop");
+CONSTANT_STRING(is_playing_method_name,"isPlaying");
+CONSTANT_STRING(get_last_audio_path_played_method_name,"getLastAudioPathPlayed");
+CONSTANT_STRING(get_position_method_name,"getPosition");
+CONSTANT_STRING(get_length_method_name,"getLength");
+CONSTANT_STRING(get_percent_complete_method_name,"getPercentComplete");
 
 // Errors
-CONSTANT_STRING(pwm_error,"Maximum number of pwm already set, must stop one to add another.");
 }
 }
