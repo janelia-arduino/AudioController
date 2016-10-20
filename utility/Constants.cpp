@@ -55,7 +55,7 @@ CONSTANT_STRING(frequency_parameter_name,"frequency");
 const int frequency_min = 0;
 const int frequency_max = 22000;
 
-CONSTANT_STRING(speaker_field_name,"speaker");
+CONSTANT_STRING(speaker_parameter_name,"speaker");
 CONSTANT_STRING(speaker_all,"ALL");
 CONSTANT_STRING(speaker_left,"LEFT");
 CONSTANT_STRING(speaker_right,"RIGHT");
@@ -65,7 +65,6 @@ const modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH]
     {.cs_ptr=&speaker_left},
     {.cs_ptr=&speaker_right},
   };
-const ConstantString * const speaker_ptr_default = &speaker_all;
 
 // Methods
 CONSTANT_STRING(get_sd_card_info_method_name,"getSDCardInfo");

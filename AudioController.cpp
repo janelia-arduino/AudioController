@@ -8,10 +8,39 @@
 #include "AudioController.h"
 
 
+namespace audio_controller
+{
+// GUItool: begin automatically generated code
+AudioSynthWaveformSine   g_tone_left;          //xy=287,312
+AudioSynthWaveformSine   g_tone_right;          //xy=293,351
+AudioSynthNoiseWhite     g_noise_left;         //xy=293,389
+AudioSynthNoiseWhite     g_noise_right;         //xy=297,428
+AudioPlaySdWav           g_play_sd_wav;     //xy=300,238
+AudioPlaySdRaw           g_play_sd_raw;     //xy=301,275
+AudioMixer4              g_mixer_left;         //xy=537,247
+AudioMixer4              g_mixer_right;         //xy=543,323
+AudioOutputI2S           g_i2s;           //xy=707,281
+AudioConnection          patchCord1(g_tone_left, 0, g_mixer_left, 2);
+AudioConnection          patchCord2(g_tone_right, 0, g_mixer_right, 2);
+AudioConnection          patchCord3(g_noise_left, 0, g_mixer_left, 3);
+AudioConnection          patchCord4(g_noise_right, 0, g_mixer_right, 3);
+AudioConnection          patchCord5(g_play_sd_wav, 0, g_mixer_left, 0);
+AudioConnection          patchCord6(g_play_sd_wav, 1, g_mixer_right, 0);
+AudioConnection          patchCord7(g_play_sd_raw, 0, g_mixer_left, 1);
+AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_right, 1);
+AudioConnection          patchCord9(g_mixer_left, 0, g_i2s, 0);
+AudioConnection          patchCord10(g_mixer_right, 0, g_i2s, 1);
+AudioControlSGTL5000     g_sgtl5000;     //xy=535,172
+// GUItool: end automatically generated code
+}
+
 using namespace audio_controller;
 
 AudioController::AudioController()
 {
+  codec_enabled_ = false;
+  playing_ = false;
+  path_played_[0] = 0;
 }
 
 void AudioController::setup()
@@ -19,17 +48,20 @@ void AudioController::setup()
   // Parent Setup
   ModularDevice::setup();
 
+  // Audio Setup
+  // Audio connections require memory to work.  For more
+  // detailed information, see the MemoryAndCpuUsage example
+  AudioMemory(8);
+
+  enableAudioCodec();
+
+  // Setup SD Card
+  sd_interface_.setup();
+
   // Event Controller Setup
-  event_controller_.setup();
+  // event_controller_.setup();
 
   // Pin Setup
-  for (int channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    pinMode(constants::enable_pins[channel],OUTPUT);
-    digitalWrite(constants::enable_pins[channel],LOW);
-    pinMode(constants::dir_a_pins[channel],OUTPUT);
-    pinMode(constants::dir_b_pins[channel],OUTPUT);
-  }
 
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
@@ -41,348 +73,325 @@ void AudioController::setup()
   modular_server_.addFirmware(constants::firmware_info,
                               fields_,
                               parameters_,
-                              methods_);
-  // Fields
-  modular_server::Field & polarity_reversed_field = modular_server_.createField(constants::polarity_reversed_field_name,constants::polarity_reversed_default);
+                              methods_,
+                              interrupts_);
 
-  modular_server::Field & channels_enabled_field = modular_server_.createField(constants::channels_enabled_field_name,constants::channels_enabled_default);
-  channels_enabled_field.attachPostSetElementValueCallback(makeFunctor((Functor1<const size_t> *)0,*this,&AudioController::setChannelOff));
+  // Fields
+  modular_server::Field & volume_field = modular_server_.createField(constants::volume_field_name,constants::volume_default);
+  volume_field.setRange(constants::volume_min,constants::volume_max);
+  volume_field.attachPostSetValueCallback(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
 
   // Parameters
-  modular_server::Parameter & channel_parameter = modular_server_.createParameter(constants::channel_parameter_name);
-  channel_parameter.setRange(0,constants::CHANNEL_COUNT-1);
+  modular_server::Parameter & audio_path_parameter = modular_server_.createParameter(constants::audio_path_parameter_name);
+  audio_path_parameter.setTypeString();
 
-  modular_server::Parameter & channels_parameter = modular_server_.createParameter(constants::channels_parameter_name);
-  channels_parameter.setRange(0,constants::CHANNEL_COUNT-1);
-  channels_parameter.setArrayLengthRange(1,constants::CHANNEL_COUNT);
+  modular_server::Parameter & percent_parameter = modular_server_.createParameter(constants::percent_parameter_name);
+  percent_parameter.setRange(constants::percent_min,constants::percent_max);
 
-  modular_server::Parameter & polarity_parameter = modular_server_.createParameter(constants::polarity_parameter_name);
-  polarity_parameter.setTypeString();
-  polarity_parameter.setSubset(constants::polarity_ptr_subset);
+  modular_server::Parameter & frequency_parameter = modular_server_.createParameter(constants::frequency_parameter_name);
+  frequency_parameter.setRange(constants::frequency_min,constants::frequency_max);
 
-  modular_server::Parameter & delay_parameter = modular_server_.createParameter(constants::delay_parameter_name);
-  delay_parameter.setRange(constants::delay_min,constants::delay_max);
-  delay_parameter.setUnits(constants::ms_unit);
-
-  modular_server::Parameter & period_parameter = modular_server_.createParameter(constants::period_parameter_name);
-  period_parameter.setRange(constants::period_min,constants::period_max);
-  period_parameter.setUnits(constants::ms_unit);
-
-  modular_server::Parameter & on_duration_parameter = modular_server_.createParameter(constants::on_duration_parameter_name);
-  on_duration_parameter.setRange(constants::on_duration_min,constants::on_duration_max);
-  on_duration_parameter.setUnits(constants::ms_unit);
-
-  modular_server::Parameter & count_parameter = modular_server_.createParameter(constants::count_parameter_name);
-  count_parameter.setRange(constants::count_min,constants::count_max);
-  count_parameter.setUnits(constants::ms_unit);
-
-  modular_server::Parameter & pwm_index_parameter = modular_server_.createParameter(constants::pwm_index_parameter_name);
-  pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
+  modular_server::Parameter & speaker_parameter = modular_server_.createParameter(constants::speaker_parameter_name);
+  speaker_parameter.setSubset(constants::speaker_ptr_subset);
 
   // Methods
-  modular_server::Method & set_channel_on_method = modular_server_.createMethod(constants::set_channel_on_method_name);
-  set_channel_on_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setChannelOnCallback));
-  set_channel_on_method.addParameter(channel_parameter);
-  set_channel_on_method.addParameter(polarity_parameter);
+  modular_server::Method & get_sd_card_info_method = modular_server_.createMethod(constants::get_sd_card_info_method_name);
+  get_sd_card_info_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoCallback));
+  get_sd_card_info_method.setReturnTypeObject();
 
-  modular_server::Method & set_channel_off_method = modular_server_.createMethod(constants::set_channel_off_method_name);
-  set_channel_off_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setChannelOffCallback));
-  set_channel_off_method.addParameter(channel_parameter);
+  modular_server::Method & get_audio_paths_method = modular_server_.createMethod(constants::get_audio_paths_method_name);
+  get_audio_paths_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsCallback));
+  get_audio_paths_method.setReturnTypeArray();
 
-  modular_server::Method & set_channels_on_method = modular_server_.createMethod(constants::set_channels_on_method_name);
-  set_channels_on_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setChannelsOnCallback));
-  set_channels_on_method.addParameter(channels_parameter);
-  set_channels_on_method.addParameter(polarity_parameter);
+  modular_server::Method & play_path_method = modular_server_.createMethod(constants::play_path_method_name);
+  play_path_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playPathCallback));
+  play_path_method.addParameter(audio_path_parameter);
 
-  modular_server::Method & set_channels_off_method = modular_server_.createMethod(constants::set_channels_off_method_name);
-  set_channels_off_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setChannelsOffCallback));
-  set_channels_off_method.addParameter(channels_parameter);
+  modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
+  play_tone_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playToneCallback));
+  play_tone_method.addParameter(frequency_parameter);
+  play_tone_method.addParameter(speaker_parameter);
 
-  modular_server::Method & set_all_channels_on_method = modular_server_.createMethod(constants::set_all_channels_on_method_name);
-  set_all_channels_on_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setAllChannelsOnCallback));
-  set_all_channels_on_method.addParameter(polarity_parameter);
+  modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
+  play_noise_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseCallback));
+  play_noise_method.addParameter(speaker_parameter);
 
-  modular_server::Method & set_all_channels_off_method = modular_server_.createMethod(constants::set_all_channels_off_method_name);
-  set_all_channels_off_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::setAllChannelsOffCallback));
+  modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
+  stop_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::stopCallback));
 
-  modular_server::Method & add_pwm_method = modular_server_.createMethod(constants::add_pwm_method_name);
-  add_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::addPwmCallback));
-  add_pwm_method.addParameter(channels_parameter);
-  add_pwm_method.addParameter(polarity_parameter);
-  add_pwm_method.addParameter(delay_parameter);
-  add_pwm_method.addParameter(period_parameter);
-  add_pwm_method.addParameter(on_duration_parameter);
-  add_pwm_method.addParameter(count_parameter);
-  add_pwm_method.setReturnTypeLong();
+  modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
+  is_playing_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingCallback));
+  is_playing_method.setReturnTypeBool();
 
-  modular_server::Method & start_pwm_method = modular_server_.createMethod(constants::start_pwm_method_name);
-  start_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::startPwmCallback));
-  start_pwm_method.addParameter(channels_parameter);
-  start_pwm_method.addParameter(polarity_parameter);
-  start_pwm_method.addParameter(delay_parameter);
-  start_pwm_method.addParameter(period_parameter);
-  start_pwm_method.addParameter(on_duration_parameter);
-  start_pwm_method.setReturnTypeLong();
+  modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
+  get_last_audio_path_played_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedCallback));
+  get_last_audio_path_played_method.setReturnTypeString();
 
-  modular_server::Method & add_toggle_pwm_method = modular_server_.createMethod(constants::add_toggle_pwm_method_name);
-  add_toggle_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::addTogglePwmCallback));
-  add_toggle_pwm_method.addParameter(channels_parameter);
-  add_toggle_pwm_method.addParameter(polarity_parameter);
-  add_toggle_pwm_method.addParameter(delay_parameter);
-  add_toggle_pwm_method.addParameter(period_parameter);
-  add_toggle_pwm_method.addParameter(on_duration_parameter);
-  add_toggle_pwm_method.addParameter(count_parameter);
-  add_toggle_pwm_method.setReturnTypeLong();
+  modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
+  get_position_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionCallback));
+  get_position_method.setReturnTypeLong();
 
-  modular_server::Method & start_toggle_pwm_method = modular_server_.createMethod(constants::start_toggle_pwm_method_name);
-  start_toggle_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::startTogglePwmCallback));
-  start_toggle_pwm_method.addParameter(channels_parameter);
-  start_toggle_pwm_method.addParameter(polarity_parameter);
-  start_toggle_pwm_method.addParameter(delay_parameter);
-  start_toggle_pwm_method.addParameter(period_parameter);
-  start_toggle_pwm_method.addParameter(on_duration_parameter);
-  start_toggle_pwm_method.setReturnTypeLong();
+  modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
+  get_length_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthCallback));
+  get_length_method.setReturnTypeLong();
 
-  modular_server::Method & stop_pwm_method = modular_server_.createMethod(constants::stop_pwm_method_name);
-  stop_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::stopPwmCallback));
-  stop_pwm_method.addParameter(pwm_index_parameter);
+  modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
+  get_percent_complete_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteCallback));
+  get_percent_complete_method.setReturnTypeLong();
 
-  modular_server::Method & stop_all_pwm_method = modular_server_.createMethod(constants::stop_all_pwm_method_name);
-  stop_all_pwm_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::stopAllPwmCallback));
+  // Interrupts
 
 }
 
-void AudioController::setChannelOn(const size_t channel, const constants::Polarity polarity)
+bool AudioController::playPath(const char * path)
 {
-  bool channel_enabled;
-  modular_server_.field(constants::channels_enabled_field_name).getElementValue(channel,
-                                                                                channel_enabled);
-  if (!channel_enabled)
-  {
-    return;
-  }
-  bool channel_polarity_reversed;
-  modular_server_.field(constants::polarity_reversed_field_name).getElementValue(channel,
-                                                                                 channel_polarity_reversed);
-  constants::Polarity polarity_corrected = polarity;
-  if (channel_polarity_reversed)
-  {
-    polarity_corrected = ((polarity == constants::POSITIVE) ? constants::NEGATIVE : constants::POSITIVE);
-  }
-  if (polarity_corrected == constants::POSITIVE)
-  {
-    digitalWrite(constants::dir_a_pins[channel],HIGH);
-    digitalWrite(constants::dir_b_pins[channel],LOW);
-  }
-  else
-  {
-    digitalWrite(constants::dir_a_pins[channel],LOW);
-    digitalWrite(constants::dir_b_pins[channel],HIGH);
-  }
-  digitalWrite(constants::enable_pins[channel],HIGH);
-}
+  char path_upper[constants::STRING_LENGTH_PATH];
+  String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
 
-void AudioController::setChannelOff(const size_t channel)
-{
-  digitalWrite(constants::enable_pins[channel],LOW);
-}
-
-void AudioController::setChannelsOn(const uint32_t channels, const constants::Polarity polarity)
-{
-  uint32_t bit = 1;
-  for (int channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  bool sd_specified = false;
+  char * sd_path;
+  sd_path = strstr(path_upper,constants::sd_prefix);
+  if (sd_path == path_upper)
   {
-    if (channels & (bit << channel))
+    sd_specified = true;
+    // remove "/SD" from path
+    sd_path = sd_path+strlen(constants::sd_prefix)-1;
+  }
+
+  // default to SD card if none specified
+  if (!sd_specified)
+  {
+    sd_specified = true;
+    sd_path = path_upper;
+  }
+
+  stop();
+  bool playing = false;
+
+  char * raw_ext = strstr(path_upper,constants::audio_ext_raw);
+  if (raw_ext != NULL)
+  {
+    audio_type_playing_ = constants::RAW_TYPE;
+    if (sd_specified)
     {
-      setChannelOn(channel,polarity);
+      playing = g_play_sd_raw.play(sd_path);
     }
   }
-}
 
-void AudioController::setChannelsOff(const uint32_t channels)
-{
-  uint32_t bit = 1;
-  for (int channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  if (!playing)
   {
-    if (channels & (bit << channel))
+    char * wav_ext = strstr(path_upper,constants::audio_ext_wav);
+    if (wav_ext != NULL)
     {
-      setChannelOff(channel);
+      audio_type_playing_ = constants::WAV_TYPE;
+      if (sd_specified)
+      {
+        playing = g_play_sd_wav.play(sd_path);
+      }
     }
   }
+
+  playing_ = playing;
+  if (playing)
+  {
+    path_played_[0] = 0;
+    strcpy(path_played_,path_upper);
+  }
+  return playing;
 }
 
-void AudioController::setAllChannelsOn(const constants::Polarity polarity)
+void AudioController::playTone(size_t frequency, const ConstantString * const speaker_ptr)
 {
-  for (int channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  stop();
+  audio_type_playing_ = constants::TONE_TYPE;
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
-    setChannelOn(channel,polarity);
+    g_tone_left.amplitude(0);
+    g_tone_left.frequency(frequency);
+    g_tone_left.amplitude(1);
   }
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
+  {
+    g_tone_right.amplitude(0);
+    g_tone_right.frequency(frequency);
+    g_tone_right.amplitude(1);
+  }
+  updateVolume();
+  playing_ = true;
 }
 
-void AudioController::setAllChannelsOff()
+void Controller::playNoise(const ConstantString * const speaker_ptr)
 {
-  for (int channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  stop();
+  audio_type_playing_ = constants::NOISE_TYPE;
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
-    setChannelOff(channel);
+    g_noise_left.amplitude(1);
   }
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
+  {
+    g_noise_right.amplitude(1);
+  }
+  updateVolume();
+  playing_ = true;
 }
 
-int AudioController::addPwm(const uint32_t channels,
-                              const audio_controller::constants::Polarity polarity,
-                              const long delay,
-                              const long period,
-                              const long on_duration,
-                              const long count)
+void Controller::stop()
 {
-  if (indexed_pulses_.full())
+  switch (audio_type_playing_)
   {
-    return constants::bad_index;
+    case constants::RAW_TYPE:
+      g_play_sd_raw.stop();
+      break;
+    case constants::WAV_TYPE:
+      g_play_sd_wav.stop();
+      break;
+    case constants::TONE_TYPE:
+      g_tone_left.amplitude(0);
+      g_tone_right.amplitude(0);
+    case constants::NOISE_TYPE:
+      g_noise_left.amplitude(0);
+      g_noise_right.amplitude(0);
   }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.channels = channels;
-  pulse_info.polarity = polarity;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnCallback),
-                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOffCallback),
-                                                                 delay,
-                                                                 period,
-                                                                 on_duration,
-                                                                 count,
-                                                                 index);
-  event_controller_.addStartCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmCallback));
-  event_controller_.addStopCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmCallback));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
+  playing_ = false;
 }
 
-int AudioController::startPwm(const uint32_t channels,
-                                const audio_controller::constants::Polarity polarity,
-                                const long delay,
-                                const long period,
-                                const long on_duration)
+bool Controller::isPlaying()
 {
-  if (indexed_pulses_.full())
-  {
-    return -1;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.channels = channels;
-  pulse_info.polarity = polarity;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnCallback),
-                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOffCallback),
-                                                                         delay,
-                                                                         period,
-                                                                         on_duration,
-                                                                         index);
-  event_controller_.addStartCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmCallback));
-  event_controller_.addStopCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmCallback));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
+  return playing_;
 }
 
-int AudioController::addTogglePwm(const uint32_t channels,
-                                    const audio_controller::constants::Polarity polarity,
-                                    const long delay,
-                                    const long period,
-                                    const long on_duration,
-                                    const long count)
+const char * Controller::getLastAudioPathPlayed()
 {
-  if (indexed_pulses_.full())
-  {
-    return constants::bad_index;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.channels = channels;
-  pulse_info.polarity = polarity;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnCallback),
-                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnReversedCallback),
-                                                                 delay,
-                                                                 period,
-                                                                 on_duration,
-                                                                 count,
-                                                                 index);
-  event_controller_.addStartCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmCallback));
-  event_controller_.addStopCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmCallback));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
+  return path_played_;
 }
 
-int AudioController::startTogglePwm(const uint32_t channels,
-                                      const audio_controller::constants::Polarity polarity,
-                                      const long delay,
-                                      const long period,
-                                      const long on_duration)
+long Controller::getPosition()
 {
-  if (indexed_pulses_.full())
+  long position = 0;
+  switch (audio_type_playing_)
   {
-    return -1;
+    case constants::RAW_TYPE:
+      position = g_play_sd_raw.positionMillis();
+      break;
+    case constants::WAV_TYPE:
+      position = g_play_sd_wav.positionMillis();
+      break;
   }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.channels = channels;
-  pulse_info.polarity = polarity;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnCallback),
-                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::setChannelsOnReversedCallback),
-                                                                         delay,
-                                                                         period,
-                                                                         on_duration,
-                                                                         index);
-  event_controller_.addStartCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmCallback));
-  event_controller_.addStopCallback(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmCallback));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
+  return position;
 }
 
-void AudioController::stopPwm(const int pwm_index)
+long Controller::getLength()
 {
-  if (pwm_index < 0)
+  long length = 0;
+  switch (audio_type_playing_)
   {
-    return;
+    case constants::RAW_TYPE:
+      length = g_play_sd_raw.lengthMillis();
+      break;
+    case constants::WAV_TYPE:
+      length = g_play_sd_wav.lengthMillis();
+      break;
   }
-  if (indexed_pulses_.indexHasValue(pwm_index))
+  return length;
+}
+
+bool Controller::codecEnabled()
+{
+  return codec_enabled_;
+}
+
+bool Controller::isAudioPath(const char * path)
+{
+  char path_upper[constants::STRING_LENGTH_PATH];
+  String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
+
+  bool audio_path = false;
+  for (unsigned int i=0;i<constants::AUDIO_EXT_COUNT;++i)
   {
-    constants::PulseInfo pulse_info = indexed_pulses_[pwm_index];
-    event_controller_.remove(pulse_info.event_id_pair);
+    const char * audio_ext = constants::audio_exts[i];
+    char * audio_ext_path = strstr(path_upper,audio_ext);
+    if (audio_ext_path != NULL)
+    {
+      audio_path = true;
+      break;
+    }
+  }
+  return audio_path;
+}
+
+void Controller::updateVolume()
+{
+  if (controller.codecEnabled())
+  {
+    double volume;
+    modular_server_.getFieldValue(constants::volume_field_name,volume);
+    g_sgtl5000.volume(volume);
   }
 }
 
-void AudioController::stopAllPwm()
+void AudioController::enableAudioCodec()
 {
-  for (size_t i=0; i<constants::INDEXED_PULSES_COUNT_MAX; ++i)
+  pinMode(SDA, INPUT);
+  pinMode(SCL, INPUT);
+  if (digitalRead(SDA) && digitalRead(SCL))
   {
-    stopPwm(i);
+    // This may wait forever if the SDA & SCL pins lack
+    // pullup resistors so check first
+    codec_enabled_ = true;
+    g_sgtl5000.enable();
+    updateVolume();
   }
 }
 
-uint32_t AudioController::arrayToChannels(ArduinoJson::JsonArray & channels_array)
+void AudioController::updatePlaying()
 {
-  uint32_t channels = 0;
-  uint32_t bit = 1;
-  for (ArduinoJson::JsonArray::iterator channels_it=channels_array.begin();
-       channels_it != channels_array.end();
-       ++channels_it)
+  switch (audio_type_playing_)
   {
-    long channel = *channels_it;
-    channels |= bit << channel;
+    case constants::RAW_TYPE:
+      playing_ = g_play_sd_raw.isPlaying();
+      break;
+    case constants::WAV_TYPE:
+      playing_ = g_play_sd_wav.isPlaying();
+      break;
   }
-  return channels;
 }
 
-constants::Polarity AudioController:: stringToPolarity(const char * string)
+void AudioController::addDirectoryToResponse(File dir, const char * pwd)
 {
-  if (string == constants::polarity_positive)
+  while (true)
   {
-    return constants::POSITIVE;
-  }
-  else
-  {
-    return constants::NEGATIVE;
+    File entry =  dir.openNextFile();
+    if (!entry)
+    {
+      // no more files
+      break;
+    }
+    char full_path[constants::STRING_LENGTH_PATH];
+    full_path[0] = 0;
+    strcat(full_path,pwd);
+    strcat(full_path,entry.name());
+    if (!entry.isDirectory())
+    {
+      bool audio_file = false;
+      for (unsigned int i=0;i<constants::AUDIO_EXT_COUNT;++i)
+      {
+        if (strstr(full_path,constants::audio_exts[i]) != NULL)
+        {
+          audio_file = true;
+        }
+      }
+      if (audio_file)
+      {
+        modular_server_.response().write(full_path);
+      }
+    }
+    else
+    {
+      strcat(full_path,"/");
+      addDirectoryToResponse(entry,full_path);
+    }
+    entry.close();
   }
 }
 
@@ -403,200 +412,54 @@ constants::Polarity AudioController:: stringToPolarity(const char * string)
 // modular_server_.field(field_name).getElementValue(value) value type must match the field array element default type
 // modular_server_.field(field_name).setElementValue(value) value type must match the field array element default type
 
-void AudioController::startPwmCallback(int index)
+void AudioController::getSDCardInfoCallback()
 {
+  modular_server::Response & response = modular_server_.response();
+  response.writeResultKey();
+  response.beginObject();
+  response.write("detected",sd_interface_.getDetected());
+  response.write("type",sd_interface_.getType());
+  response.write("formatted",sd_interface_.getFormatted());
+  response.write("format",sd_interface_.getFormat());
+  response.write("volume_size",sd_interface_.getVolumeSize());
+  response.write("initialized",sd_interface_.getInitialized());
+  response.endObject();
 }
 
-void AudioController::stopPwmCallback(int index)
+void AudioController::getAudioPathsCallback()
 {
-  uint32_t & channels = indexed_pulses_[index].channels;
-  setChannelsOff(channels);
-  indexed_pulses_.remove(index);
+  File root = SD.open("/");
+  modular_server::Response & response = modular_server_.response();
+  response.writeResultKey();
+  response.beginArray();
+  addDirectoryToResponse(root,constants::sd_prefix);
+  response.endArray();
 }
 
-void AudioController::setChannelOnCallback()
+void AudioController::playPathCallback()
 {
-  int channel;
-  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  setChannelOn(channel,polarity);
-}
-
-void AudioController::setChannelOffCallback()
-{
-  int channel;
-  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
-  setChannelOff(channel);
-}
-
-void AudioController::setChannelsOnCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  setChannelsOn(channels,polarity);
-}
-
-void AudioController::setChannelsOffCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  setChannelsOff(channels);
-}
-
-void AudioController::setAllChannelsOnCallback()
-{
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  setAllChannelsOn(polarity);
-}
-
-void AudioController::setAllChannelsOffCallback()
-{
-  setAllChannelsOff();
-}
-
-void AudioController::addPwmCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  long delay;
-  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
-  long period;
-  modular_server_.parameter(constants::period_parameter_name).getValue(period);
-  long on_duration;
-  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  long count;
-  modular_server_.parameter(constants::count_parameter_name).getValue(count);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  int index = addPwm(channels,polarity,delay,period,on_duration,count);
-  if (index >= 0)
+  if (!controller.codecEnabled())
   {
-    modular_server_.response().returnResult(index);
+    modular_server.sendErrorResponse("No audio codec chip detected.");
+    return;
   }
-  else
+  const char * audio_path = modular_server.getParameterValue(constants::audio_path_parameter_name);
+  if (!controller.isAudioPath(audio_path))
   {
-    modular_server_.response().returnError(constants::pwm_error);
+    char err_msg[constants::STRING_LENGTH_ERROR_MESSAGE];
+    err_msg[0] = 0;
+    strcat(err_msg,"Invalid audio path: ");
+    strcat(err_msg,audio_path);
+    modular_server.sendErrorResponse(err_msg);
+    return;
   }
-}
-
-void AudioController::startPwmCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  long delay;
-  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
-  long period;
-  modular_server_.parameter(constants::period_parameter_name).getValue(period);
-  long on_duration;
-  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  int index = startPwm(channels,polarity,delay,period,on_duration);
-  if (index >= 0)
+  bool playing = controller.playPath(audio_path);
+  if (!playing)
   {
-    modular_server_.response().returnResult(index);
+    char err_msg[constants::STRING_LENGTH_ERROR_MESSAGE];
+    err_msg[0] = 0;
+    strcat(err_msg,"Unable to find audio path: ");
+    strcat(err_msg,audio_path);
+    modular_server.sendErrorResponse(err_msg);
   }
-  else
-  {
-    modular_server_.response().returnError(constants::pwm_error);
-  }
-}
-
-void AudioController::addTogglePwmCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  long delay;
-  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
-  long period;
-  modular_server_.parameter(constants::period_parameter_name).getValue(period);
-  long on_duration;
-  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  long count;
-  modular_server_.parameter(constants::count_parameter_name).getValue(count);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  int index = addTogglePwm(channels,polarity,delay,period,on_duration,count);
-  if (index >= 0)
-  {
-    modular_server_.response().returnResult(index);
-  }
-  else
-  {
-    modular_server_.response().returnError(constants::pwm_error);
-  }
-}
-
-void AudioController::startTogglePwmCallback()
-{
-  ArduinoJson::JsonArray * channels_array_ptr;
-  modular_server_.parameter(constants::channels_parameter_name).getValue(channels_array_ptr);
-  const char * polarity_string;
-  modular_server_.parameter(constants::polarity_parameter_name).getValue(polarity_string);
-  long delay;
-  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
-  long period;
-  modular_server_.parameter(constants::period_parameter_name).getValue(period);
-  long on_duration;
-  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  const uint32_t channels = arrayToChannels(*channels_array_ptr);
-  const constants::Polarity polarity = stringToPolarity(polarity_string);
-  int index = startTogglePwm(channels,polarity,delay,period,on_duration);
-  if (index >= 0)
-  {
-    modular_server_.response().returnResult(index);
-  }
-  else
-  {
-    modular_server_.response().returnError(constants::pwm_error);
-  }
-}
-
-void AudioController::stopPwmCallback()
-{
-  int pwm_index;
-  modular_server_.parameter(constants::pwm_index_parameter_name).getValue(pwm_index);
-  stopPwm(pwm_index);
-}
-
-void AudioController::stopAllPwmCallback()
-{
-  stopAllPwm();
-}
-
-void AudioController::setChannelsOnCallback(int index)
-{
-  uint32_t & channels = indexed_pulses_[index].channels;
-  constants::Polarity & polarity = indexed_pulses_[index].polarity;
-  setChannelsOn(channels,polarity);
-}
-
-void AudioController::setChannelsOffCallback(int index)
-{
-  uint32_t & channels = indexed_pulses_[index].channels;
-  setChannelsOff(channels);
-}
-
-void AudioController::setChannelsOnReversedCallback(int index)
-{
-  uint32_t & channels = indexed_pulses_[index].channels;
-  constants::Polarity & polarity = indexed_pulses_[index].polarity;
-  constants::Polarity polarity_reversed;
-  polarity_reversed = ((polarity == constants::POSITIVE) ? constants::NEGATIVE : constants::POSITIVE);
-  setChannelsOn(channels,polarity_reversed);
 }

@@ -44,12 +44,8 @@ public:
 
   SDInterface & getSDInterface();
   bool playPath(const char * path);
-  void playTone(size_t frequency);
-  void playToneLeft(size_t frequency);
-  void playToneRight(size_t frequency);
-  void playNoise();
-  void playNoiseLeft();
-  void playNoiseRight();
+  void playTone(size_t frequency, const ConstantString * const speaker_ptr);
+  void playNoise(const ConstantString * const speaker_ptr);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
@@ -63,13 +59,34 @@ private:
   modular_server::Field fields_[audio_controller::constants::FIELD_COUNT_MAX];
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Method methods_[audio_controller::constants::METHOD_COUNT_MAX];
+  modular_server::Interrupt interrupts_[modular_device::constants::INTERRUPT_COUNT_MAX];
 
-  EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
+  // EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
-  IndexedContainer<audio_controller::constants::PulseInfo,
-                   audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+  // IndexedContainer<audio_controller::constants::PulseInfo,
+  //                  audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+
+  bool codec_enabled_;
+  constants::audio_t audio_type_playing_;
+  bool playing_;
+  char path_played_[constants::STRING_LENGTH_PATH];
+  SDInterface sd_interface_;
+  void enableAudioCodec();
+  void updatePlaying();
+  void addDirectoryToResponse(File dir, const char * pwd);
 
   // Callbacks
+  void getSDCardInfoCallback();
+  void getAudioPathsCallback();
+  void playPathCallback();
+  void playToneCallback();
+  void playNoiseCallback();
+  void stopCallback();
+  void isPlayingCallback();
+  void getLastAudioPathPlayedCallback();
+  void getPositionCallback();
+  void getLengthCallback();
+  void getPercentCompleteCallback();
 
 };
 
