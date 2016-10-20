@@ -107,37 +107,37 @@ void AudioController::setup()
   play_path_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
   play_path_method.addParameter(audio_path_parameter);
 
-  modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
-  play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
-  play_tone_method.addParameter(frequency_parameter);
-  play_tone_method.addParameter(speaker_parameter);
+  // modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
+  // play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
+  // play_tone_method.addParameter(frequency_parameter);
+  // play_tone_method.addParameter(speaker_parameter);
 
-  modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
-  play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
-  play_noise_method.addParameter(speaker_parameter);
+  // modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
+  // play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
+  // play_noise_method.addParameter(speaker_parameter);
 
-  modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
-  stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
+  // modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
+  // stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
 
-  modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
-  is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
-  is_playing_method.setReturnTypeBool();
+  // modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
+  // is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
+  // is_playing_method.setReturnTypeBool();
 
-  modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
-  get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
-  get_last_audio_path_played_method.setReturnTypeString();
+  // modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
+  // get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
+  // get_last_audio_path_played_method.setReturnTypeString();
 
-  modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
-  get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
-  get_position_method.setReturnTypeLong();
+  // modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
+  // get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
+  // get_position_method.setReturnTypeLong();
 
-  modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
-  get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
-  get_length_method.setReturnTypeLong();
+  // modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
+  // get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
+  // get_length_method.setReturnTypeLong();
 
-  modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
-  get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
-  get_percent_complete_method.setReturnTypeLong();
+  // modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
+  // get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
+  // get_percent_complete_method.setReturnTypeLong();
 
   // Callbacks
 
@@ -301,7 +301,7 @@ bool Controller::codecEnabled()
   return codec_enabled_;
 }
 
-bool Controller::isAudioPath(const char * path)
+bool Controller::pathIsAudio(const char * path)
 {
   char path_upper[constants::STRING_LENGTH_PATH];
   String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
@@ -438,28 +438,30 @@ void AudioController::getAudioPathsHandler()
 
 void AudioController::playPathHandler()
 {
-  if (!controller.codecEnabled())
+  modular_server::Response & response = modular_server_.response();
+  if (!codecEnabled())
   {
-    modular_server.sendErrorResponse("No audio codec chip detected.");
+    response.returnError("No audio codec chip detected.");
     return;
   }
-  const char * audio_path = modular_server.getParameterValue(constants::audio_path_parameter_name);
-  if (!controller.isAudioPath(audio_path))
+  const char * audio_path;
+  modular_server_.parameter(constants::audio_path_parameter_name).getValue(audio_path);
+  if (!pathIsAudio(audio_path))
   {
-    char err_msg[constants::STRING_LENGTH_ERROR_MESSAGE];
-    err_msg[0] = 0;
-    strcat(err_msg,"Invalid audio path: ");
-    strcat(err_msg,audio_path);
-    modular_server.sendErrorResponse(err_msg);
+    char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
+    error_str[0] = 0;
+    strcat(error_str,"Invalid audio path: ");
+    strcat(error_str,audio_path);
+    response.returnError(error_str);
     return;
   }
-  bool playing = controller.playPath(audio_path);
+  bool playing = playPath(audio_path);
   if (!playing)
   {
-    char err_msg[constants::STRING_LENGTH_ERROR_MESSAGE];
-    err_msg[0] = 0;
-    strcat(err_msg,"Unable to find audio path: ");
-    strcat(err_msg,audio_path);
-    modular_server.sendErrorResponse(err_msg);
+    char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
+    error_str[0] = 0;
+    strcat(error_str,"Unable to find audio path: ");
+    strcat(error_str,audio_path);
+    response.returnError(error_str);
   }
 }

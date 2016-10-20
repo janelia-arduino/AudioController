@@ -52,7 +52,7 @@ public:
   long getPosition();
   long getLength();
   bool codecEnabled();
-  bool isAudioPath(const char * path);
+  bool pathIsAudio(const char * path);
   void updateVolume();
 
 private:
@@ -67,9 +67,9 @@ private:
   //                  audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   bool codec_enabled_;
-  constants::audio_t audio_type_playing_;
+  audio_controller::constants::audio_t audio_type_playing_;
   bool playing_;
-  char path_played_[constants::STRING_LENGTH_PATH];
+  char path_played_[audio_controller::constants::STRING_LENGTH_PATH];
   SDInterface sd_interface_;
   void enableAudioCodec();
   void updatePlaying();

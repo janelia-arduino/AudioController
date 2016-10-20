@@ -52,16 +52,16 @@ extern const size_t sd_card_cs_pin;
 extern const size_t sd_card_mosi_pin;
 extern const size_t sd_card_sck_pin;
 
-enum{EVENT_COUNT_MAX=8};
-enum{INDEXED_PULSES_COUNT_MAX=4};
-extern const int bad_index;
+// enum{EVENT_COUNT_MAX=8};
+// enum{INDEXED_PULSES_COUNT_MAX=4};
+// extern const int bad_index;
 
-struct PulseInfo
-{
-  uint32_t channels;
-  Polarity polarity;
-  EventIdPair event_id_pair;
-};
+// struct PulseInfo
+// {
+//   uint32_t channels;
+//   Polarity polarity;
+//   EventIdPair event_id_pair;
+// };
 
 // Units
 extern ConstantString ms_unit;
