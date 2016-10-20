@@ -25,7 +25,7 @@ namespace constants
 
 // Methods
 
-// Interrupts
+// Callbacks
 
 // Errors
 }

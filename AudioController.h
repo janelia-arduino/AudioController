@@ -59,7 +59,7 @@ private:
   modular_server::Field fields_[audio_controller::constants::FIELD_COUNT_MAX];
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Method methods_[audio_controller::constants::METHOD_COUNT_MAX];
-  modular_server::Interrupt interrupts_[modular_device::constants::INTERRUPT_COUNT_MAX];
+  modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
 
   // EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
@@ -75,18 +75,18 @@ private:
   void updatePlaying();
   void addDirectoryToResponse(File dir, const char * pwd);
 
-  // Callbacks
-  void getSDCardInfoCallback();
-  void getAudioPathsCallback();
-  void playPathCallback();
-  void playToneCallback();
-  void playNoiseCallback();
-  void stopCallback();
-  void isPlayingCallback();
-  void getLastAudioPathPlayedCallback();
-  void getPositionCallback();
-  void getLengthCallback();
-  void getPercentCompleteCallback();
+  // Handlers
+  void getSDCardInfoHandler();
+  void getAudioPathsHandler();
+  void playPathHandler();
+  void playToneHandler();
+  void playNoiseHandler();
+  void stopHandler();
+  void isPlayingHandler();
+  void getLastAudioPathPlayedHandler();
+  void getPositionHandler();
+  void getLengthHandler();
+  void getPercentCompleteHandler();
 
 };
 

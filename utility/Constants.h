@@ -21,7 +21,7 @@ namespace constants
 enum{FIELD_COUNT_MAX=1};
 enum{PARAMETER_COUNT_MAX=4};
 enum{METHOD_COUNT_MAX=11};
-enum{INTERRUPT_COUNT_MAX=1};
+enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
 

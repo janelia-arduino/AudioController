@@ -74,12 +74,12 @@ void AudioController::setup()
                               fields_,
                               parameters_,
                               methods_,
-                              interrupts_);
+                              callbacks_);
 
   // Fields
   modular_server::Field & volume_field = modular_server_.createField(constants::volume_field_name,constants::volume_default);
   volume_field.setRange(constants::volume_min,constants::volume_max);
-  volume_field.attachPostSetValueCallback(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
+  volume_field.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
 
   // Parameters
   modular_server::Parameter & audio_path_parameter = modular_server_.createParameter(constants::audio_path_parameter_name);
@@ -96,50 +96,50 @@ void AudioController::setup()
 
   // Methods
   modular_server::Method & get_sd_card_info_method = modular_server_.createMethod(constants::get_sd_card_info_method_name);
-  get_sd_card_info_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoCallback));
+  get_sd_card_info_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
   get_sd_card_info_method.setReturnTypeObject();
 
   modular_server::Method & get_audio_paths_method = modular_server_.createMethod(constants::get_audio_paths_method_name);
-  get_audio_paths_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsCallback));
+  get_audio_paths_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsHandler));
   get_audio_paths_method.setReturnTypeArray();
 
   modular_server::Method & play_path_method = modular_server_.createMethod(constants::play_path_method_name);
-  play_path_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playPathCallback));
+  play_path_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
   play_path_method.addParameter(audio_path_parameter);
 
   modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
-  play_tone_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playToneCallback));
+  play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
   play_tone_method.addParameter(frequency_parameter);
   play_tone_method.addParameter(speaker_parameter);
 
   modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
-  play_noise_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseCallback));
+  play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
   play_noise_method.addParameter(speaker_parameter);
 
   modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
-  stop_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::stopCallback));
+  stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
 
   modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
-  is_playing_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingCallback));
+  is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
   is_playing_method.setReturnTypeBool();
 
   modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
-  get_last_audio_path_played_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedCallback));
+  get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
   get_last_audio_path_played_method.setReturnTypeString();
 
   modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
-  get_position_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionCallback));
+  get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
   get_position_method.setReturnTypeLong();
 
   modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
-  get_length_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthCallback));
+  get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
   get_length_method.setReturnTypeLong();
 
   modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
-  get_percent_complete_method.attachCallback(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteCallback));
+  get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
   get_percent_complete_method.setReturnTypeLong();
 
-  // Interrupts
+  // Callbacks
 
 }
 
@@ -395,7 +395,7 @@ void AudioController::addDirectoryToResponse(File dir, const char * pwd)
   }
 }
 
-// Callbacks must be non-blocking (avoid 'delay')
+// Handlers must be non-blocking (avoid 'delay')
 //
 // modular_server_.parameter(parameter_name).getValue(value) value type must be either:
 // fixed-point number (int, long, etc.)
@@ -412,7 +412,7 @@ void AudioController::addDirectoryToResponse(File dir, const char * pwd)
 // modular_server_.field(field_name).getElementValue(value) value type must match the field array element default type
 // modular_server_.field(field_name).setElementValue(value) value type must match the field array element default type
 
-void AudioController::getSDCardInfoCallback()
+void AudioController::getSDCardInfoHandler()
 {
   modular_server::Response & response = modular_server_.response();
   response.writeResultKey();
@@ -426,7 +426,7 @@ void AudioController::getSDCardInfoCallback()
   response.endObject();
 }
 
-void AudioController::getAudioPathsCallback()
+void AudioController::getAudioPathsHandler()
 {
   File root = SD.open("/");
   modular_server::Response & response = modular_server_.response();
@@ -436,7 +436,7 @@ void AudioController::getAudioPathsCallback()
   response.endArray();
 }
 
-void AudioController::playPathCallback()
+void AudioController::playPathHandler()
 {
   if (!controller.codecEnabled())
   {

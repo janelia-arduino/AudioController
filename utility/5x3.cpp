@@ -34,7 +34,7 @@ const size_t sd_card_sck_pin = 14;
 
 // Methods
 
-// Interrupts
+// Callbacks
 
 // Errors
 }
