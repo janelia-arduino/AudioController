@@ -59,7 +59,7 @@ CONSTANT_STRING(speaker_parameter_name,"speaker");
 CONSTANT_STRING(speaker_all,"ALL");
 CONSTANT_STRING(speaker_left,"LEFT");
 CONSTANT_STRING(speaker_right,"RIGHT");
-const modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH] =
+modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH] =
   {
     {.cs_ptr=&speaker_all},
     {.cs_ptr=&speaker_left},

@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------
 #include "SDInterface.h"
 
+
+using namespace audio_controller;
+
 SDInterface::SDInterface()
 {
   detected_ = false;
