@@ -93,7 +93,7 @@ void AudioController::setup()
 
   modular_server::Parameter & speaker_parameter = modular_server_.createParameter(constants::speaker_parameter_name);
   speaker_parameter.setTypeString();
-  speaker_parameter.setSubset(constants::speaker_ptr_subset);
+  speaker_parameter.setSubset(constants::speaker_str_subset);
 
   // Methods
   modular_server::Method & get_sd_card_info_method = modular_server_.createMethod(constants::get_sd_card_info_method_name);
@@ -108,37 +108,37 @@ void AudioController::setup()
   play_path_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
   play_path_method.addParameter(audio_path_parameter);
 
-  // modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
-  // play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
-  // play_tone_method.addParameter(frequency_parameter);
-  // play_tone_method.addParameter(speaker_parameter);
+  modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
+  play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
+  play_tone_method.addParameter(frequency_parameter);
+  play_tone_method.addParameter(speaker_parameter);
 
-  // modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
-  // play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
-  // play_noise_method.addParameter(speaker_parameter);
+  modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
+  play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
+  play_noise_method.addParameter(speaker_parameter);
 
-  // modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
-  // stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
+  modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
+  stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
 
-  // modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
-  // is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
-  // is_playing_method.setReturnTypeBool();
+  modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
+  is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
+  is_playing_method.setReturnTypeBool();
 
-  // modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
-  // get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
-  // get_last_audio_path_played_method.setReturnTypeString();
+  modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
+  get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
+  get_last_audio_path_played_method.setReturnTypeString();
 
-  // modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
-  // get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
-  // get_position_method.setReturnTypeLong();
+  modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
+  get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
+  get_position_method.setReturnTypeLong();
 
-  // modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
-  // get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
-  // get_length_method.setReturnTypeLong();
+  modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
+  get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
+  get_length_method.setReturnTypeLong();
 
-  // modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
-  // get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
-  // get_percent_complete_method.setReturnTypeLong();
+  modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
+  get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
+  get_percent_complete_method.setReturnTypeLong();
 
   // Callbacks
 
@@ -201,17 +201,17 @@ bool AudioController::playPath(const char * path)
   return playing;
 }
 
-void AudioController::playTone(size_t frequency, const ConstantString * const speaker_ptr)
+void AudioController::playTone(size_t frequency, const ConstantString * const speaker_str)
 {
   stop();
   audio_type_playing_ = constants::TONE_TYPE;
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
+  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_left))
   {
     g_tone_left.amplitude(0);
     g_tone_left.frequency(frequency);
     g_tone_left.amplitude(1);
   }
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
+  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_right))
   {
     g_tone_right.amplitude(0);
     g_tone_right.frequency(frequency);
@@ -221,15 +221,15 @@ void AudioController::playTone(size_t frequency, const ConstantString * const sp
   playing_ = true;
 }
 
-void AudioController::playNoise(const ConstantString * const speaker_ptr)
+void AudioController::playNoise(const ConstantString * const speaker_str)
 {
   stop();
   audio_type_playing_ = constants::NOISE_TYPE;
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
+  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_left))
   {
     g_noise_left.amplitude(1);
   }
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
+  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_right))
   {
     g_noise_right.amplitude(1);
   }
@@ -239,22 +239,33 @@ void AudioController::playNoise(const ConstantString * const speaker_ptr)
 
 void AudioController::stop()
 {
-  switch (audio_type_playing_)
+  if (playing_)
   {
-    case constants::RAW_TYPE:
-      g_play_sd_raw.stop();
-      break;
-    case constants::WAV_TYPE:
-      g_play_sd_wav.stop();
-      break;
-    case constants::TONE_TYPE:
-      g_tone_left.amplitude(0);
-      g_tone_right.amplitude(0);
-    case constants::NOISE_TYPE:
-      g_noise_left.amplitude(0);
-      g_noise_right.amplitude(0);
+    switch (audio_type_playing_)
+    {
+      case constants::RAW_TYPE:
+      {
+        g_play_sd_raw.stop();
+        break;
+      }
+      case constants::WAV_TYPE:
+      {
+        g_play_sd_wav.stop();
+        break;
+      }
+      case constants::TONE_TYPE:
+      {
+        g_tone_left.amplitude(0);
+        g_tone_right.amplitude(0);
+      }
+      case constants::NOISE_TYPE:
+      {
+        g_noise_left.amplitude(0);
+        g_noise_right.amplitude(0);
+      }
+    }
+    playing_ = false;
   }
-  playing_ = false;
 }
 
 bool AudioController::isPlaying()
@@ -270,14 +281,21 @@ const char * AudioController::getLastAudioPathPlayed()
 long AudioController::getPosition()
 {
   long position = 0;
-  switch (audio_type_playing_)
+  if (playing_)
   {
-    case constants::RAW_TYPE:
-      position = g_play_sd_raw.positionMillis();
-      break;
-    case constants::WAV_TYPE:
-      position = g_play_sd_wav.positionMillis();
-      break;
+    switch (audio_type_playing_)
+    {
+      case constants::RAW_TYPE:
+      {
+        position = g_play_sd_raw.positionMillis();
+        break;
+      }
+      case constants::WAV_TYPE:
+      {
+        position = g_play_sd_wav.positionMillis();
+        break;
+      }
+    }
   }
   return position;
 }
@@ -285,16 +303,43 @@ long AudioController::getPosition()
 long AudioController::getLength()
 {
   long length = 0;
-  switch (audio_type_playing_)
+  if (playing_)
   {
-    case constants::RAW_TYPE:
-      length = g_play_sd_raw.lengthMillis();
-      break;
-    case constants::WAV_TYPE:
-      length = g_play_sd_wav.lengthMillis();
-      break;
+    switch (audio_type_playing_)
+    {
+      case constants::RAW_TYPE:
+      {
+        length = g_play_sd_raw.lengthMillis();
+        break;
+      }
+      case constants::WAV_TYPE:
+      {
+        length = g_play_sd_wav.lengthMillis();
+        break;
+      }
+    }
   }
   return length;
+}
+
+int AudioController::getPercentComplete()
+{
+  long position = getPosition();
+  long length = getLength();
+  long percent_complete;
+  if (length > 0)
+  {
+    percent_complete = (100*position)/length;
+  }
+  else if (isPlaying())
+  {
+    percent_complete = 0;
+  }
+  else
+  {
+    percent_complete = 100;
+  }
+  return percent_complete;
 }
 
 bool AudioController::codecEnabled()
@@ -347,14 +392,21 @@ void AudioController::enableAudioCodec()
 
 void AudioController::updatePlaying()
 {
-  switch (audio_type_playing_)
+  if (playing_)
   {
-    case constants::RAW_TYPE:
-      playing_ = g_play_sd_raw.isPlaying();
-      break;
-    case constants::WAV_TYPE:
-      playing_ = g_play_sd_wav.isPlaying();
-      break;
+    switch (audio_type_playing_)
+    {
+      case constants::RAW_TYPE:
+      {
+        playing_ = g_play_sd_raw.isPlaying();
+        break;
+      }
+      case constants::WAV_TYPE:
+      {
+        playing_ = g_play_sd_wav.isPlaying();
+        break;
+      }
+    }
   }
 }
 
@@ -393,6 +445,22 @@ void AudioController::addDirectoryToResponse(File dir, const char * pwd)
       addDirectoryToResponse(entry,full_path);
     }
     entry.close();
+  }
+}
+
+ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
+{
+  if (string == constants::speaker_left)
+  {
+    return &constants::speaker_left;
+  }
+  else if (string == constants::speaker_right)
+  {
+    return &constants::speaker_right;
+  }
+  else
+  {
+    return &constants::speaker_all;
   }
 }
 
@@ -446,7 +514,7 @@ void AudioController::playPathHandler()
     return;
   }
   const char * path;
-  bool found = modular_server_.parameter(constants::audio_path_parameter_name).getValue(path);
+  modular_server_.parameter(constants::audio_path_parameter_name).getValue(path);
   if (!pathIsAudio(path))
   {
     char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
@@ -465,4 +533,69 @@ void AudioController::playPathHandler()
     strcat(error_str,path);
     response.returnError(error_str);
   }
+}
+
+void AudioController::playToneHandler()
+{
+  modular_server::Response & response = modular_server_.response();
+  if (!codecEnabled())
+  {
+    response.returnError("No audio codec chip detected.");
+    return;
+  }
+  long frequency;
+  modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  playTone(frequency,speaker_ptr);
+}
+
+void AudioController::playNoiseHandler()
+{
+  modular_server::Response & response = modular_server_.response();
+  if (!codecEnabled())
+  {
+    response.returnError("No audio codec chip detected.");
+    return;
+  }
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  playNoise(speaker_ptr);
+}
+
+void AudioController::stopHandler()
+{
+  stop();
+}
+
+void AudioController::isPlayingHandler()
+{
+  bool playing = isPlaying();
+  modular_server_.response().returnResult(playing);
+}
+
+void AudioController::getLastAudioPathPlayedHandler()
+{
+  const char * last_path_played = getLastAudioPathPlayed();
+  modular_server_.response().returnResult(last_path_played);
+}
+
+void AudioController::getPositionHandler()
+{
+  long position = getPosition();
+  modular_server_.response().returnResult(position);
+}
+
+void AudioController::getLengthHandler()
+{
+  long length = getLength();
+  modular_server_.response().returnResult(length);
+}
+
+void AudioController::getPercentCompleteHandler()
+{
+  long percent_complete = getPercentComplete();
+  modular_server_.response().returnResult(percent_complete);
 }

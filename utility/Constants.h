@@ -90,7 +90,7 @@ enum{SPEAKER_SUBSET_LENGTH=3};
 extern ConstantString speaker_all;
 extern ConstantString speaker_left;
 extern ConstantString speaker_right;
-extern modular_server::SubsetMemberType speaker_ptr_subset[SPEAKER_SUBSET_LENGTH];
+extern modular_server::SubsetMemberType speaker_str_subset[SPEAKER_SUBSET_LENGTH];
 
 // Methods
 extern ConstantString get_sd_card_info_method_name;

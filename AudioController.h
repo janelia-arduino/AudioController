@@ -44,13 +44,14 @@ public:
 
   SDInterface & getSDInterface();
   bool playPath(const char * path);
-  void playTone(size_t frequency, const ConstantString * const speaker_ptr);
-  void playNoise(const ConstantString * const speaker_ptr);
+  void playTone(size_t frequency, const ConstantString * const speaker_str);
+  void playNoise(const ConstantString * const speaker_str);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
   long getPosition();
   long getLength();
+  int getPercentComplete();
   bool codecEnabled();
   bool pathIsAudio(const char * path);
   void updateVolume();
@@ -74,6 +75,7 @@ private:
   void enableAudioCodec();
   void updatePlaying();
   void addDirectoryToResponse(File dir, const char * pwd);
+  ConstantString * const stringToSpeakerPtr(const char * string);
 
   // Handlers
   void getSDCardInfoHandler();
