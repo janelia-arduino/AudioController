@@ -439,36 +439,30 @@ void AudioController::getAudioPathsHandler()
 
 void AudioController::playPathHandler()
 {
-  // modular_server::Response & response = modular_server_.response();
-  // if (!codecEnabled())
-  // {
-  //   response.returnError("No audio codec chip detected.");
-  //   return;
-  // }
+  modular_server::Response & response = modular_server_.response();
+  if (!codecEnabled())
+  {
+    response.returnError("No audio codec chip detected.");
+    return;
+  }
   const char * path;
   bool found = modular_server_.parameter(constants::audio_path_parameter_name).getValue(path);
-  if (!found)
+  if (!pathIsAudio(path))
   {
-    Serial << "not found!";
+    char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
+    error_str[0] = 0;
+    strcat(error_str,"Invalid audio path: ");
+    strcat(error_str,path);
+    response.returnError(error_str);
+    return;
   }
-  // Serial << "path = " << path << "\n";
-  // Serial << "path = ";
-  // if (!pathIsAudio(path))
-  // {
-  //   char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
-  //   error_str[0] = 0;
-  //   strcat(error_str,"Invalid audio path: ");
-  //   strcat(error_str,path);
-  //   response.returnError(error_str);
-  //   return;
-  // }
-  // bool playing = playPath(path);
-  // if (!playing)
-  // {
-  //   char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
-  //   error_str[0] = 0;
-  //   strcat(error_str,"Unable to find audio path: ");
-  //   strcat(error_str,audio_path);
-  //   response.returnError(error_str);
-  // }
+  bool playing = playPath(path);
+  if (!playing)
+  {
+    char error_str[constants::STRING_LENGTH_ERROR_MESSAGE];
+    error_str[0] = 0;
+    strcat(error_str,"Unable to find audio path: ");
+    strcat(error_str,path);
+    response.returnError(error_str);
+  }
 }
