@@ -38,8 +38,8 @@ const char * const sd_prefix = "/SD/";
 CONSTANT_STRING(ms_unit,"ms");
 CONSTANT_STRING(hz_unit,"Hz");
 
-// Fields
-CONSTANT_STRING(volume_field_name,"volume");
+// Properties
+CONSTANT_STRING(volume_property_name,"volume");
 const double volume_min = 0.0;
 const double volume_max = 1.0;
 const double volume_default = 0.25;
@@ -66,18 +66,18 @@ modular_server::SubsetMemberType speaker_str_subset[SPEAKER_SUBSET_LENGTH] =
     {.cs_ptr=&speaker_right},
   };
 
-// Methods
-CONSTANT_STRING(get_sd_card_info_method_name,"getSDCardInfo");
-CONSTANT_STRING(get_audio_paths_method_name,"getAudioPaths");
-CONSTANT_STRING(play_path_method_name,"playPath");
-CONSTANT_STRING(play_tone_method_name,"playTone");
-CONSTANT_STRING(play_noise_method_name,"playNoise");
-CONSTANT_STRING(stop_method_name,"stop");
-CONSTANT_STRING(is_playing_method_name,"isPlaying");
-CONSTANT_STRING(get_last_audio_path_played_method_name,"getLastAudioPathPlayed");
-CONSTANT_STRING(get_position_method_name,"getPosition");
-CONSTANT_STRING(get_length_method_name,"getLength");
-CONSTANT_STRING(get_percent_complete_method_name,"getPercentComplete");
+// Functions
+CONSTANT_STRING(get_sd_card_info_function_name,"getSDCardInfo");
+CONSTANT_STRING(get_audio_paths_function_name,"getAudioPaths");
+CONSTANT_STRING(play_path_function_name,"playPath");
+CONSTANT_STRING(play_tone_function_name,"playTone");
+CONSTANT_STRING(play_noise_function_name,"playNoise");
+CONSTANT_STRING(stop_function_name,"stop");
+CONSTANT_STRING(is_playing_function_name,"isPlaying");
+CONSTANT_STRING(get_last_audio_path_played_function_name,"getLastAudioPathPlayed");
+CONSTANT_STRING(get_position_function_name,"getPosition");
+CONSTANT_STRING(get_length_function_name,"getLength");
+CONSTANT_STRING(get_percent_complete_function_name,"getPercentComplete");
 
 // Errors
 }

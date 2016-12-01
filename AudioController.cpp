@@ -66,20 +66,23 @@ void AudioController::setup()
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
 
-  // Add Hardware Info
-  modular_server_.addHardwareInfo(constants::hardware_info);
+  // Add Hardware
+  modular_server_.addHardware(constants::hardware_info,
+                              interrupts_);
+
+  // Interrupts
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
-                              fields_,
+                              properties_,
                               parameters_,
-                              methods_,
+                              functions_,
                               callbacks_);
 
-  // Fields
-  modular_server::Field & volume_field = modular_server_.createField(constants::volume_field_name,constants::volume_default);
-  volume_field.setRange(constants::volume_min,constants::volume_max);
-  volume_field.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
+  // Properties
+  modular_server::Property & volume_property = modular_server_.createProperty(constants::volume_property_name,constants::volume_default);
+  volume_property.setRange(constants::volume_min,constants::volume_max);
+  volume_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
 
   // Parameters
   modular_server::Parameter & audio_path_parameter = modular_server_.createParameter(constants::audio_path_parameter_name);
@@ -95,50 +98,50 @@ void AudioController::setup()
   speaker_parameter.setTypeString();
   speaker_parameter.setSubset(constants::speaker_str_subset);
 
-  // Methods
-  modular_server::Method & get_sd_card_info_method = modular_server_.createMethod(constants::get_sd_card_info_method_name);
-  get_sd_card_info_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
-  get_sd_card_info_method.setReturnTypeObject();
+  // Functions
+  modular_server::Function & get_sd_card_info_function = modular_server_.createFunction(constants::get_sd_card_info_function_name);
+  get_sd_card_info_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
+  get_sd_card_info_function.setReturnTypeObject();
 
-  modular_server::Method & get_audio_paths_method = modular_server_.createMethod(constants::get_audio_paths_method_name);
-  get_audio_paths_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsHandler));
-  get_audio_paths_method.setReturnTypeArray();
+  modular_server::Function & get_audio_paths_function = modular_server_.createFunction(constants::get_audio_paths_function_name);
+  get_audio_paths_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsHandler));
+  get_audio_paths_function.setReturnTypeArray();
 
-  modular_server::Method & play_path_method = modular_server_.createMethod(constants::play_path_method_name);
-  play_path_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
-  play_path_method.addParameter(audio_path_parameter);
+  modular_server::Function & play_path_function = modular_server_.createFunction(constants::play_path_function_name);
+  play_path_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
+  play_path_function.addParameter(audio_path_parameter);
 
-  modular_server::Method & play_tone_method = modular_server_.createMethod(constants::play_tone_method_name);
-  play_tone_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
-  play_tone_method.addParameter(frequency_parameter);
-  play_tone_method.addParameter(speaker_parameter);
+  modular_server::Function & play_tone_function = modular_server_.createFunction(constants::play_tone_function_name);
+  play_tone_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
+  play_tone_function.addParameter(frequency_parameter);
+  play_tone_function.addParameter(speaker_parameter);
 
-  modular_server::Method & play_noise_method = modular_server_.createMethod(constants::play_noise_method_name);
-  play_noise_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
-  play_noise_method.addParameter(speaker_parameter);
+  modular_server::Function & play_noise_function = modular_server_.createFunction(constants::play_noise_function_name);
+  play_noise_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
+  play_noise_function.addParameter(speaker_parameter);
 
-  modular_server::Method & stop_method = modular_server_.createMethod(constants::stop_method_name);
-  stop_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
+  modular_server::Function & stop_function = modular_server_.createFunction(constants::stop_function_name);
+  stop_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopHandler));
 
-  modular_server::Method & is_playing_method = modular_server_.createMethod(constants::is_playing_method_name);
-  is_playing_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
-  is_playing_method.setReturnTypeBool();
+  modular_server::Function & is_playing_function = modular_server_.createFunction(constants::is_playing_function_name);
+  is_playing_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
+  is_playing_function.setReturnTypeBool();
 
-  modular_server::Method & get_last_audio_path_played_method = modular_server_.createMethod(constants::get_last_audio_path_played_method_name);
-  get_last_audio_path_played_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
-  get_last_audio_path_played_method.setReturnTypeString();
+  modular_server::Function & get_last_audio_path_played_function = modular_server_.createFunction(constants::get_last_audio_path_played_function_name);
+  get_last_audio_path_played_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
+  get_last_audio_path_played_function.setReturnTypeString();
 
-  modular_server::Method & get_position_method = modular_server_.createMethod(constants::get_position_method_name);
-  get_position_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
-  get_position_method.setReturnTypeLong();
+  modular_server::Function & get_position_function = modular_server_.createFunction(constants::get_position_function_name);
+  get_position_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
+  get_position_function.setReturnTypeLong();
 
-  modular_server::Method & get_length_method = modular_server_.createMethod(constants::get_length_method_name);
-  get_length_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
-  get_length_method.setReturnTypeLong();
+  modular_server::Function & get_length_function = modular_server_.createFunction(constants::get_length_function_name);
+  get_length_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
+  get_length_function.setReturnTypeLong();
 
-  modular_server::Method & get_percent_complete_method = modular_server_.createMethod(constants::get_percent_complete_method_name);
-  get_percent_complete_method.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
-  get_percent_complete_method.setReturnTypeLong();
+  modular_server::Function & get_percent_complete_function = modular_server_.createFunction(constants::get_percent_complete_function_name);
+  get_percent_complete_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
+  get_percent_complete_function.setReturnTypeLong();
 
   // Callbacks
 
@@ -371,7 +374,7 @@ void AudioController::updateVolume()
   if (codecEnabled())
   {
     double volume;
-    modular_server_.field(constants::volume_field_name).getValue(volume);
+    modular_server_.property(constants::volume_property_name).getValue(volume);
     g_sgtl5000.volume(volume);
   }
 }
@@ -476,10 +479,10 @@ ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
 //
 // For more info read about ArduinoJson parsing https://github.com/janelia-arduino/ArduinoJson
 //
-// modular_server_.field(field_name).getValue(value) value type must match the field default type
-// modular_server_.field(field_name).setValue(value) value type must match the field default type
-// modular_server_.field(field_name).getElementValue(value) value type must match the field array element default type
-// modular_server_.field(field_name).setElementValue(value) value type must match the field array element default type
+// modular_server_.property(property_name).getValue(value) value type must match the property default type
+// modular_server_.property(property_name).setValue(value) value type must match the property default type
+// modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
+// modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
 
 void AudioController::getSDCardInfoHandler()
 {

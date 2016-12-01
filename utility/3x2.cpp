@@ -28,11 +28,11 @@ const size_t sd_card_sck_pin = 14;
 
 // Units
 
-// Fields
+// Properties
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 

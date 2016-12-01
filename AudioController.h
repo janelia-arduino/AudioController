@@ -19,9 +19,9 @@
 #include "ConstantVariable.h"
 #include "SavedVariable.h"
 #include "Functor.h"
-
 #include "IndexedContainer.h"
 #include "FunctorCallbacks.h"
+
 #include "EventController.h"
 #include "Wire.h"
 #include "SPI.h"
@@ -57,9 +57,9 @@ public:
   void updateVolume();
 
 private:
-  modular_server::Field fields_[audio_controller::constants::FIELD_COUNT_MAX];
+  modular_server::Property properties_[audio_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
-  modular_server::Method methods_[audio_controller::constants::METHOD_COUNT_MAX];
+  modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
 
   // EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;

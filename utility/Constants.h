@@ -18,9 +18,9 @@ namespace audio_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{FIELD_COUNT_MAX=1};
+enum{PROPERTY_COUNT_MAX=1};
 enum{PARAMETER_COUNT_MAX=4};
-enum{METHOD_COUNT_MAX=11};
+enum{FUNCTION_COUNT_MAX=11};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -67,9 +67,9 @@ extern const size_t sd_card_sck_pin;
 extern ConstantString ms_unit;
 extern ConstantString hz_unit;
 
-// Fields
-// Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern ConstantString volume_field_name;
+// Properties
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+extern ConstantString volume_property_name;
 extern const double volume_min;
 extern const double volume_max;
 extern const double volume_default;
@@ -92,18 +92,18 @@ extern ConstantString speaker_left;
 extern ConstantString speaker_right;
 extern modular_server::SubsetMemberType speaker_str_subset[SPEAKER_SUBSET_LENGTH];
 
-// Methods
-extern ConstantString get_sd_card_info_method_name;
-extern ConstantString get_audio_paths_method_name;
-extern ConstantString play_path_method_name;
-extern ConstantString play_tone_method_name;
-extern ConstantString play_noise_method_name;
-extern ConstantString stop_method_name;
-extern ConstantString is_playing_method_name;
-extern ConstantString get_last_audio_path_played_method_name;
-extern ConstantString get_position_method_name;
-extern ConstantString get_length_method_name;
-extern ConstantString get_percent_complete_method_name;
+// Functions
+extern ConstantString get_sd_card_info_function_name;
+extern ConstantString get_audio_paths_function_name;
+extern ConstantString play_path_function_name;
+extern ConstantString play_tone_function_name;
+extern ConstantString play_noise_function_name;
+extern ConstantString stop_function_name;
+extern ConstantString is_playing_function_name;
+extern ConstantString get_last_audio_path_played_function_name;
+extern ConstantString get_position_function_name;
+extern ConstantString get_length_function_name;
+extern ConstantString get_percent_complete_function_name;
 
 // Errors
 }

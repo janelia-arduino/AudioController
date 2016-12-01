@@ -18,12 +18,12 @@ namespace constants
 {
 // Units
 
-// Fields
-// Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Properties
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 
