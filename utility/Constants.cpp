@@ -19,7 +19,7 @@ CONSTANT_STRING(firmware_name,"AudioController");
 const modular_server::FirmwareInfo firmware_info =
   {
     .name_ptr=&firmware_name,
-    .version_major=1,
+    .version_major=2,
     .version_minor=0,
     .version_patch=0,
   };
@@ -33,6 +33,8 @@ const char * const audio_ext_wav = ".WAV";
 const char * const audio_exts[AUDIO_EXT_COUNT] = {audio_ext_raw, audio_ext_wav};
 
 const char * const sd_prefix = "/SD/";
+
+// Interrupts
 
 // Units
 CONSTANT_STRING(ms_unit,"ms");
@@ -78,6 +80,8 @@ CONSTANT_STRING(get_last_audio_path_played_function_name,"getLastAudioPathPlayed
 CONSTANT_STRING(get_position_function_name,"getPosition");
 CONSTANT_STRING(get_length_function_name,"getLength");
 CONSTANT_STRING(get_percent_complete_function_name,"getPercentComplete");
+
+// Callbacks
 
 // Errors
 }

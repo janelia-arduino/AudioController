@@ -63,6 +63,8 @@ extern const size_t sd_card_sck_pin;
 //   EventIdPair event_id_pair;
 // };
 
+// Interrupts
+
 // Units
 extern ConstantString ms_unit;
 extern ConstantString hz_unit;
@@ -104,6 +106,8 @@ extern ConstantString get_last_audio_path_played_function_name;
 extern ConstantString get_position_function_name;
 extern ConstantString get_length_function_name;
 extern ConstantString get_percent_complete_function_name;
+
+// Callbacks
 
 // Errors
 }

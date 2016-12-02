@@ -57,6 +57,8 @@ public:
   void updateVolume();
 
 private:
+  modular_server::Interrupt interrupts_[audio_controller::constants::INTERRUPT_COUNT_MAX];
+
   modular_server::Property properties_[audio_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
