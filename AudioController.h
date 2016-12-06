@@ -44,8 +44,8 @@ public:
 
   SDInterface & getSDInterface();
   bool playPath(const char * path);
-  void playTone(size_t frequency, const ConstantString * const speaker_str);
-  void playNoise(const ConstantString * const speaker_str);
+  void playTone(const size_t frequency, const ConstantString * const speaker_ptr);
+  void playNoise(const ConstantString * const speaker_ptr);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
@@ -56,6 +56,33 @@ public:
   bool pathIsAudio(const char * path);
   void updateVolume();
 
+  int addTonePwm(const size_t frequency,
+                 const ConstantString * const speaker_ptr,
+                 const long delay,
+                 const long period,
+                 const long on_duration,
+                 const long count);
+  int startTonePwm(const size_t frequency,
+                   const ConstantString * const speaker_ptr,
+                   const long delay,
+                   const long period,
+                   const long on_duration);
+  int addNoisePwm(const ConstantString * const speaker_ptr,
+                  const long delay,
+                  const long period,
+                  const long on_duration,
+                  const long count);
+  int startNoisePwm(const ConstantString * const speaker_ptr,
+                    const long delay,
+                    const long period,
+                    const long on_duration);
+  void stopPwm(const int pwm_index);
+  void stopAllPwm();
+
+  // Handlers
+  virtual void startPwmHandler(int index);
+  virtual void stopPwmHandler(int index);
+
 private:
   modular_server::Interrupt interrupts_[audio_controller::constants::INTERRUPT_COUNT_MAX];
 
@@ -64,10 +91,10 @@ private:
   modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
 
-  // EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
+  EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
-  // IndexedContainer<audio_controller::constants::PulseInfo,
-  //                  audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+  IndexedContainer<audio_controller::constants::PulseInfo,
+                   audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   bool codec_enabled_;
   audio_controller::constants::audio_t audio_type_playing_;
@@ -91,6 +118,15 @@ private:
   void getPositionHandler();
   void getLengthHandler();
   void getPercentCompleteHandler();
+  void addTonePwmHandler();
+  void startTonePwmHandler();
+  void addNoisePwmHandler();
+  void startNoisePwmHandler();
+  void stopPwmHandler();
+  void stopAllPwmHandler();
+  void playToneHandler(int index);
+  void playNoiseHandler(int index);
+  void stopHandler(int index);
 
 };
 

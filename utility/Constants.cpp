@@ -61,12 +61,30 @@ CONSTANT_STRING(speaker_parameter_name,"speaker");
 CONSTANT_STRING(speaker_all,"ALL");
 CONSTANT_STRING(speaker_left,"LEFT");
 CONSTANT_STRING(speaker_right,"RIGHT");
-modular_server::SubsetMemberType speaker_str_subset[SPEAKER_SUBSET_LENGTH] =
+modular_server::SubsetMemberType speaker_subset[SPEAKER_SUBSET_LENGTH] =
   {
     {.cs_ptr=&speaker_all},
     {.cs_ptr=&speaker_left},
     {.cs_ptr=&speaker_right},
   };
+
+CONSTANT_STRING(delay_parameter_name,"delay");
+const long delay_min = 0;
+const long delay_max = 2000000000;
+
+CONSTANT_STRING(period_parameter_name,"period");
+const long period_min = 2;
+const long period_max = 2000000000;
+
+CONSTANT_STRING(on_duration_parameter_name,"on_duration");
+const long on_duration_min = 1;
+const long on_duration_max = 2000000000;
+
+CONSTANT_STRING(count_parameter_name,"count");
+const long count_min = 1;
+const long count_max = 2000000000;
+
+CONSTANT_STRING(pwm_index_parameter_name,"pwm_index");
 
 // Functions
 CONSTANT_STRING(get_sd_card_info_function_name,"getSDCardInfo");

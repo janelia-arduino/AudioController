@@ -59,7 +59,7 @@ void AudioController::setup()
   sd_interface_.setup();
 
   // Event Controller Setup
-  // event_controller_.setup();
+  event_controller_.setup();
 
   // Pin Setup
 
@@ -110,7 +110,26 @@ void AudioController::setup()
 
   modular_server::Parameter & speaker_parameter = modular_server_.createParameter(constants::speaker_parameter_name);
   speaker_parameter.setTypeString();
-  speaker_parameter.setSubset(constants::speaker_str_subset);
+  speaker_parameter.setSubset(constants::speaker_subset);
+
+  modular_server::Parameter & delay_parameter = modular_server_.createParameter(constants::delay_parameter_name);
+  delay_parameter.setRange(constants::delay_min,constants::delay_max);
+  delay_parameter.setUnits(constants::ms_unit);
+
+  modular_server::Parameter & period_parameter = modular_server_.createParameter(constants::period_parameter_name);
+  period_parameter.setRange(constants::period_min,constants::period_max);
+  period_parameter.setUnits(constants::ms_unit);
+
+  modular_server::Parameter & on_duration_parameter = modular_server_.createParameter(constants::on_duration_parameter_name);
+  on_duration_parameter.setRange(constants::on_duration_min,constants::on_duration_max);
+  on_duration_parameter.setUnits(constants::ms_unit);
+
+  modular_server::Parameter & count_parameter = modular_server_.createParameter(constants::count_parameter_name);
+  count_parameter.setRange(constants::count_min,constants::count_max);
+  count_parameter.setUnits(constants::ms_unit);
+
+  modular_server::Parameter & pwm_index_parameter = modular_server_.createParameter(constants::pwm_index_parameter_name);
+  pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
 
   // Functions
   modular_server::Function & get_sd_card_info_function = modular_server_.createFunction(constants::get_sd_card_info_function_name);
@@ -156,6 +175,49 @@ void AudioController::setup()
   modular_server::Function & get_percent_complete_function = modular_server_.createFunction(constants::get_percent_complete_function_name);
   get_percent_complete_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
   get_percent_complete_function.setReturnTypeLong();
+
+  modular_server::Function & add_tone_pwm_function = modular_server_.createFunction(constants::add_tone_pwm_function_name);
+  add_tone_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addTonePwmHandler));
+  add_tone_pwm_function.addParameter(frequency_parameter);
+  add_tone_pwm_function.addParameter(speaker_parameter);
+  add_tone_pwm_function.addParameter(delay_parameter);
+  add_tone_pwm_function.addParameter(period_parameter);
+  add_tone_pwm_function.addParameter(on_duration_parameter);
+  add_tone_pwm_function.addParameter(count_parameter);
+  add_tone_pwm_function.setReturnTypeLong();
+
+  modular_server::Function & start_tone_pwm_function = modular_server_.createFunction(constants::start_tone_pwm_function_name);
+  start_tone_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startTonePwmHandler));
+  start_tone_pwm_function.addParameter(frequency_parameter);
+  start_tone_pwm_function.addParameter(speaker_parameter);
+  start_tone_pwm_function.addParameter(delay_parameter);
+  start_tone_pwm_function.addParameter(period_parameter);
+  start_tone_pwm_function.addParameter(on_duration_parameter);
+  start_tone_pwm_function.setReturnTypeLong();
+
+  modular_server::Function & add_noise_pwm_function = modular_server_.createFunction(constants::add_noise_pwm_function_name);
+  add_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addNoisePwmHandler));
+  add_noise_pwm_function.addParameter(speaker_parameter);
+  add_noise_pwm_function.addParameter(delay_parameter);
+  add_noise_pwm_function.addParameter(period_parameter);
+  add_noise_pwm_function.addParameter(on_duration_parameter);
+  add_noise_pwm_function.addParameter(count_parameter);
+  add_noise_pwm_function.setReturnTypeLong();
+
+  modular_server::Function & start_noise_pwm_function = modular_server_.createFunction(constants::start_noise_pwm_function_name);
+  start_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startNoisePwmHandler));
+  start_noise_pwm_function.addParameter(speaker_parameter);
+  start_noise_pwm_function.addParameter(delay_parameter);
+  start_noise_pwm_function.addParameter(period_parameter);
+  start_noise_pwm_function.addParameter(on_duration_parameter);
+  start_noise_pwm_function.setReturnTypeLong();
+
+  modular_server::Function & stop_pwm_function = modular_server_.createFunction(constants::stop_pwm_function_name);
+  stop_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopPwmHandler));
+  stop_pwm_function.addParameter(pwm_index_parameter);
+
+  modular_server::Function & stop_all_pwm_function = modular_server_.createFunction(constants::stop_all_pwm_function_name);
+  stop_all_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopAllPwmHandler));
 
   // Callbacks
 
@@ -218,17 +280,17 @@ bool AudioController::playPath(const char * path)
   return playing;
 }
 
-void AudioController::playTone(size_t frequency, const ConstantString * const speaker_str)
+void AudioController::playTone(const size_t frequency, const ConstantString * const speaker_ptr)
 {
   stop();
   audio_type_playing_ = constants::TONE_TYPE;
-  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_left))
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
     g_tone_left.amplitude(0);
     g_tone_left.frequency(frequency);
     g_tone_left.amplitude(1);
   }
-  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_right))
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
   {
     g_tone_right.amplitude(0);
     g_tone_right.frequency(frequency);
@@ -238,15 +300,15 @@ void AudioController::playTone(size_t frequency, const ConstantString * const sp
   playing_ = true;
 }
 
-void AudioController::playNoise(const ConstantString * const speaker_str)
+void AudioController::playNoise(const ConstantString * const speaker_ptr)
 {
   stop();
   audio_type_playing_ = constants::NOISE_TYPE;
-  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_left))
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
     g_noise_left.amplitude(1);
   }
-  if ((speaker_str == &constants::speaker_all) || (speaker_str == &constants::speaker_right))
+  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
   {
     g_noise_right.amplitude(1);
   }
@@ -498,6 +560,17 @@ ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
 // modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
 
+void AudioController::startPwmHandler(int index)
+{
+}
+
+void AudioController::stopPwmHandler(int index)
+{
+  // uint32_t & channels = indexed_pulses_[index].channels;
+  // setChannelsOff(channels);
+  indexed_pulses_.remove(index);
+}
+
 void AudioController::getSDCardInfoHandler()
 {
   modular_server::Response & response = modular_server_.response();
@@ -616,3 +689,116 @@ void AudioController::getPercentCompleteHandler()
   long percent_complete = getPercentComplete();
   modular_server_.response().returnResult(percent_complete);
 }
+
+void AudioController::addTonePwmHandler()
+{
+  long frequency;
+  modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  long delay;
+  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
+  long period;
+  modular_server_.parameter(constants::period_parameter_name).getValue(period);
+  long on_duration;
+  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
+  long count;
+  modular_server_.parameter(constants::count_parameter_name).getValue(count);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  int index = addTonePwm(frequency,speaker_ptr,delay,period,on_duration,count);
+  if (index >= 0)
+  {
+    modular_server_.response().returnResult(index);
+  }
+  else
+  {
+    modular_server_.response().returnError(constants::pwm_error);
+  }
+}
+
+void AudioController::startTonePwmHandler()
+{
+  long frequency;
+  modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  long delay;
+  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
+  long period;
+  modular_server_.parameter(constants::period_parameter_name).getValue(period);
+  long on_duration;
+  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  int index = startTonePwm(frequency,speaker_ptr,delay,period,on_duration);
+  if (index >= 0)
+  {
+    modular_server_.response().returnResult(index);
+  }
+  else
+  {
+    modular_server_.response().returnError(constants::pwm_error);
+  }
+}
+
+void AudioController::addNoisePwmHandler()
+{
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  long delay;
+  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
+  long period;
+  modular_server_.parameter(constants::period_parameter_name).getValue(period);
+  long on_duration;
+  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
+  long count;
+  modular_server_.parameter(constants::count_parameter_name).getValue(count);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  int index = addNoisePwm(speaker_ptr,delay,period,on_duration,count);
+  if (index >= 0)
+  {
+    modular_server_.response().returnResult(index);
+  }
+  else
+  {
+    modular_server_.response().returnError(constants::pwm_error);
+  }
+}
+
+void AudioController::startNoisePwmHandler()
+{
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  long delay;
+  modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
+  long period;
+  modular_server_.parameter(constants::period_parameter_name).getValue(period);
+  long on_duration;
+  modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  int index = startNoisePwm(speaker_ptr,delay,period,on_duration);
+  if (index >= 0)
+  {
+    modular_server_.response().returnResult(index);
+  }
+  else
+  {
+    modular_server_.response().returnError(constants::pwm_error);
+  }
+}
+
+void AudioController::stopPwmHandler()
+{
+  int pwm_index;
+  modular_server_.parameter(constants::pwm_index_parameter_name).getValue(pwm_index);
+  stopPwm(pwm_index);
+}
+
+void AudioController::stopAllPwmHandler()
+{
+  stopAllPwm();
+}
+
+void AudioController::playToneHandler(int index)
+{
+}
+
