@@ -17,9 +17,20 @@ namespace audio_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{INTERRUPT_COUNT_MAX=1};
+enum{INTERRUPT_COUNT_MAX=4};
 
 // Interrupts
+extern ConstantString int_a_interrupt_name;
+extern const size_t int_a_pin;
+
+extern ConstantString int_b_interrupt_name;
+extern const size_t int_b_pin;
+
+extern ConstantString int_c_interrupt_name;
+extern const size_t int_c_pin;
+
+extern ConstantString int_d_interrupt_name;
+extern const size_t int_d_pin;
 
 // Units
 

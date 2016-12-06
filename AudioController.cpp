@@ -71,6 +71,20 @@ void AudioController::setup()
                               interrupts_);
 
   // Interrupts
+#if defined(__MK20DX256__)
+  modular_server::Interrupt & int_a_interrupt = modular_server_.createInterrupt(constants::int_a_interrupt_name,
+                                                                                constants::int_a_pin);
+
+  modular_server::Interrupt & int_b_interrupt = modular_server_.createInterrupt(constants::int_b_interrupt_name,
+                                                                                constants::int_b_pin);
+
+  modular_server::Interrupt & int_c_interrupt = modular_server_.createInterrupt(constants::int_c_interrupt_name,
+                                                                                constants::int_c_pin);
+
+  modular_server::Interrupt & int_d_interrupt = modular_server_.createInterrupt(constants::int_d_interrupt_name,
+                                                                                constants::int_d_pin);
+
+#endif
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
