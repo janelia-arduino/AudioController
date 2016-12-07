@@ -134,6 +134,7 @@ extern ConstantString stop_all_pwm_function_name;
 // Callbacks
 
 // Errors
+extern ConstantString pwm_error;
 }
 }
 #include "5x3.h"

@@ -98,9 +98,16 @@ CONSTANT_STRING(get_last_audio_path_played_function_name,"getLastAudioPathPlayed
 CONSTANT_STRING(get_position_function_name,"getPosition");
 CONSTANT_STRING(get_length_function_name,"getLength");
 CONSTANT_STRING(get_percent_complete_function_name,"getPercentComplete");
+CONSTANT_STRING(add_tone_pwm_function_name,"addTonePwm");
+CONSTANT_STRING(start_tone_pwm_function_name,"startTonePwm");
+CONSTANT_STRING(add_noise_pwm_function_name,"addNoisePwm");
+CONSTANT_STRING(start_noise_pwm_function_name,"startNoisePwm");
+CONSTANT_STRING(stop_pwm_function_name,"stopPwm");
+CONSTANT_STRING(stop_all_pwm_function_name,"stopAllPwm");
 
 // Callbacks
 
 // Errors
+CONSTANT_STRING(pwm_error,"Maximum number of pwm already set, must stop one to add another.");
 }
 }

@@ -44,8 +44,8 @@ public:
 
   SDInterface & getSDInterface();
   bool playPath(const char * path);
-  void playTone(const size_t frequency, const ConstantString * const speaker_ptr);
-  void playNoise(const ConstantString * const speaker_ptr);
+  void playTone(const size_t frequency, ConstantString * const speaker_ptr);
+  void playNoise(ConstantString * const speaker_ptr);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
@@ -57,22 +57,22 @@ public:
   void updateVolume();
 
   int addTonePwm(const size_t frequency,
-                 const ConstantString * const speaker_ptr,
+                 ConstantString * const speaker_ptr,
                  const long delay,
                  const long period,
                  const long on_duration,
                  const long count);
   int startTonePwm(const size_t frequency,
-                   const ConstantString * const speaker_ptr,
+                   ConstantString * const speaker_ptr,
                    const long delay,
                    const long period,
                    const long on_duration);
-  int addNoisePwm(const ConstantString * const speaker_ptr,
+  int addNoisePwm(ConstantString * const speaker_ptr,
                   const long delay,
                   const long period,
                   const long on_duration,
                   const long count);
-  int startNoisePwm(const ConstantString * const speaker_ptr,
+  int startNoisePwm(ConstantString * const speaker_ptr,
                     const long delay,
                     const long period,
                     const long on_duration);

@@ -280,7 +280,7 @@ bool AudioController::playPath(const char * path)
   return playing;
 }
 
-void AudioController::playTone(const size_t frequency, const ConstantString * const speaker_ptr)
+void AudioController::playTone(const size_t frequency, ConstantString * const speaker_ptr)
 {
   stop();
   audio_type_playing_ = constants::TONE_TYPE;
@@ -300,7 +300,7 @@ void AudioController::playTone(const size_t frequency, const ConstantString * co
   playing_ = true;
 }
 
-void AudioController::playNoise(const ConstantString * const speaker_ptr)
+void AudioController::playNoise(ConstantString * const speaker_ptr)
 {
   stop();
   audio_type_playing_ = constants::NOISE_TYPE;
@@ -455,6 +455,135 @@ void AudioController::updateVolume()
   }
 }
 
+int AudioController::addTonePwm(const size_t frequency,
+                                ConstantString * const speaker_ptr,
+                                const long delay,
+                                const long period,
+                                const long on_duration,
+                                const long count)
+{
+  if (indexed_pulses_.full())
+  {
+    return constants::bad_index;
+  }
+  audio_controller::constants::PulseInfo pulse_info;
+  pulse_info.frequency = frequency;
+  pulse_info.speaker_ptr = speaker_ptr;
+  int index = indexed_pulses_.add(pulse_info);
+  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
+                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+                                                                 delay,
+                                                                 period,
+                                                                 on_duration,
+                                                                 count,
+                                                                 index);
+  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
+  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
+  indexed_pulses_[index].event_id_pair = event_id_pair;
+  event_controller_.enable(event_id_pair);
+  return index;
+}
+
+int AudioController::startTonePwm(const size_t frequency,
+                                  ConstantString * const speaker_ptr,
+                                  const long delay,
+                                  const long period,
+                                  const long on_duration)
+{
+  if (indexed_pulses_.full())
+  {
+    return -1;
+  }
+  audio_controller::constants::PulseInfo pulse_info;
+  pulse_info.frequency = frequency;
+  pulse_info.speaker_ptr = speaker_ptr;
+  int index = indexed_pulses_.add(pulse_info);
+  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
+                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+                                                                         delay,
+                                                                         period,
+                                                                         on_duration,
+                                                                         index);
+  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
+  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
+  indexed_pulses_[index].event_id_pair = event_id_pair;
+  event_controller_.enable(event_id_pair);
+  return index;
+}
+
+int AudioController::addNoisePwm(ConstantString * const speaker_ptr,
+                                 const long delay,
+                                 const long period,
+                                 const long on_duration,
+                                 const long count)
+{
+  if (indexed_pulses_.full())
+  {
+    return constants::bad_index;
+  }
+  audio_controller::constants::PulseInfo pulse_info;
+  pulse_info.speaker_ptr = speaker_ptr;
+  int index = indexed_pulses_.add(pulse_info);
+  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
+                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+                                                                 delay,
+                                                                 period,
+                                                                 on_duration,
+                                                                 count,
+                                                                 index);
+  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
+  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
+  indexed_pulses_[index].event_id_pair = event_id_pair;
+  event_controller_.enable(event_id_pair);
+  return index;
+}
+
+int AudioController::startNoisePwm(ConstantString * const speaker_ptr,
+                                   const long delay,
+                                   const long period,
+                                   const long on_duration)
+{
+  if (indexed_pulses_.full())
+  {
+    return -1;
+  }
+  audio_controller::constants::PulseInfo pulse_info;
+  pulse_info.speaker_ptr = speaker_ptr;
+  int index = indexed_pulses_.add(pulse_info);
+  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
+                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+                                                                         delay,
+                                                                         period,
+                                                                         on_duration,
+                                                                         index);
+  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
+  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
+  indexed_pulses_[index].event_id_pair = event_id_pair;
+  event_controller_.enable(event_id_pair);
+  return index;
+}
+
+void AudioController::stopPwm(const int pwm_index)
+{
+  if (pwm_index < 0)
+  {
+    return;
+  }
+  if (indexed_pulses_.indexHasValue(pwm_index))
+  {
+    constants::PulseInfo pulse_info = indexed_pulses_[pwm_index];
+    event_controller_.remove(pulse_info.event_id_pair);
+  }
+}
+
+void AudioController::stopAllPwm()
+{
+  for (size_t i=0; i<constants::INDEXED_PULSES_COUNT_MAX; ++i)
+  {
+    stopPwm(i);
+  }
+}
+
 void AudioController::enableAudioCodec()
 {
   pinMode(SDA, INPUT);
@@ -566,8 +695,7 @@ void AudioController::startPwmHandler(int index)
 
 void AudioController::stopPwmHandler(int index)
 {
-  // uint32_t & channels = indexed_pulses_[index].channels;
-  // setChannelsOff(channels);
+  stop();
   indexed_pulses_.remove(index);
 }
 
@@ -800,5 +928,18 @@ void AudioController::stopAllPwmHandler()
 
 void AudioController::playToneHandler(int index)
 {
+  size_t frequency = indexed_pulses_[index].frequency;
+  ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
+  playTone(frequency,speaker_ptr);
 }
 
+void AudioController::playNoiseHandler(int index)
+{
+  ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
+  playNoise(speaker_ptr);
+}
+
+void AudioController::stopHandler(int index)
+{
+  stop();
+}
