@@ -54,7 +54,7 @@ const int percent_min = 0;
 const int percent_max = 100;
 
 CONSTANT_STRING(frequency_parameter_name,"frequency");
-const int frequency_min = 0;
+const int frequency_min = 200;
 const int frequency_max = 22000;
 
 CONSTANT_STRING(speaker_parameter_name,"speaker");
