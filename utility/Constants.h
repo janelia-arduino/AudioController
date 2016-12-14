@@ -70,7 +70,7 @@ extern ConstantString ms_unit;
 extern ConstantString hz_unit;
 
 // Properties
-// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern ConstantString volume_property_name;
 extern const double volume_min;
 extern const double volume_max;

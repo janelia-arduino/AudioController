@@ -24,7 +24,7 @@ enum{INTERRUPT_COUNT_MAX=1};
 // Units
 
 // Properties
-// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 
 // Parameters
 
