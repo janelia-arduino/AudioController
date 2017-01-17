@@ -51,7 +51,8 @@ void AudioController::setup()
   // Audio Setup
   // Audio connections require memory to work.  For more
   // detailed information, see the MemoryAndCpuUsage example
-  AudioMemory(8);
+  AudioMemory(constants::AUDIO_MEMORY_BLOCK_COUNT);
+  AudioMemoryUsageMaxReset();
 
   enableAudioCodec();
 
@@ -132,6 +133,28 @@ void AudioController::setup()
   pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
 
   // Functions
+  modular_server::Function & get_audio_memory_usage_function = modular_server_.createFunction(constants::get_audio_memory_usage_function_name);
+  get_audio_memory_usage_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioMemoryUsageHandler));
+  get_audio_memory_usage_function.setReturnTypeLong();
+
+  modular_server::Function & get_audio_memory_usage_max_function = modular_server_.createFunction(constants::get_audio_memory_usage_max_function_name);
+  get_audio_memory_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioMemoryUsageMaxHandler));
+  get_audio_memory_usage_max_function.setReturnTypeLong();
+
+  modular_server::Function & reset_audio_memory_usage_max_function = modular_server_.createFunction(constants::reset_audio_memory_usage_max_function_name);
+  reset_audio_memory_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::resetAudioMemoryUsageMaxHandler));
+
+  modular_server::Function & get_audio_processor_usage_function = modular_server_.createFunction(constants::get_audio_processor_usage_function_name);
+  get_audio_processor_usage_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioProcessorUsageHandler));
+  get_audio_processor_usage_function.setReturnTypeDouble();
+
+  modular_server::Function & get_audio_processor_usage_max_function = modular_server_.createFunction(constants::get_audio_processor_usage_max_function_name);
+  get_audio_processor_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioProcessorUsageMaxHandler));
+  get_audio_processor_usage_max_function.setReturnTypeDouble();
+
+  modular_server::Function & reset_audio_processor_usage_max_function = modular_server_.createFunction(constants::reset_audio_processor_usage_max_function_name);
+  reset_audio_processor_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::resetAudioProcessorUsageMaxHandler));
+
   modular_server::Function & get_sd_card_info_function = modular_server_.createFunction(constants::get_sd_card_info_function_name);
   get_sd_card_info_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
   get_sd_card_info_function.setReturnTypeObject();
@@ -697,6 +720,36 @@ void AudioController::stopPwmHandler(int index)
 {
   stop();
   indexed_pulses_.remove(index);
+}
+
+void AudioController::getAudioMemoryUsageHandler()
+{
+  modular_server_.response().returnResult(AudioMemoryUsage());
+}
+
+void AudioController::getAudioMemoryUsageMaxHandler()
+{
+  modular_server_.response().returnResult(AudioMemoryUsage());
+}
+
+void AudioController::resetAudioMemoryUsageMaxHandler()
+{
+  AudioMemoryUsageMaxReset();
+}
+
+void AudioController::getAudioProcessorUsageHandler()
+{
+  modular_server_.response().returnResult(AudioProcessorUsage());
+}
+
+void AudioController::getAudioProcessorUsageMaxHandler()
+{
+  modular_server_.response().returnResult(AudioProcessorUsage());
+}
+
+void AudioController::resetAudioProcessorUsageMaxHandler()
+{
+  AudioProcessorUsageMaxReset();
 }
 
 void AudioController::getSDCardInfoHandler()

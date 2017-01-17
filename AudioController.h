@@ -107,6 +107,12 @@ private:
   ConstantString * const stringToSpeakerPtr(const char * string);
 
   // Handlers
+  void getAudioMemoryUsageHandler();
+  void getAudioMemoryUsageMaxHandler();
+  void resetAudioMemoryUsageMaxHandler();
+  void getAudioProcessorUsageHandler();
+  void getAudioProcessorUsageMaxHandler();
+  void resetAudioProcessorUsageMaxHandler();
   void getSDCardInfoHandler();
   void getAudioPathsHandler();
   void playPathHandler();

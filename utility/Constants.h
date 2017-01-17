@@ -20,7 +20,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=1};
 enum{PARAMETER_COUNT_MAX=9};
-enum{FUNCTION_COUNT_MAX=17};
+enum{FUNCTION_COUNT_MAX=23};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -34,6 +34,8 @@ extern const modular_server::HardwareInfo hardware_info;
 enum{AUDIO_EXT_COUNT=2};
 enum{STRING_LENGTH_PATH=255};
 enum{STRING_LENGTH_ERROR_MESSAGE=257};
+
+enum{AUDIO_MEMORY_BLOCK_COUNT=20};
 
 extern const char * const audio_ext_raw;
 extern const char * const audio_ext_wav;
@@ -54,6 +56,7 @@ extern const size_t sd_card_sck_pin;
 
 enum{EVENT_COUNT_MAX=8};
 enum{INDEXED_PULSES_COUNT_MAX=4};
+
 extern const int bad_index;
 
 struct PulseInfo
@@ -113,6 +116,12 @@ extern const long count_max;
 extern ConstantString pwm_index_parameter_name;
 
 // Functions
+extern ConstantString get_audio_memory_usage_function_name;
+extern ConstantString get_audio_memory_usage_max_function_name;
+extern ConstantString reset_audio_memory_usage_max_function_name;
+extern ConstantString get_audio_processor_usage_function_name;
+extern ConstantString get_audio_processor_usage_max_function_name;
+extern ConstantString reset_audio_processor_usage_max_function_name;
 extern ConstantString get_sd_card_info_function_name;
 extern ConstantString get_audio_paths_function_name;
 extern ConstantString play_path_function_name;

@@ -26,13 +26,13 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"audio_controller");
 
-const int bad_index = -1;
-
 const char * const audio_ext_raw = ".RAW";
 const char * const audio_ext_wav = ".WAV";
 const char * const audio_exts[AUDIO_EXT_COUNT] = {audio_ext_raw, audio_ext_wav};
 
 const char * const sd_prefix = "/SD/";
+
+const int bad_index = -1;
 
 // Interrupts
 
@@ -87,6 +87,12 @@ const long count_max = 2000000000;
 CONSTANT_STRING(pwm_index_parameter_name,"pwm_index");
 
 // Functions
+CONSTANT_STRING(get_audio_memory_usage_function_name,"getAudioMemoryUsage");
+CONSTANT_STRING(get_audio_memory_usage_max_function_name,"getAudioMemoryUsageMax");
+CONSTANT_STRING(reset_audio_memory_usage_max_function_name,"resetAudioMemoryUsageMax");
+CONSTANT_STRING(get_audio_processor_usage_function_name,"getAudioProcessorUsage");
+CONSTANT_STRING(get_audio_processor_usage_max_function_name,"getAudioProcessorUsageMax");
+CONSTANT_STRING(reset_audio_processor_usage_max_function_name,"resetAudioProcessorUsageMax");
 CONSTANT_STRING(get_sd_card_info_function_name,"getSDCardInfo");
 CONSTANT_STRING(get_audio_paths_function_name,"getAudioPaths");
 CONSTANT_STRING(play_path_function_name,"playPath");

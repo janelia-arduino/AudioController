@@ -18,6 +18,12 @@ License:
   "result":{
     "firmware":["AudioController"],
     "functions":[
+      "getAudioMemoryUsage",
+      "getAudioMemoryUsageMax",
+      "resetAudioMemoryUsageMax",
+      "getAudioProcessorUsage",
+      "getAudioProcessorUsageMax",
+      "resetAudioProcessorUsageMax",
       "getSDCardInfo",
       "getAudioPaths",
       "playPath",
@@ -28,13 +34,24 @@ License:
       "getLastAudioPathPlayed",
       "getPosition",
       "getLength",
-      "getPercentComplete"
+      "getPercentComplete",
+      "addTonePwm",
+      "startTonePwm",
+      "addNoisePwm",
+      "startNoisePwm",
+      "stopPwm",
+      "stopAllPwm"
     ],
     "parameters":[
       "audio_path",
       "percent",
       "frequency",
-      "speaker"
+      "speaker",
+      "delay",
+      "period",
+      "on_duration",
+      "count",
+      "pwm_index"
     ],
     "properties":[
       "volume"
@@ -42,7 +59,6 @@ License:
     "callbacks":[]
   }
 }
-
 ```
 
 ##More Detailed Modular Device Information
