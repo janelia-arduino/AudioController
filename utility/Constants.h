@@ -19,8 +19,8 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=1};
-enum{PARAMETER_COUNT_MAX=9};
-enum{FUNCTION_COUNT_MAX=23};
+enum{PARAMETER_COUNT_MAX=10};
+enum{FUNCTION_COUNT_MAX=24};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -65,6 +65,9 @@ struct PulseInfo
   ConstantString * speaker_ptr;
   EventIdPair event_id_pair;
 };
+
+enum {FILTER_COEF_COUNT=5};
+extern const double allpass_coefs[FILTER_COEF_COUNT];
 
 // Interrupts
 
@@ -115,6 +118,8 @@ extern const long count_max;
 
 extern ConstantString pwm_index_parameter_name;
 
+extern ConstantString volume_parameter_name;
+
 // Functions
 extern ConstantString get_audio_memory_usage_function_name;
 extern ConstantString get_audio_memory_usage_max_function_name;
@@ -126,6 +131,7 @@ extern ConstantString get_sd_card_info_function_name;
 extern ConstantString get_audio_paths_function_name;
 extern ConstantString play_path_function_name;
 extern ConstantString play_tone_function_name;
+extern ConstantString play_tone_at_function_name;
 extern ConstantString play_noise_function_name;
 extern ConstantString stop_function_name;
 extern ConstantString is_playing_function_name;

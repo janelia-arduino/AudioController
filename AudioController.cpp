@@ -11,26 +11,30 @@
 namespace audio_controller
 {
 // GUItool: begin automatically generated code
-AudioSynthWaveformSine   g_tone_left;          //xy=287,312
-AudioSynthWaveformSine   g_tone_right;          //xy=293,351
-AudioSynthNoiseWhite     g_noise_left;         //xy=293,389
-AudioSynthNoiseWhite     g_noise_right;         //xy=297,428
-AudioPlaySdWav           g_play_sd_wav;     //xy=300,238
-AudioPlaySdRaw           g_play_sd_raw;     //xy=301,275
-AudioMixer4              g_mixer_left;         //xy=537,247
-AudioMixer4              g_mixer_right;         //xy=543,323
-AudioOutputI2S           g_i2s;           //xy=707,281
-AudioConnection          patchCord1(g_tone_left, 0, g_mixer_left, 2);
-AudioConnection          patchCord2(g_tone_right, 0, g_mixer_right, 2);
-AudioConnection          patchCord3(g_noise_left, 0, g_mixer_left, 3);
-AudioConnection          patchCord4(g_noise_right, 0, g_mixer_right, 3);
+AudioSynthNoiseWhite     g_noise_left;   //xy=181,343
+AudioSynthNoiseWhite     g_noise_right;  //xy=185,380
+AudioSynthWaveformSine   g_tone_left;    //xy=346,268
+AudioSynthWaveformSine   g_tone_right;   //xy=352,307
+AudioPlaySdWav           g_play_sd_wav;  //xy=359,194
+AudioFilterBiquad        g_biquad_left;        //xy=359,343
+AudioPlaySdRaw           g_play_sd_raw;  //xy=360,231
+AudioFilterBiquad        g_biquad_right;        //xy=361,381
+AudioMixer4              g_mixer_left;   //xy=596,203
+AudioMixer4              g_mixer_right;  //xy=602,279
+AudioOutputI2S           g_i2s;          //xy=766,237
+AudioConnection          patchCord1(g_noise_left, g_biquad_left);
+AudioConnection          patchCord2(g_noise_right, g_biquad_right);
+AudioConnection          patchCord3(g_tone_left, 0, g_mixer_left, 2);
+AudioConnection          patchCord4(g_tone_right, 0, g_mixer_right, 2);
 AudioConnection          patchCord5(g_play_sd_wav, 0, g_mixer_left, 0);
 AudioConnection          patchCord6(g_play_sd_wav, 1, g_mixer_right, 0);
-AudioConnection          patchCord7(g_play_sd_raw, 0, g_mixer_left, 1);
-AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_right, 1);
-AudioConnection          patchCord9(g_mixer_left, 0, g_i2s, 0);
-AudioConnection          patchCord10(g_mixer_right, 0, g_i2s, 1);
-AudioControlSGTL5000     g_sgtl5000;     //xy=535,172
+AudioConnection          patchCord7(g_biquad_left, 0, g_mixer_left, 3);
+AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_left, 1);
+AudioConnection          patchCord9(g_play_sd_raw, 0, g_mixer_right, 1);
+AudioConnection          patchCord10(g_biquad_right, 0, g_mixer_right, 3);
+AudioConnection          patchCord11(g_mixer_left, 0, g_i2s, 0);
+AudioConnection          patchCord12(g_mixer_right, 0, g_i2s, 1);
+AudioControlSGTL5000     g_sgtl5000;     //xy=594,128
 // GUItool: end automatically generated code
 }
 
@@ -132,6 +136,9 @@ void AudioController::setup()
   modular_server::Parameter & pwm_index_parameter = modular_server_.createParameter(constants::pwm_index_parameter_name);
   pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
 
+  modular_server::Parameter & volume_parameter = modular_server_.createParameter(constants::volume_parameter_name);
+  volume_parameter.setRange(constants::volume_min,constants::volume_max);
+
   // Functions
   modular_server::Function & get_audio_memory_usage_function = modular_server_.createFunction(constants::get_audio_memory_usage_function_name);
   get_audio_memory_usage_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioMemoryUsageHandler));
@@ -171,6 +178,12 @@ void AudioController::setup()
   play_tone_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
   play_tone_function.addParameter(frequency_parameter);
   play_tone_function.addParameter(speaker_parameter);
+
+  modular_server::Function & play_tone_at_function = modular_server_.createFunction(constants::play_tone_at_function_name);
+  play_tone_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneAtHandler));
+  play_tone_at_function.addParameter(frequency_parameter);
+  play_tone_at_function.addParameter(volume_parameter);
+  play_tone_at_function.addParameter(speaker_parameter);
 
   modular_server::Function & play_noise_function = modular_server_.createFunction(constants::play_noise_function_name);
   play_noise_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playNoiseHandler));
@@ -305,6 +318,13 @@ bool AudioController::playPath(const char * path)
 
 void AudioController::playTone(const size_t frequency, ConstantString * const speaker_ptr)
 {
+  double volume;
+  modular_server_.property(constants::volume_property_name).getValue(volume);
+  playToneAt(frequency,volume,speaker_ptr);
+}
+
+void AudioController::playToneAt(const size_t frequency, const double volume, ConstantString * const speaker_ptr)
+{
   stop();
   audio_type_playing_ = constants::TONE_TYPE;
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
@@ -319,7 +339,10 @@ void AudioController::playTone(const size_t frequency, ConstantString * const sp
     g_tone_right.frequency(frequency);
     g_tone_right.amplitude(1);
   }
-  updateVolume();
+  if (codecEnabled())
+  {
+    g_sgtl5000.volume(volume);
+  }
   playing_ = true;
 }
 
@@ -329,10 +352,12 @@ void AudioController::playNoise(ConstantString * const speaker_ptr)
   audio_type_playing_ = constants::NOISE_TYPE;
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
+    g_biquad_left.setCoefficients(0,constants::allpass_coefs);
     g_noise_left.amplitude(1);
   }
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
   {
+    g_biquad_right.setCoefficients(0,constants::allpass_coefs);
     g_noise_right.amplitude(1);
   }
   updateVolume();
@@ -820,6 +845,24 @@ void AudioController::playToneHandler()
   modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
   ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
   playTone(frequency,speaker_ptr);
+}
+
+void AudioController::playToneAtHandler()
+{
+  modular_server::Response & response = modular_server_.response();
+  if (!codecEnabled())
+  {
+    response.returnError("No audio codec chip detected.");
+    return;
+  }
+  long frequency;
+  modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
+  double volume;
+  modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
+  const char * speaker_str;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
+  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  playToneAt(frequency,volume,speaker_ptr);
 }
 
 void AudioController::playNoiseHandler()

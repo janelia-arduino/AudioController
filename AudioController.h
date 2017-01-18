@@ -45,6 +45,7 @@ public:
   SDInterface & getSDInterface();
   bool playPath(const char * path);
   void playTone(const size_t frequency, ConstantString * const speaker_ptr);
+  void playToneAt(const size_t frequency, const double volume, ConstantString * const speaker_ptr);
   void playNoise(ConstantString * const speaker_ptr);
   void stop();
   bool isPlaying();
@@ -117,6 +118,7 @@ private:
   void getAudioPathsHandler();
   void playPathHandler();
   void playToneHandler();
+  void playToneAtHandler();
   void playNoiseHandler();
   void stopHandler();
   void isPlayingHandler();

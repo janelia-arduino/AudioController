@@ -34,6 +34,12 @@ const char * const sd_prefix = "/SD/";
 
 const int bad_index = -1;
 
+const double allpass_coefs[FILTER_COEF_COUNT] = {1.0,
+                                                 0.0,
+                                                 1.0,
+                                                 0.0,
+                                                 1.0};
+
 // Interrupts
 
 // Units
@@ -86,6 +92,8 @@ const long count_max = 2000000000;
 
 CONSTANT_STRING(pwm_index_parameter_name,"pwm_index");
 
+CONSTANT_STRING(volume_parameter_name,"volume");
+
 // Functions
 CONSTANT_STRING(get_audio_memory_usage_function_name,"getAudioMemoryUsage");
 CONSTANT_STRING(get_audio_memory_usage_max_function_name,"getAudioMemoryUsageMax");
@@ -97,6 +105,7 @@ CONSTANT_STRING(get_sd_card_info_function_name,"getSDCardInfo");
 CONSTANT_STRING(get_audio_paths_function_name,"getAudioPaths");
 CONSTANT_STRING(play_path_function_name,"playPath");
 CONSTANT_STRING(play_tone_function_name,"playTone");
+CONSTANT_STRING(play_tone_at_function_name,"playToneAt");
 CONSTANT_STRING(play_noise_function_name,"playNoise");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(is_playing_function_name,"isPlaying");
