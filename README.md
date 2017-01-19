@@ -28,7 +28,11 @@ License:
       "getAudioPaths",
       "playPath",
       "playTone",
+      "playToneAt",
       "playNoise",
+      "playNoiseAt",
+      "playFilteredNoise",
+      "playFilteredNoiseAt",
       "stop",
       "isPlaying",
       "getLastAudioPathPlayed",
@@ -36,11 +40,20 @@ License:
       "getLength",
       "getPercentComplete",
       "addTonePwm",
+      "addTonePwmAt",
       "startTonePwm",
+      "startTonePwmAt",
       "addNoisePwm",
+      "addNoisePwmAt",
       "startNoisePwm",
+      "startNoisePwmAt",
+      "addFilteredNoisePwm",
+      "addFilteredNoisePwmAt",
+      "startFilteredNoisePwm",
+      "startFilteredNoisePwmAt",
       "stopPwm",
-      "stopAllPwm"
+      "stopAllPwm",
+      "isPulsing"
     ],
     "parameters":[
       "audio_path",
@@ -51,7 +64,9 @@ License:
       "period",
       "on_duration",
       "count",
-      "pwm_index"
+      "pwm_index",
+      "volume",
+      "bandwidth"
     ],
     "properties":[
       "volume"
