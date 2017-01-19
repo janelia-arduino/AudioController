@@ -44,9 +44,21 @@ public:
 
   SDInterface & getSDInterface();
   bool playPath(const char * path);
-  void playTone(const size_t frequency, ConstantString * const speaker_ptr);
-  void playToneAt(const size_t frequency, const double volume, ConstantString * const speaker_ptr);
+  void playTone(const size_t frequency,
+                ConstantString * const speaker_ptr);
+  void playToneAt(const size_t frequency,
+                  ConstantString * const speaker_ptr,
+                  const double volume);
   void playNoise(ConstantString * const speaker_ptr);
+  void playNoiseAt(ConstantString * const speaker_ptr,
+                   const double volume);
+  void playFilteredNoise(const size_t frequency,
+                         const double bandwidth,
+                         ConstantString * const speaker_ptr);
+  void playFilteredNoiseAt(const size_t frequency,
+                           const double bandwidth,
+                           ConstantString * const speaker_ptr,
+                           const double volume);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
@@ -63,22 +75,75 @@ public:
                  const long period,
                  const long on_duration,
                  const long count);
+  int addTonePwmAt(const size_t frequency,
+                   ConstantString * const speaker_ptr,
+                   const double volume,
+                   const long delay,
+                   const long period,
+                   const long on_duration,
+                   const long count);
   int startTonePwm(const size_t frequency,
                    ConstantString * const speaker_ptr,
                    const long delay,
                    const long period,
                    const long on_duration);
+  int startTonePwmAt(const size_t frequency,
+                     ConstantString * const speaker_ptr,
+                     const double volume,
+                     const long delay,
+                     const long period,
+                     const long on_duration);
   int addNoisePwm(ConstantString * const speaker_ptr,
                   const long delay,
                   const long period,
                   const long on_duration,
                   const long count);
+  int addNoisePwmAt(ConstantString * const speaker_ptr,
+                    const double volume,
+                    const long delay,
+                    const long period,
+                    const long on_duration,
+                    const long count);
   int startNoisePwm(ConstantString * const speaker_ptr,
                     const long delay,
                     const long period,
                     const long on_duration);
+  int startNoisePwmAt(ConstantString * const speaker_ptr,
+                      const double volume,
+                      const long delay,
+                      const long period,
+                      const long on_duration);
+  int addFilteredNoisePwm(const size_t frequency,
+                          const double bandwidth,
+                          ConstantString * const speaker_ptr,
+                          const long delay,
+                          const long period,
+                          const long on_duration,
+                          const long count);
+  int addFilteredNoisePwmAt(const size_t frequency,
+                            const double bandwidth,
+                            ConstantString * const speaker_ptr,
+                            const double volume,
+                            const long delay,
+                            const long period,
+                            const long on_duration,
+                            const long count);
+  int startFilteredNoisePwm(const size_t frequency,
+                            const double bandwidth,
+                            ConstantString * const speaker_ptr,
+                            const long delay,
+                            const long period,
+                            const long on_duration);
+  int startFilteredNoisePwmAt(const size_t frequency,
+                              const double bandwidth,
+                              ConstantString * const speaker_ptr,
+                              const double volume,
+                              const long delay,
+                              const long period,
+                              const long on_duration);
   void stopPwm(const int pwm_index);
   void stopAllPwm();
+  bool isPulsing();
 
   // Handlers
   virtual void startPwmHandler(int index);
@@ -106,6 +171,7 @@ private:
   void updatePlaying();
   void addDirectoryToResponse(File dir, const char * pwd);
   ConstantString * const stringToSpeakerPtr(const char * string);
+  bool pulsing_;
 
   // Handlers
   void getAudioMemoryUsageHandler();
@@ -120,6 +186,9 @@ private:
   void playToneHandler();
   void playToneAtHandler();
   void playNoiseHandler();
+  void playNoiseAtHandler();
+  void playFilteredNoiseHandler();
+  void playFilteredNoiseAtHandler();
   void stopHandler();
   void isPlayingHandler();
   void getLastAudioPathPlayedHandler();
@@ -127,13 +196,23 @@ private:
   void getLengthHandler();
   void getPercentCompleteHandler();
   void addTonePwmHandler();
+  void addTonePwmAtHandler();
   void startTonePwmHandler();
+  void startTonePwmAtHandler();
   void addNoisePwmHandler();
+  void addNoisePwmAtHandler();
   void startNoisePwmHandler();
+  void startNoisePwmAtHandler();
+  void addFilteredNoisePwmHandler();
+  void addFilteredNoisePwmAtHandler();
+  void startFilteredNoisePwmHandler();
+  void startFilteredNoisePwmAtHandler();
   void stopPwmHandler();
   void stopAllPwmHandler();
+  void isPulsingHandler();
   void playToneHandler(int index);
   void playNoiseHandler(int index);
+  void playFilteredNoiseHandler(int index);
   void stopHandler(int index);
 
 };

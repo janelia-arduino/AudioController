@@ -34,17 +34,18 @@ const char * const sd_prefix = "/SD/";
 
 const int bad_index = -1;
 
-const double allpass_coefs[FILTER_COEF_COUNT] = {1.0,
-                                                 0.0,
-                                                 1.0,
-                                                 0.0,
-                                                 1.0};
+const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
+                                                        0.0,
+                                                        1.0,
+                                                        0.0,
+                                                        1.0};
 
 // Interrupts
 
 // Units
 CONSTANT_STRING(ms_unit,"ms");
 CONSTANT_STRING(hz_unit,"Hz");
+CONSTANT_STRING(octaves_unit,"octaves");
 
 // Properties
 CONSTANT_STRING(volume_property_name,"volume");
@@ -94,6 +95,10 @@ CONSTANT_STRING(pwm_index_parameter_name,"pwm_index");
 
 CONSTANT_STRING(volume_parameter_name,"volume");
 
+CONSTANT_STRING(bandwidth_parameter_name,"bandwidth");
+const double bandwidth_min = 0.001;
+const double bandwidth_max = 10;
+
 // Functions
 CONSTANT_STRING(get_audio_memory_usage_function_name,"getAudioMemoryUsage");
 CONSTANT_STRING(get_audio_memory_usage_max_function_name,"getAudioMemoryUsageMax");
@@ -107,6 +112,9 @@ CONSTANT_STRING(play_path_function_name,"playPath");
 CONSTANT_STRING(play_tone_function_name,"playTone");
 CONSTANT_STRING(play_tone_at_function_name,"playToneAt");
 CONSTANT_STRING(play_noise_function_name,"playNoise");
+CONSTANT_STRING(play_noise_at_function_name,"playNoiseAt");
+CONSTANT_STRING(play_filtered_noise_function_name,"playFilteredNoise");
+CONSTANT_STRING(play_filtered_noise_at_function_name,"playFilteredNoiseAt");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(is_playing_function_name,"isPlaying");
 CONSTANT_STRING(get_last_audio_path_played_function_name,"getLastAudioPathPlayed");
@@ -114,11 +122,20 @@ CONSTANT_STRING(get_position_function_name,"getPosition");
 CONSTANT_STRING(get_length_function_name,"getLength");
 CONSTANT_STRING(get_percent_complete_function_name,"getPercentComplete");
 CONSTANT_STRING(add_tone_pwm_function_name,"addTonePwm");
+CONSTANT_STRING(add_tone_pwm_at_function_name,"addTonePwmAt");
 CONSTANT_STRING(start_tone_pwm_function_name,"startTonePwm");
+CONSTANT_STRING(start_tone_pwm_at_function_name,"startTonePwmAt");
 CONSTANT_STRING(add_noise_pwm_function_name,"addNoisePwm");
+CONSTANT_STRING(add_noise_pwm_at_function_name,"addNoisePwmAt");
 CONSTANT_STRING(start_noise_pwm_function_name,"startNoisePwm");
+CONSTANT_STRING(start_noise_pwm_at_function_name,"startNoisePwmAt");
+CONSTANT_STRING(add_filtered_noise_pwm_function_name,"addFilteredNoisePwm");
+CONSTANT_STRING(add_filtered_noise_pwm_at_function_name,"addFilteredNoisePwmAt");
+CONSTANT_STRING(start_filtered_noise_pwm_function_name,"startFilteredNoisePwm");
+CONSTANT_STRING(start_filtered_noise_pwm_at_function_name,"startFilteredNoisePwmAt");
 CONSTANT_STRING(stop_pwm_function_name,"stopPwm");
 CONSTANT_STRING(stop_all_pwm_function_name,"stopAllPwm");
+CONSTANT_STRING(is_pulsing_function_name,"isPulsing");
 
 // Callbacks
 

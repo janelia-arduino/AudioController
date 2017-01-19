@@ -19,8 +19,8 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=1};
-enum{PARAMETER_COUNT_MAX=10};
-enum{FUNCTION_COUNT_MAX=24};
+enum{PARAMETER_COUNT_MAX=11};
+enum{FUNCTION_COUNT_MAX=36};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -62,18 +62,25 @@ extern const int bad_index;
 struct PulseInfo
 {
   size_t frequency;
+  double bandwidth;
   ConstantString * speaker_ptr;
+  double volume;
   EventIdPair event_id_pair;
 };
 
+enum {FILTER_STAGE_0=0};
+enum {FILTER_STAGE_1=1};
+enum {FILTER_STAGE_2=2};
+enum {FILTER_STAGE_3=3};
 enum {FILTER_COEF_COUNT=5};
-extern const double allpass_coefs[FILTER_COEF_COUNT];
+extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
 // Interrupts
 
 // Units
 extern ConstantString ms_unit;
 extern ConstantString hz_unit;
+extern ConstantString octaves_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
@@ -120,6 +127,10 @@ extern ConstantString pwm_index_parameter_name;
 
 extern ConstantString volume_parameter_name;
 
+extern ConstantString bandwidth_parameter_name;
+extern const double bandwidth_min;
+extern const double bandwidth_max;
+
 // Functions
 extern ConstantString get_audio_memory_usage_function_name;
 extern ConstantString get_audio_memory_usage_max_function_name;
@@ -133,6 +144,9 @@ extern ConstantString play_path_function_name;
 extern ConstantString play_tone_function_name;
 extern ConstantString play_tone_at_function_name;
 extern ConstantString play_noise_function_name;
+extern ConstantString play_noise_at_function_name;
+extern ConstantString play_filtered_noise_function_name;
+extern ConstantString play_filtered_noise_at_function_name;
 extern ConstantString stop_function_name;
 extern ConstantString is_playing_function_name;
 extern ConstantString get_last_audio_path_played_function_name;
@@ -140,11 +154,20 @@ extern ConstantString get_position_function_name;
 extern ConstantString get_length_function_name;
 extern ConstantString get_percent_complete_function_name;
 extern ConstantString add_tone_pwm_function_name;
+extern ConstantString add_tone_pwm_at_function_name;
 extern ConstantString start_tone_pwm_function_name;
+extern ConstantString start_tone_pwm_at_function_name;
 extern ConstantString add_noise_pwm_function_name;
+extern ConstantString add_noise_pwm_at_function_name;
 extern ConstantString start_noise_pwm_function_name;
+extern ConstantString start_noise_pwm_at_function_name;
+extern ConstantString add_filtered_noise_pwm_function_name;
+extern ConstantString add_filtered_noise_pwm_at_function_name;
+extern ConstantString start_filtered_noise_pwm_function_name;
+extern ConstantString start_filtered_noise_pwm_at_function_name;
 extern ConstantString stop_pwm_function_name;
 extern ConstantString stop_all_pwm_function_name;
+extern ConstantString is_pulsing_function_name;
 
 // Callbacks
 
