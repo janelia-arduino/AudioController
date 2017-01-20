@@ -853,7 +853,7 @@ int AudioController::addFilteredNoisePwmAt(const size_t frequency,
   pulse_info.speaker_ptr = speaker_ptr;
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
+  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
                                                                  makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
                                                                  delay,
                                                                  period,
@@ -897,7 +897,7 @@ int AudioController::startFilteredNoisePwmAt(const size_t frequency,
   pulse_info.speaker_ptr = speaker_ptr;
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
+  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
                                                                          makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
                                                                          delay,
                                                                          period,
