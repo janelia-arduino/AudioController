@@ -30,13 +30,13 @@
 #include "Audio.h"
 
 #include "ModularServer.h"
-#include "ModularDevice.h"
+#include "ModularDeviceBase.h"
 
 #include "utility/Constants.h"
 #include "utility/SDInterface.h"
 
 
-class AudioController : public ModularDevice
+class AudioController : public ModularDeviceBase
 {
 public:
   AudioController();

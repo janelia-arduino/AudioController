@@ -51,7 +51,7 @@ AudioController::AudioController()
 void AudioController::setup()
 {
   // Parent Setup
-  ModularDevice::setup();
+  ModularDeviceBase::setup();
 
   // Audio Setup
   // Audio connections require memory to work.  For more
