@@ -155,7 +155,7 @@ private:
   modular_server::Property properties_[audio_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
-  modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
+  modular_server::Callback callbacks_[audio_controller::constants::CALLBACK_COUNT_MAX];
 
   EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
