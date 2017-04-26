@@ -50,6 +50,7 @@ enum audio_t
 
 extern const char * const sd_prefix;
 
+extern const bool sd_exists;
 extern const size_t sd_card_cs_pin;
 extern const size_t sd_card_mosi_pin;
 extern const size_t sd_card_sck_pin;

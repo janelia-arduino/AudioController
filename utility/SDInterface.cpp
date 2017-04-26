@@ -22,6 +22,10 @@ SDInterface::SDInterface()
 
 void SDInterface::setup()
 {
+  if (!constants::sd_exists)
+  {
+    return;
+  }
   SPI.setMOSI(constants::sd_card_mosi_pin);
   SPI.setSCK(constants::sd_card_sck_pin);
 
