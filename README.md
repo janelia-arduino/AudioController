@@ -8,7 +8,11 @@ License:
 
     BSD
 
-[Examples](./examples)
+## Inherits
+
+[ModularServer](https://github.com/janelia-arduino/ModularServer)
+
+[ModularDeviceBase](https://github.com/janelia-arduino/ModularDeviceBase)
 
 ## API
 
