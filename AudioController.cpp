@@ -1038,8 +1038,8 @@ ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
 //
 // modular_server_.property(property_name).getValue(value) value type must match the property default type
 // modular_server_.property(property_name).setValue(value) value type must match the property default type
-// modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
-// modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
+// modular_server_.property(property_name).getElementValue(element_index,value) value type must match the property array element default type
+// modular_server_.property(property_name).setElementValue(element_index,value) value type must match the property array element default type
 
 void AudioController::startPwmHandler(int index)
 {
