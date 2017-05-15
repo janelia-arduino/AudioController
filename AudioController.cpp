@@ -174,6 +174,7 @@ void AudioController::setup()
   modular_server::Function & get_audio_paths_function = modular_server_.createFunction(constants::get_audio_paths_function_name);
   get_audio_paths_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsHandler));
   get_audio_paths_function.setResultTypeArray();
+  get_audio_paths_function.setResultTypeString();
 
   modular_server::Function & play_path_function = modular_server_.createFunction(constants::play_path_function_name);
   play_path_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));

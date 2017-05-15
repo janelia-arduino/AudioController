@@ -99,57 +99,66 @@ License:
       {
         "name":"getAudioMemoryUsage",
         "parameters":[],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"getAudioMemoryUsageMax",
         "parameters":[],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"resetAudioMemoryUsageMax",
-        "parameters":[],
-        "result_type":null
+        "parameters":[]
       },
       {
         "name":"getAudioProcessorUsage",
         "parameters":[],
-        "result_type":"double"
+        "result_info":{
+          "type":"double"
+        }
       },
       {
         "name":"getAudioProcessorUsageMax",
         "parameters":[],
-        "result_type":"double"
+        "result_info":{
+          "type":"double"
+        }
       },
       {
         "name":"resetAudioProcessorUsageMax",
-        "parameters":[],
-        "result_type":null
+        "parameters":[]
       },
       {
         "name":"getSDCardInfo",
         "parameters":[],
-        "result_type":"object"
+        "result_info":{
+          "type":"object"
+        }
       },
       {
         "name":"getAudioPaths",
         "parameters":[],
-        "result_type":"array"
+        "result_info":{
+          "type":"array",
+          "array_element_type":"string"
+        }
       },
       {
         "name":"playPath",
         "parameters":[
           "audio_path"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playTone",
         "parameters":[
           "frequency",
           "speaker"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playToneAt",
@@ -157,23 +166,20 @@ License:
           "frequency",
           "speaker",
           "volume"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playNoise",
         "parameters":[
           "speaker"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playNoiseAt",
         "parameters":[
           "speaker",
           "volume"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playFilteredNoise",
@@ -181,8 +187,7 @@ License:
           "frequency",
           "bandwidth",
           "speaker"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"playFilteredNoiseAt",
@@ -191,38 +196,46 @@ License:
           "bandwidth",
           "speaker",
           "volume"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"stop",
-        "parameters":[],
-        "result_type":null
+        "parameters":[]
       },
       {
         "name":"isPlaying",
         "parameters":[],
-        "result_type":"bool"
+        "result_info":{
+          "type":"bool"
+        }
       },
       {
         "name":"getLastAudioPathPlayed",
         "parameters":[],
-        "result_type":"string"
+        "result_info":{
+          "type":"string"
+        }
       },
       {
         "name":"getPosition",
         "parameters":[],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"getLength",
         "parameters":[],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"getPercentComplete",
         "parameters":[],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addTonePwm",
@@ -234,7 +247,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addTonePwmAt",
@@ -247,7 +262,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startTonePwm",
@@ -258,7 +275,9 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startTonePwmAt",
@@ -270,7 +289,9 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addNoisePwm",
@@ -281,7 +302,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addNoisePwmAt",
@@ -293,7 +316,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startNoisePwm",
@@ -303,7 +328,9 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startNoisePwmAt",
@@ -314,7 +341,9 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addFilteredNoisePwm",
@@ -327,7 +356,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"addFilteredNoisePwmAt",
@@ -341,7 +372,9 @@ License:
           "on_duration",
           "count"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startFilteredNoisePwm",
@@ -353,7 +386,9 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"startFilteredNoisePwmAt",
@@ -366,24 +401,26 @@ License:
           "period",
           "on_duration"
         ],
-        "result_type":"long"
+        "result_info":{
+          "type":"long"
+        }
       },
       {
         "name":"stopPwm",
         "parameters":[
           "pwm_index"
-        ],
-        "result_type":null
+        ]
       },
       {
         "name":"stopAllPwm",
-        "parameters":[],
-        "result_type":null
+        "parameters":[]
       },
       {
         "name":"isPulsing",
         "parameters":[],
-        "result_type":"bool"
+        "result_info":{
+          "type":"bool"
+        }
       }
     ],
     "parameters":[
@@ -405,23 +442,23 @@ License:
       },
       {
         "name":"delay",
-        "units":"ms",
-        "type":"long"
+        "type":"long",
+        "units":"ms"
       },
       {
         "name":"period",
-        "units":"ms",
-        "type":"long"
+        "type":"long",
+        "units":"ms"
       },
       {
         "name":"on_duration",
-        "units":"ms",
-        "type":"long"
+        "type":"long",
+        "units":"ms"
       },
       {
         "name":"count",
-        "units":"ms",
-        "type":"long"
+        "type":"long",
+        "units":"ms"
       },
       {
         "name":"pwm_index",
@@ -433,14 +470,23 @@ License:
       },
       {
         "name":"bandwidth",
-        "units":"octaves",
-        "type":"double"
+        "type":"double",
+        "units":"octaves"
       }
     ],
     "properties":[
       {
         "name":"volume",
-        "type":"double"
+        "type":"double",
+        "functions":[
+          "getValue",
+          "setValue",
+          "getDefaultValue",
+          "setValueToDefault"
+        ],
+        "parameters":[
+          "value"
+        ]
       }
     ],
     "callbacks":[]
