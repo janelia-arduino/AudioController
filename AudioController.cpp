@@ -120,19 +120,19 @@ void AudioController::setup()
 
   modular_server::Parameter & delay_parameter = modular_server_.createParameter(constants::delay_parameter_name);
   delay_parameter.setRange(constants::delay_min,constants::delay_max);
-  delay_parameter.setUnits(constants::ms_unit);
+  delay_parameter.setUnits(constants::ms_units);
 
   modular_server::Parameter & period_parameter = modular_server_.createParameter(constants::period_parameter_name);
   period_parameter.setRange(constants::period_min,constants::period_max);
-  period_parameter.setUnits(constants::ms_unit);
+  period_parameter.setUnits(constants::ms_units);
 
   modular_server::Parameter & on_duration_parameter = modular_server_.createParameter(constants::on_duration_parameter_name);
   on_duration_parameter.setRange(constants::on_duration_min,constants::on_duration_max);
-  on_duration_parameter.setUnits(constants::ms_unit);
+  on_duration_parameter.setUnits(constants::ms_units);
 
   modular_server::Parameter & count_parameter = modular_server_.createParameter(constants::count_parameter_name);
   count_parameter.setRange(constants::count_min,constants::count_max);
-  count_parameter.setUnits(constants::ms_unit);
+  count_parameter.setUnits(constants::ms_units);
 
   modular_server::Parameter & pwm_index_parameter = modular_server_.createParameter(constants::pwm_index_parameter_name);
   pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
@@ -142,38 +142,38 @@ void AudioController::setup()
 
   modular_server::Parameter & bandwidth_parameter = modular_server_.createParameter(constants::bandwidth_parameter_name);
   bandwidth_parameter.setRange(constants::bandwidth_min,constants::bandwidth_max);
-  bandwidth_parameter.setUnits(constants::octaves_unit);
+  bandwidth_parameter.setUnits(constants::octaves_units);
 
   // Functions
   modular_server::Function & get_audio_memory_usage_function = modular_server_.createFunction(constants::get_audio_memory_usage_function_name);
   get_audio_memory_usage_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioMemoryUsageHandler));
-  get_audio_memory_usage_function.setReturnTypeLong();
+  get_audio_memory_usage_function.setResultTypeLong();
 
   modular_server::Function & get_audio_memory_usage_max_function = modular_server_.createFunction(constants::get_audio_memory_usage_max_function_name);
   get_audio_memory_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioMemoryUsageMaxHandler));
-  get_audio_memory_usage_max_function.setReturnTypeLong();
+  get_audio_memory_usage_max_function.setResultTypeLong();
 
   modular_server::Function & reset_audio_memory_usage_max_function = modular_server_.createFunction(constants::reset_audio_memory_usage_max_function_name);
   reset_audio_memory_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::resetAudioMemoryUsageMaxHandler));
 
   modular_server::Function & get_audio_processor_usage_function = modular_server_.createFunction(constants::get_audio_processor_usage_function_name);
   get_audio_processor_usage_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioProcessorUsageHandler));
-  get_audio_processor_usage_function.setReturnTypeDouble();
+  get_audio_processor_usage_function.setResultTypeDouble();
 
   modular_server::Function & get_audio_processor_usage_max_function = modular_server_.createFunction(constants::get_audio_processor_usage_max_function_name);
   get_audio_processor_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioProcessorUsageMaxHandler));
-  get_audio_processor_usage_max_function.setReturnTypeDouble();
+  get_audio_processor_usage_max_function.setResultTypeDouble();
 
   modular_server::Function & reset_audio_processor_usage_max_function = modular_server_.createFunction(constants::reset_audio_processor_usage_max_function_name);
   reset_audio_processor_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::resetAudioProcessorUsageMaxHandler));
 
   modular_server::Function & get_sd_card_info_function = modular_server_.createFunction(constants::get_sd_card_info_function_name);
   get_sd_card_info_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
-  get_sd_card_info_function.setReturnTypeObject();
+  get_sd_card_info_function.setResultTypeObject();
 
   modular_server::Function & get_audio_paths_function = modular_server_.createFunction(constants::get_audio_paths_function_name);
   get_audio_paths_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getAudioPathsHandler));
-  get_audio_paths_function.setReturnTypeArray();
+  get_audio_paths_function.setResultTypeArray();
 
   modular_server::Function & play_path_function = modular_server_.createFunction(constants::play_path_function_name);
   play_path_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
@@ -217,23 +217,23 @@ void AudioController::setup()
 
   modular_server::Function & is_playing_function = modular_server_.createFunction(constants::is_playing_function_name);
   is_playing_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPlayingHandler));
-  is_playing_function.setReturnTypeBool();
+  is_playing_function.setResultTypeBool();
 
   modular_server::Function & get_last_audio_path_played_function = modular_server_.createFunction(constants::get_last_audio_path_played_function_name);
   get_last_audio_path_played_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLastAudioPathPlayedHandler));
-  get_last_audio_path_played_function.setReturnTypeString();
+  get_last_audio_path_played_function.setResultTypeString();
 
   modular_server::Function & get_position_function = modular_server_.createFunction(constants::get_position_function_name);
   get_position_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPositionHandler));
-  get_position_function.setReturnTypeLong();
+  get_position_function.setResultTypeLong();
 
   modular_server::Function & get_length_function = modular_server_.createFunction(constants::get_length_function_name);
   get_length_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getLengthHandler));
-  get_length_function.setReturnTypeLong();
+  get_length_function.setResultTypeLong();
 
   modular_server::Function & get_percent_complete_function = modular_server_.createFunction(constants::get_percent_complete_function_name);
   get_percent_complete_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getPercentCompleteHandler));
-  get_percent_complete_function.setReturnTypeLong();
+  get_percent_complete_function.setResultTypeLong();
 
   modular_server::Function & add_tone_pwm_function = modular_server_.createFunction(constants::add_tone_pwm_function_name);
   add_tone_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addTonePwmHandler));
@@ -243,7 +243,7 @@ void AudioController::setup()
   add_tone_pwm_function.addParameter(period_parameter);
   add_tone_pwm_function.addParameter(on_duration_parameter);
   add_tone_pwm_function.addParameter(count_parameter);
-  add_tone_pwm_function.setReturnTypeLong();
+  add_tone_pwm_function.setResultTypeLong();
 
   modular_server::Function & add_tone_pwm_at_function = modular_server_.createFunction(constants::add_tone_pwm_at_function_name);
   add_tone_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addTonePwmAtHandler));
@@ -254,7 +254,7 @@ void AudioController::setup()
   add_tone_pwm_at_function.addParameter(period_parameter);
   add_tone_pwm_at_function.addParameter(on_duration_parameter);
   add_tone_pwm_at_function.addParameter(count_parameter);
-  add_tone_pwm_at_function.setReturnTypeLong();
+  add_tone_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & start_tone_pwm_function = modular_server_.createFunction(constants::start_tone_pwm_function_name);
   start_tone_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startTonePwmHandler));
@@ -263,7 +263,7 @@ void AudioController::setup()
   start_tone_pwm_function.addParameter(delay_parameter);
   start_tone_pwm_function.addParameter(period_parameter);
   start_tone_pwm_function.addParameter(on_duration_parameter);
-  start_tone_pwm_function.setReturnTypeLong();
+  start_tone_pwm_function.setResultTypeLong();
 
   modular_server::Function & start_tone_pwm_at_function = modular_server_.createFunction(constants::start_tone_pwm_at_function_name);
   start_tone_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startTonePwmAtHandler));
@@ -273,7 +273,7 @@ void AudioController::setup()
   start_tone_pwm_at_function.addParameter(delay_parameter);
   start_tone_pwm_at_function.addParameter(period_parameter);
   start_tone_pwm_at_function.addParameter(on_duration_parameter);
-  start_tone_pwm_at_function.setReturnTypeLong();
+  start_tone_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & add_noise_pwm_function = modular_server_.createFunction(constants::add_noise_pwm_function_name);
   add_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addNoisePwmHandler));
@@ -282,7 +282,7 @@ void AudioController::setup()
   add_noise_pwm_function.addParameter(period_parameter);
   add_noise_pwm_function.addParameter(on_duration_parameter);
   add_noise_pwm_function.addParameter(count_parameter);
-  add_noise_pwm_function.setReturnTypeLong();
+  add_noise_pwm_function.setResultTypeLong();
 
   modular_server::Function & add_noise_pwm_at_function = modular_server_.createFunction(constants::add_noise_pwm_at_function_name);
   add_noise_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addNoisePwmAtHandler));
@@ -292,7 +292,7 @@ void AudioController::setup()
   add_noise_pwm_at_function.addParameter(period_parameter);
   add_noise_pwm_at_function.addParameter(on_duration_parameter);
   add_noise_pwm_at_function.addParameter(count_parameter);
-  add_noise_pwm_at_function.setReturnTypeLong();
+  add_noise_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & start_noise_pwm_function = modular_server_.createFunction(constants::start_noise_pwm_function_name);
   start_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startNoisePwmHandler));
@@ -300,7 +300,7 @@ void AudioController::setup()
   start_noise_pwm_function.addParameter(delay_parameter);
   start_noise_pwm_function.addParameter(period_parameter);
   start_noise_pwm_function.addParameter(on_duration_parameter);
-  start_noise_pwm_function.setReturnTypeLong();
+  start_noise_pwm_function.setResultTypeLong();
 
   modular_server::Function & start_noise_pwm_at_function = modular_server_.createFunction(constants::start_noise_pwm_at_function_name);
   start_noise_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startNoisePwmAtHandler));
@@ -309,7 +309,7 @@ void AudioController::setup()
   start_noise_pwm_at_function.addParameter(delay_parameter);
   start_noise_pwm_at_function.addParameter(period_parameter);
   start_noise_pwm_at_function.addParameter(on_duration_parameter);
-  start_noise_pwm_at_function.setReturnTypeLong();
+  start_noise_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & add_filtered_noise_pwm_function = modular_server_.createFunction(constants::add_filtered_noise_pwm_function_name);
   add_filtered_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addFilteredNoisePwmHandler));
@@ -320,7 +320,7 @@ void AudioController::setup()
   add_filtered_noise_pwm_function.addParameter(period_parameter);
   add_filtered_noise_pwm_function.addParameter(on_duration_parameter);
   add_filtered_noise_pwm_function.addParameter(count_parameter);
-  add_filtered_noise_pwm_function.setReturnTypeLong();
+  add_filtered_noise_pwm_function.setResultTypeLong();
 
   modular_server::Function & add_filtered_noise_pwm_at_function = modular_server_.createFunction(constants::add_filtered_noise_pwm_at_function_name);
   add_filtered_noise_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::addFilteredNoisePwmAtHandler));
@@ -332,7 +332,7 @@ void AudioController::setup()
   add_filtered_noise_pwm_at_function.addParameter(period_parameter);
   add_filtered_noise_pwm_at_function.addParameter(on_duration_parameter);
   add_filtered_noise_pwm_at_function.addParameter(count_parameter);
-  add_filtered_noise_pwm_at_function.setReturnTypeLong();
+  add_filtered_noise_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & start_filtered_noise_pwm_function = modular_server_.createFunction(constants::start_filtered_noise_pwm_function_name);
   start_filtered_noise_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startFilteredNoisePwmHandler));
@@ -342,7 +342,7 @@ void AudioController::setup()
   start_filtered_noise_pwm_function.addParameter(delay_parameter);
   start_filtered_noise_pwm_function.addParameter(period_parameter);
   start_filtered_noise_pwm_function.addParameter(on_duration_parameter);
-  start_filtered_noise_pwm_function.setReturnTypeLong();
+  start_filtered_noise_pwm_function.setResultTypeLong();
 
   modular_server::Function & start_filtered_noise_pwm_at_function = modular_server_.createFunction(constants::start_filtered_noise_pwm_at_function_name);
   start_filtered_noise_pwm_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::startFilteredNoisePwmAtHandler));
@@ -353,7 +353,7 @@ void AudioController::setup()
   start_filtered_noise_pwm_at_function.addParameter(delay_parameter);
   start_filtered_noise_pwm_at_function.addParameter(period_parameter);
   start_filtered_noise_pwm_at_function.addParameter(on_duration_parameter);
-  start_filtered_noise_pwm_at_function.setReturnTypeLong();
+  start_filtered_noise_pwm_at_function.setResultTypeLong();
 
   modular_server::Function & stop_pwm_function = modular_server_.createFunction(constants::stop_pwm_function_name);
   stop_pwm_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::stopPwmHandler));
@@ -364,7 +364,7 @@ void AudioController::setup()
 
   modular_server::Function & is_pulsing_function = modular_server_.createFunction(constants::is_pulsing_function_name);
   is_pulsing_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::isPulsingHandler));
-  is_pulsing_function.setReturnTypeBool();
+  is_pulsing_function.setResultTypeBool();
 
   // Callbacks
 

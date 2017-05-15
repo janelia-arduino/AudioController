@@ -43,9 +43,9 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
 // Interrupts
 
 // Units
-CONSTANT_STRING(ms_unit,"ms");
-CONSTANT_STRING(hz_unit,"Hz");
-CONSTANT_STRING(octaves_unit,"octaves");
+CONSTANT_STRING(ms_units,"ms");
+CONSTANT_STRING(hz_units,"Hz");
+CONSTANT_STRING(octaves_units,"octaves");
 
 // Properties
 CONSTANT_STRING(volume_property_name,"volume");

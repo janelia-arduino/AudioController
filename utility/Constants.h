@@ -79,9 +79,9 @@ extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 // Interrupts
 
 // Units
-extern ConstantString ms_unit;
-extern ConstantString hz_unit;
-extern ConstantString octaves_unit;
+extern ConstantString ms_units;
+extern ConstantString hz_units;
+extern ConstantString octaves_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
