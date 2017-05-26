@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
     .name_ptr=&firmware_name,
     .version_major=2,
     .version_minor=0,
-    .version_patch=0,
+    .version_patch=1,
   };
 
 CONSTANT_STRING(hardware_name,"audio_controller");
@@ -39,6 +39,8 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
                                                         1.0,
                                                         0.0,
                                                         1.0};
+
+const double volume_stop_threshold = 0.001;
 
 // Interrupts
 

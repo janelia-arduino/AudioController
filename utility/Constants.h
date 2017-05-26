@@ -76,6 +76,8 @@ enum {FILTER_STAGE_3=3};
 enum {FILTER_COEF_COUNT=5};
 extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
+extern const double volume_stop_threshold;
+
 // Interrupts
 
 // Units

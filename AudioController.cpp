@@ -441,6 +441,10 @@ void AudioController::playToneAt(const size_t frequency,
                                  const double volume)
 {
   stop();
+  if (volume < constants::volume_stop_threshold)
+  {
+    return;
+  }
   audio_type_playing_ = constants::TONE_TYPE;
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
@@ -472,6 +476,10 @@ void AudioController::playNoiseAt(ConstantString * const speaker_ptr,
                                   const double volume)
 {
   stop();
+  if (volume < constants::volume_stop_threshold)
+  {
+    return;
+  }
   audio_type_playing_ = constants::NOISE_TYPE;
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
@@ -505,6 +513,10 @@ void AudioController::playFilteredNoiseAt(const size_t frequency,
                                           const double volume)
 {
   stop();
+  if (volume < constants::volume_stop_threshold)
+  {
+    return;
+  }
   audio_type_playing_ = constants::NOISE_TYPE;
   if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
   {
