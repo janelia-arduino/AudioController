@@ -40,7 +40,7 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
                                                         0.0,
                                                         1.0};
 
-const double volume_stop_threshold = 0.001;
+const long frequency_stop_threshold = 200;
 
 // Interrupts
 
@@ -48,22 +48,19 @@ const double volume_stop_threshold = 0.001;
 CONSTANT_STRING(ms_units,"ms");
 CONSTANT_STRING(hz_units,"Hz");
 CONSTANT_STRING(octaves_units,"octaves");
+CONSTANT_STRING(percent_units,"%");
 
 // Properties
 CONSTANT_STRING(volume_property_name,"volume");
-const double volume_min = 0.0;
-const double volume_max = 1.0;
-const double volume_default = 0.25;
+const long volume_min = 0;
+const long volume_max = 100;
+const long volume_default = 25;
 
 // Parameters
 CONSTANT_STRING(audio_path_parameter_name,"audio_path");
 
-CONSTANT_STRING(percent_parameter_name,"percent");
-const int percent_min = 0;
-const int percent_max = 100;
-
 CONSTANT_STRING(frequency_parameter_name,"frequency");
-const int frequency_min = 200;
+const int frequency_min = 0;
 const int frequency_max = 22000;
 
 CONSTANT_STRING(speaker_parameter_name,"speaker");

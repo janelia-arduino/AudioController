@@ -50,17 +50,17 @@ public:
                 ConstantString * const speaker_ptr);
   void playToneAt(const size_t frequency,
                   ConstantString * const speaker_ptr,
-                  const double volume);
+                  const long volume);
   void playNoise(ConstantString * const speaker_ptr);
   void playNoiseAt(ConstantString * const speaker_ptr,
-                   const double volume);
+                   const long volume);
   void playFilteredNoise(const size_t frequency,
                          const double bandwidth,
                          ConstantString * const speaker_ptr);
   void playFilteredNoiseAt(const size_t frequency,
                            const double bandwidth,
                            ConstantString * const speaker_ptr,
-                           const double volume);
+                           const long volume);
   void stop();
   bool isPlaying();
   const char * getLastAudioPathPlayed();
@@ -79,7 +79,7 @@ public:
                  const long count);
   int addTonePwmAt(const size_t frequency,
                    ConstantString * const speaker_ptr,
-                   const double volume,
+                   const long volume,
                    const long delay,
                    const long period,
                    const long on_duration,
@@ -91,7 +91,7 @@ public:
                    const long on_duration);
   int startTonePwmAt(const size_t frequency,
                      ConstantString * const speaker_ptr,
-                     const double volume,
+                     const long volume,
                      const long delay,
                      const long period,
                      const long on_duration);
@@ -101,7 +101,7 @@ public:
                   const long on_duration,
                   const long count);
   int addNoisePwmAt(ConstantString * const speaker_ptr,
-                    const double volume,
+                    const long volume,
                     const long delay,
                     const long period,
                     const long on_duration,
@@ -111,7 +111,7 @@ public:
                     const long period,
                     const long on_duration);
   int startNoisePwmAt(ConstantString * const speaker_ptr,
-                      const double volume,
+                      const long volume,
                       const long delay,
                       const long period,
                       const long on_duration);
@@ -125,7 +125,7 @@ public:
   int addFilteredNoisePwmAt(const size_t frequency,
                             const double bandwidth,
                             ConstantString * const speaker_ptr,
-                            const double volume,
+                            const long volume,
                             const long delay,
                             const long period,
                             const long on_duration,
@@ -139,7 +139,7 @@ public:
   int startFilteredNoisePwmAt(const size_t frequency,
                               const double bandwidth,
                               ConstantString * const speaker_ptr,
-                              const double volume,
+                              const long volume,
                               const long delay,
                               const long period,
                               const long on_duration);

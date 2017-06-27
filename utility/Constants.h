@@ -19,7 +19,7 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=1};
-enum{PARAMETER_COUNT_MAX=11};
+enum{PARAMETER_COUNT_MAX=10};
 enum{FUNCTION_COUNT_MAX=36};
 enum{CALLBACK_COUNT_MAX=1};
 
@@ -65,7 +65,7 @@ struct PulseInfo
   size_t frequency;
   double bandwidth;
   ConstantString * speaker_ptr;
-  double volume;
+  long volume;
   EventIdPair event_id_pair;
 };
 
@@ -76,7 +76,7 @@ enum {FILTER_STAGE_3=3};
 enum {FILTER_COEF_COUNT=5};
 extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
-extern const double volume_stop_threshold;
+extern const long frequency_stop_threshold;
 
 // Interrupts
 
@@ -84,20 +84,17 @@ extern const double volume_stop_threshold;
 extern ConstantString ms_units;
 extern ConstantString hz_units;
 extern ConstantString octaves_units;
+extern ConstantString percent_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern ConstantString volume_property_name;
-extern const double volume_min;
-extern const double volume_max;
-extern const double volume_default;
+extern const long volume_min;
+extern const long volume_max;
+extern const long volume_default;
 
 // Parameters
 extern ConstantString audio_path_parameter_name;
-
-extern ConstantString percent_parameter_name;
-extern const int percent_min;
-extern const int percent_max;
 
 extern ConstantString frequency_parameter_name;
 extern const int frequency_min;

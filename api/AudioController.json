@@ -336,12 +336,9 @@
         "type":"string"
       },
       {
-        "name":"percent",
-        "type":"long"
-      },
-      {
         "name":"frequency",
-        "type":"long"
+        "type":"long",
+        "units":"Hz"
       },
       {
         "name":"speaker",
@@ -364,8 +361,7 @@
       },
       {
         "name":"count",
-        "type":"long",
-        "units":"ms"
+        "type":"long"
       },
       {
         "name":"pwm_index",
@@ -373,7 +369,8 @@
       },
       {
         "name":"volume",
-        "type":"double"
+        "type":"long",
+        "units":"%"
       },
       {
         "name":"bandwidth",
@@ -384,7 +381,8 @@
     "properties":[
       {
         "name":"volume",
-        "type":"double",
+        "type":"long",
+        "units":"%",
         "functions":[
           "getValue",
           "setValue",

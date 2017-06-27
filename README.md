@@ -69,7 +69,6 @@ License:
     ],
     "parameters":[
       "audio_path",
-      "percent",
       "frequency",
       "speaker",
       "delay",
