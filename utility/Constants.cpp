@@ -40,7 +40,7 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
                                                         0.0,
                                                         1.0};
 
-const long frequency_stop_threshold = 200;
+const size_t frequency_stop_threshold = 200;
 
 // Interrupts
 

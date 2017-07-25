@@ -77,20 +77,6 @@ void AudioController::setup()
                               interrupts_);
 
   // Interrupts
-#if defined(__MK20DX256__)
-  modular_server::Interrupt & int_a_interrupt = modular_server_.createInterrupt(constants::int_a_interrupt_name,
-                                                                                constants::int_a_pin);
-
-  modular_server::Interrupt & int_b_interrupt = modular_server_.createInterrupt(constants::int_b_interrupt_name,
-                                                                                constants::int_b_pin);
-
-  modular_server::Interrupt & int_c_interrupt = modular_server_.createInterrupt(constants::int_c_interrupt_name,
-                                                                                constants::int_c_pin);
-
-  modular_server::Interrupt & int_d_interrupt = modular_server_.createInterrupt(constants::int_d_interrupt_name,
-                                                                                constants::int_d_pin);
-
-#endif
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
@@ -592,6 +578,14 @@ long AudioController::getPosition()
         position = g_play_sd_wav.positionMillis();
         break;
       }
+      case constants::TONE_TYPE:
+      {
+        break;
+      }
+      case constants::NOISE_TYPE:
+      {
+        break;
+      }
     }
   }
   return position;
@@ -612,6 +606,14 @@ long AudioController::getLength()
       case constants::WAV_TYPE:
       {
         length = g_play_sd_wav.lengthMillis();
+        break;
+      }
+      case constants::TONE_TYPE:
+      {
+        break;
+      }
+      case constants::NOISE_TYPE:
+      {
         break;
       }
     }
@@ -976,6 +978,14 @@ void AudioController::updatePlaying()
       case constants::WAV_TYPE:
       {
         playing_ = g_play_sd_wav.isPlaying();
+        break;
+      }
+      case constants::TONE_TYPE:
+      {
+        break;
+      }
+      case constants::NOISE_TYPE:
+      {
         break;
       }
     }

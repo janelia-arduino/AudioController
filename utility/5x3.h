@@ -10,7 +10,7 @@
 #include "Constants.h"
 
 
-#if defined(__AVR_ATmega2560__)
+#if defined(__MK64FX512__)
 
 namespace audio_controller
 {
