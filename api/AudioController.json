@@ -1,54 +1,47 @@
 {
-  "id":"getApiVerbose",
+  "id":"getApi",
   "result":{
     "firmware":["AudioController"],
+    "verbosity":"GENERAL",
     "functions":[
       {
         "name":"getAudioMemoryUsage",
-        "parameters":[],
         "result_info":{
           "type":"long"
         }
       },
       {
         "name":"getAudioMemoryUsageMax",
-        "parameters":[],
         "result_info":{
           "type":"long"
         }
       },
       {
-        "name":"resetAudioMemoryUsageMax",
-        "parameters":[]
+        "name":"resetAudioMemoryUsageMax"
       },
       {
         "name":"getAudioProcessorUsage",
-        "parameters":[],
         "result_info":{
           "type":"double"
         }
       },
       {
         "name":"getAudioProcessorUsageMax",
-        "parameters":[],
         "result_info":{
           "type":"double"
         }
       },
       {
-        "name":"resetAudioProcessorUsageMax",
-        "parameters":[]
+        "name":"resetAudioProcessorUsageMax"
       },
       {
         "name":"getSDCardInfo",
-        "parameters":[],
         "result_info":{
           "type":"object"
         }
       },
       {
         "name":"getAudioPaths",
-        "parameters":[],
         "result_info":{
           "type":"array",
           "array_element_type":"string"
@@ -106,40 +99,34 @@
         ]
       },
       {
-        "name":"stop",
-        "parameters":[]
+        "name":"stop"
       },
       {
         "name":"isPlaying",
-        "parameters":[],
         "result_info":{
           "type":"bool"
         }
       },
       {
         "name":"getLastAudioPathPlayed",
-        "parameters":[],
         "result_info":{
           "type":"string"
         }
       },
       {
         "name":"getPosition",
-        "parameters":[],
         "result_info":{
           "type":"long"
         }
       },
       {
         "name":"getLength",
-        "parameters":[],
         "result_info":{
           "type":"long"
         }
       },
       {
         "name":"getPercentComplete",
-        "parameters":[],
         "result_info":{
           "type":"long"
         }
@@ -319,12 +306,10 @@
         ]
       },
       {
-        "name":"stopAllPwm",
-        "parameters":[]
+        "name":"stopAllPwm"
       },
       {
         "name":"isPulsing",
-        "parameters":[],
         "result_info":{
           "type":"bool"
         }
@@ -337,8 +322,7 @@
       },
       {
         "name":"frequency",
-        "type":"long",
-        "units":"Hz"
+        "type":"long"
       },
       {
         "name":"speaker",
@@ -346,18 +330,15 @@
       },
       {
         "name":"delay",
-        "type":"long",
-        "units":"ms"
+        "type":"long"
       },
       {
         "name":"period",
-        "type":"long",
-        "units":"ms"
+        "type":"long"
       },
       {
         "name":"on_duration",
-        "type":"long",
-        "units":"ms"
+        "type":"long"
       },
       {
         "name":"count",
@@ -369,31 +350,53 @@
       },
       {
         "name":"volume",
-        "type":"long",
-        "units":"%"
+        "type":"long"
       },
       {
         "name":"bandwidth",
-        "type":"double",
-        "units":"octaves"
+        "type":"double"
       }
     ],
     "properties":[
       {
         "name":"volume",
         "type":"long",
-        "units":"%",
         "functions":[
-          "getValue",
-          "setValue",
-          "getDefaultValue",
-          "setValueToDefault"
+          {
+            "name":"getValue",
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"setValue",
+            "parameters":[
+              "value"
+            ],
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"getDefaultValue",
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"setValueToDefault",
+            "result_info":{
+              "type":"long"
+            }
+          }
         ],
         "parameters":[
-          "value"
+          {
+            "name":"value",
+            "type":"long"
+          }
         ]
       }
-    ],
-    "callbacks":[]
+    ]
   }
 }
