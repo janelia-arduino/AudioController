@@ -11,17 +11,19 @@
 namespace audio_controller
 {
 // GUItool: begin automatically generated code
-AudioSynthNoiseWhite     g_noise_left;   //xy=181,343
-AudioSynthNoiseWhite     g_noise_right;  //xy=185,380
-AudioSynthWaveformSine   g_tone_left;    //xy=346,268
-AudioSynthWaveformSine   g_tone_right;   //xy=352,307
-AudioPlaySdWav           g_play_sd_wav;  //xy=359,194
-AudioFilterBiquad        g_biquad_left;        //xy=359,343
-AudioPlaySdRaw           g_play_sd_raw;  //xy=360,231
-AudioFilterBiquad        g_biquad_right;        //xy=361,381
-AudioMixer4              g_mixer_left;   //xy=596,203
-AudioMixer4              g_mixer_right;  //xy=602,279
-AudioOutputI2S           g_i2s;          //xy=766,237
+AudioSynthNoiseWhite     g_noise_left;   //xy=145,283
+AudioSynthNoiseWhite     g_noise_right;  //xy=149,320
+AudioSynthWaveformSine   g_tone_left;    //xy=310,208
+AudioSynthWaveformSine   g_tone_right;   //xy=316,247
+AudioPlaySdWav           g_play_sd_wav;  //xy=323,134
+AudioFilterBiquad        g_biquad_left;  //xy=323,283
+AudioPlaySdRaw           g_play_sd_raw;  //xy=324,171
+AudioFilterBiquad        g_biquad_right; //xy=325,321
+AudioMixer4              g_mixer_left;   //xy=560,143
+AudioMixer4              g_mixer_right;  //xy=566,219
+AudioOutputI2S           g_i2s;          //xy=743,150
+AudioMixer4              g_mixer_dac;    //xy=762,220
+AudioOutputAnalog        g_dac;          //xy=909,220
 AudioConnection          patchCord1(g_noise_left, g_biquad_left);
 AudioConnection          patchCord2(g_noise_right, g_biquad_right);
 AudioConnection          patchCord3(g_tone_left, 0, g_mixer_left, 2);
@@ -33,8 +35,11 @@ AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_left, 1);
 AudioConnection          patchCord9(g_play_sd_raw, 0, g_mixer_right, 1);
 AudioConnection          patchCord10(g_biquad_right, 0, g_mixer_right, 3);
 AudioConnection          patchCord11(g_mixer_left, 0, g_i2s, 0);
-AudioConnection          patchCord12(g_mixer_right, 0, g_i2s, 1);
-AudioControlSGTL5000     g_sgtl5000;     //xy=594,128
+AudioConnection          patchCord12(g_mixer_left, 0, g_mixer_dac, 0);
+AudioConnection          patchCord13(g_mixer_right, 0, g_i2s, 1);
+AudioConnection          patchCord14(g_mixer_right, 0, g_mixer_dac, 1);
+AudioConnection          patchCord15(g_mixer_dac, dac1);
+AudioControlSGTL5000     g_sgtl5000;     //xy=558,68
 // GUItool: end automatically generated code
 }
 
