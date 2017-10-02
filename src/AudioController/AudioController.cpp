@@ -5,7 +5,7 @@
 // Authors:
 // Peter Polidoro polidorop@janelia.hhmi.org
 // ----------------------------------------------------------------------------
-#include "AudioController.h"
+#include "../AudioController.h"
 
 
 namespace audio_controller
@@ -38,7 +38,7 @@ AudioConnection          patchCord11(g_mixer_left, 0, g_i2s, 0);
 AudioConnection          patchCord12(g_mixer_left, 0, g_mixer_dac, 0);
 AudioConnection          patchCord13(g_mixer_right, 0, g_i2s, 1);
 AudioConnection          patchCord14(g_mixer_right, 0, g_mixer_dac, 1);
-AudioConnection          patchCord15(g_mixer_dac, dac1);
+AudioConnection          patchCord15(g_mixer_dac, g_dac);
 AudioControlSGTL5000     g_sgtl5000;     //xy=558,68
 // GUItool: end automatically generated code
 }

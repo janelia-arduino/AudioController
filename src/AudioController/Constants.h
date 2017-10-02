@@ -7,10 +7,10 @@
 // ----------------------------------------------------------------------------
 #ifndef AUDIO_CONTROLLER_CONSTANTS_H
 #define AUDIO_CONTROLLER_CONSTANTS_H
-#include "ConstantVariable.h"
-#include "ModularServer.h"
+#include <ConstantVariable.h>
+#include <ModularServer.h>
 
-#include "EventController.h"
+#include <EventController.h>
 
 
 namespace audio_controller
@@ -35,7 +35,7 @@ enum{AUDIO_EXT_COUNT=2};
 enum{STRING_LENGTH_PATH=255};
 enum{STRING_LENGTH_ERROR_MESSAGE=257};
 
-enum{AUDIO_MEMORY_BLOCK_COUNT=20};
+enum{AUDIO_MEMORY_BLOCK_COUNT=50};
 
 extern const char * const audio_ext_raw;
 extern const char * const audio_ext_wav;

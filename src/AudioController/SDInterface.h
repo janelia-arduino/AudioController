@@ -7,9 +7,11 @@
 // ----------------------------------------------------------------------------
 #ifndef _SD_INTERFACE_H_
 #define _SD_INTERFACE_H_
-#include "SPI.h"
-#include "SD.h"
+#include <SPI.h>
+#include <SD.h>
+
 #include "Constants.h"
+
 
 class SDInterface
 {
