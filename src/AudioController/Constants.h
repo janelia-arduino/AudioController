@@ -18,7 +18,7 @@ namespace audio_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=1};
+enum{PROPERTY_COUNT_MAX=3};
 enum{PARAMETER_COUNT_MAX=10};
 enum{FUNCTION_COUNT_MAX=36};
 enum{CALLBACK_COUNT_MAX=1};
@@ -78,6 +78,10 @@ extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
 extern const size_t frequency_stop_threshold;
 
+extern const int pcb_speaker_reference;
+extern const double pcb_speaker_channel_gain;
+extern const double pcb_speaker_pre_gain;
+
 // Interrupts
 
 // Units
@@ -92,6 +96,14 @@ extern ConstantString volume_property_name;
 extern const long volume_min;
 extern const long volume_max;
 extern const long volume_default;
+
+extern ConstantString stereo_speaker_gain_property_name;
+extern const double gain_min;
+extern const double gain_max;
+extern const double stereo_speaker_gain_default;
+
+extern ConstantString pcb_speaker_gain_property_name;
+extern const double pcb_speaker_gain_default;
 
 // Parameters
 extern ConstantString audio_path_parameter_name;

@@ -42,6 +42,10 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
 
 const size_t frequency_stop_threshold = 200;
 
+const int pcb_speaker_reference = INTERNAL;
+const double pcb_speaker_channel_gain = 0.5;
+const double pcb_speaker_pre_gain = 0.5;
+
 // Interrupts
 
 // Units
@@ -55,6 +59,14 @@ CONSTANT_STRING(volume_property_name,"volume");
 const long volume_min = 0;
 const long volume_max = 100;
 const long volume_default = 25;
+
+CONSTANT_STRING(stereo_speaker_gain_property_name,"stereoSpeakerGain");
+const double gain_min = 0.0;
+const double gain_max = 1.0;
+const double stereo_speaker_gain_default = 1.0;
+
+CONSTANT_STRING(pcb_speaker_gain_property_name,"pcbSpeakerGain");
+const double pcb_speaker_gain_default = 1.0;
 
 // Parameters
 CONSTANT_STRING(audio_path_parameter_name,"audio_path");

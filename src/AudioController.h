@@ -69,7 +69,6 @@ public:
   int getPercentComplete();
   bool codecEnabled();
   bool pathIsAudio(const char * path);
-  void updateVolume();
 
   int addTonePwm(const size_t frequency,
                  ConstantString * const speaker_ptr,
@@ -169,13 +168,16 @@ private:
   bool playing_;
   char path_played_[audio_controller::constants::STRING_LENGTH_PATH];
   SDInterface sd_interface_;
+  bool pulsing_;
+
   void enableAudioCodec();
   void updatePlaying();
   void addDirectoryToResponse(File dir, const char * pwd);
   ConstantString * const stringToSpeakerPtr(const char * string);
-  bool pulsing_;
+  void setVolume(const long volume);
 
   // Handlers
+  void setVolumeHandler();
   void getAudioMemoryUsageHandler();
   void getAudioMemoryUsageMaxHandler();
   void resetAudioMemoryUsageMaxHandler();

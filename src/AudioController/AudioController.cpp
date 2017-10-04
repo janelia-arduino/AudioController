@@ -11,19 +11,19 @@
 namespace audio_controller
 {
 // GUItool: begin automatically generated code
-AudioSynthNoiseWhite     g_noise_left;   //xy=145,283
-AudioSynthNoiseWhite     g_noise_right;  //xy=149,320
-AudioSynthWaveformSine   g_tone_left;    //xy=310,208
-AudioSynthWaveformSine   g_tone_right;   //xy=316,247
-AudioPlaySdWav           g_play_sd_wav;  //xy=323,134
-AudioFilterBiquad        g_biquad_left;  //xy=323,283
-AudioPlaySdRaw           g_play_sd_raw;  //xy=324,171
-AudioFilterBiquad        g_biquad_right; //xy=325,321
-AudioMixer4              g_mixer_left;   //xy=560,143
-AudioMixer4              g_mixer_right;  //xy=566,219
-AudioOutputI2S           g_i2s;          //xy=743,150
-AudioMixer4              g_mixer_dac;    //xy=762,220
-AudioOutputAnalog        g_dac;          //xy=909,220
+AudioSynthNoiseWhite     g_noise_left;   //xy=85,251
+AudioSynthNoiseWhite     g_noise_right;  //xy=89,288
+AudioSynthWaveformSine   g_tone_left;    //xy=250,176
+AudioSynthWaveformSine   g_tone_right;   //xy=256,215
+AudioPlaySdWav           g_play_sd_wav;  //xy=263,102
+AudioFilterBiquad        g_biquad_left;  //xy=263,251
+AudioPlaySdRaw           g_play_sd_raw;  //xy=264,139
+AudioFilterBiquad        g_biquad_right; //xy=265,289
+AudioMixer4              g_mixer_left;   //xy=500,111
+AudioMixer4              g_mixer_right;  //xy=506,187
+AudioMixer4              g_mixer_dac;    //xy=702,188
+AudioOutputI2S           g_stereo_speaker; //xy=717,126
+AudioOutputAnalog        g_pcb_speaker;  //xy=890,188
 AudioConnection          patchCord1(g_noise_left, g_biquad_left);
 AudioConnection          patchCord2(g_noise_right, g_biquad_right);
 AudioConnection          patchCord3(g_tone_left, 0, g_mixer_left, 2);
@@ -34,12 +34,12 @@ AudioConnection          patchCord7(g_biquad_left, 0, g_mixer_left, 3);
 AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_left, 1);
 AudioConnection          patchCord9(g_play_sd_raw, 0, g_mixer_right, 1);
 AudioConnection          patchCord10(g_biquad_right, 0, g_mixer_right, 3);
-AudioConnection          patchCord11(g_mixer_left, 0, g_i2s, 0);
+AudioConnection          patchCord11(g_mixer_left, 0, g_stereo_speaker, 0);
 AudioConnection          patchCord12(g_mixer_left, 0, g_mixer_dac, 0);
-AudioConnection          patchCord13(g_mixer_right, 0, g_i2s, 1);
+AudioConnection          patchCord13(g_mixer_right, 0, g_stereo_speaker, 1);
 AudioConnection          patchCord14(g_mixer_right, 0, g_mixer_dac, 1);
-AudioConnection          patchCord15(g_mixer_dac, g_dac);
-AudioControlSGTL5000     g_sgtl5000;     //xy=558,68
+AudioConnection          patchCord15(g_mixer_dac, g_pcb_speaker);
+AudioControlSGTL5000     g_sgtl5000;     //xy=498,36
 // GUItool: end automatically generated code
 }
 
@@ -65,6 +65,8 @@ void AudioController::setup()
   AudioMemoryUsageMaxReset();
 
   enableAudioCodec();
+
+  g_pcb_speaker.analogReference(constants::pcb_speaker_reference);
 
   // Setup SD Card
   sd_interface_.setup();
@@ -94,7 +96,17 @@ void AudioController::setup()
   modular_server::Property & volume_property = modular_server_.createProperty(constants::volume_property_name,constants::volume_default);
   volume_property.setRange(constants::volume_min,constants::volume_max);
   volume_property.setUnits(constants::percent_units);
-  volume_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::updateVolume));
+  volume_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
+
+  modular_server::Property & stereo_speaker_gain_property = modular_server_.createProperty(constants::stereo_speaker_gain_property_name,constants::stereo_speaker_gain_default);
+  stereo_speaker_gain_property.setRange(constants::gain_min,constants::gain_max);
+  stereo_speaker_gain_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
+
+  modular_server::Property & pcb_speaker_gain_property = modular_server_.createProperty(constants::pcb_speaker_gain_property_name,constants::pcb_speaker_gain_default);
+  pcb_speaker_gain_property.setRange(constants::gain_min,constants::gain_max);
+  pcb_speaker_gain_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
+
+  setVolumeHandler();
 
   // Parameters
   modular_server::Parameter & audio_path_parameter = modular_server_.createParameter(constants::audio_path_parameter_name);
@@ -448,10 +460,7 @@ void AudioController::playToneAt(const size_t frequency,
     g_tone_right.frequency(frequency);
     g_tone_right.amplitude(1);
   }
-  if (codecEnabled())
-  {
-    g_sgtl5000.volume((double)volume/100.0);
-  }
+  setVolume(volume);
   playing_ = true;
 }
 
@@ -481,10 +490,7 @@ void AudioController::playNoiseAt(ConstantString * const speaker_ptr,
     g_biquad_right.setCoefficients(constants::FILTER_STAGE_0,constants::allpass_filter_coefs);
     g_noise_right.amplitude(1);
   }
-  if (codecEnabled())
-  {
-    g_sgtl5000.volume((double)volume/100.0);
-  }
+  setVolume(volume);
   playing_ = true;
 }
 
@@ -518,10 +524,7 @@ void AudioController::playFilteredNoiseAt(const size_t frequency,
     g_biquad_right.setBandpass(constants::FILTER_STAGE_0,frequency,bandwidth);
     g_noise_right.amplitude(1);
   }
-  if (codecEnabled())
-  {
-    g_sgtl5000.volume((double)volume/100.0);
-  }
+  setVolume(volume);
   playing_ = true;
 }
 
@@ -668,16 +671,6 @@ bool AudioController::pathIsAudio(const char * path)
     }
   }
   return audio_path;
-}
-
-void AudioController::updateVolume()
-{
-  if (codecEnabled())
-  {
-    long volume;
-    modular_server_.property(constants::volume_property_name).getValue(volume);
-    g_sgtl5000.volume((double)volume/100.0);
-  }
 }
 
 int AudioController::addTonePwm(const size_t frequency,
@@ -965,7 +958,6 @@ void AudioController::enableAudioCodec()
     // pullup resistors so check first
     codec_enabled_ = true;
     g_sgtl5000.enable();
-    updateVolume();
   }
 }
 
@@ -1051,6 +1043,24 @@ ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
   }
 }
 
+void AudioController::setVolume(const long volume)
+{
+  double stereo_speaker_gain;
+  modular_server_.property(constants::stereo_speaker_gain_property_name).getValue(stereo_speaker_gain);
+
+  if (codecEnabled())
+  {
+    g_sgtl5000.volume(((double)volume*stereo_speaker_gain)/100.0);
+  }
+
+  double pcb_speaker_gain;
+  modular_server_.property(constants::pcb_speaker_gain_property_name).getValue(pcb_speaker_gain);
+
+  double pcb_speaker_total_gain = (constants::pcb_speaker_channel_gain*constants::pcb_speaker_pre_gain*(double)volume*pcb_speaker_gain)/100.0;
+  g_mixer_dac.gain(0,pcb_speaker_total_gain);
+  g_mixer_dac.gain(1,pcb_speaker_total_gain);
+}
+
 // Handlers must be non-blocking (avoid 'delay')
 //
 // modular_server_.parameter(parameter_name).getValue(value) value type must be either:
@@ -1078,6 +1088,14 @@ void AudioController::stopPwmHandler(int index)
   stop();
   indexed_pulses_.remove(index);
   pulsing_ = !indexed_pulses_.empty();
+}
+
+void AudioController::setVolumeHandler()
+{
+  long volume;
+  modular_server_.property(constants::volume_property_name).getValue(volume);
+
+  setVolume(volume);
 }
 
 void AudioController::getAudioMemoryUsageHandler()
