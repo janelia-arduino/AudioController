@@ -48,6 +48,8 @@ enum audio_t
     NOISE_TYPE,
   };
 
+extern const size_t pcb_speaker_enable_pin;
+
 extern const char * const sd_prefix;
 
 extern const bool sd_exists;

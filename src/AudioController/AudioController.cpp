@@ -75,6 +75,8 @@ void AudioController::setup()
   event_controller_.setup();
 
   // Pin Setup
+  pinMode(constants::pcb_speaker_enable_pin,OUTPUT);
+  digitalWrite(constants::pcb_speaker_enable_pin,HIGH);
 
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
