@@ -111,8 +111,8 @@ extern const double pcb_speaker_gain_default;
 extern ConstantString audio_path_parameter_name;
 
 extern ConstantString frequency_parameter_name;
-extern const int frequency_min;
-extern const int frequency_max;
+extern const long frequency_min;
+extern const long frequency_max;
 
 extern ConstantString speaker_parameter_name;
 enum{SPEAKER_SUBSET_LENGTH=3};

@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
     .name_ptr=&firmware_name,
     .version_major=2,
     .version_minor=0,
-    .version_patch=2,
+    .version_patch=3,
   };
 
 CONSTANT_STRING(hardware_name,"audio_controller");
@@ -72,8 +72,8 @@ const double pcb_speaker_gain_default = 1.0;
 CONSTANT_STRING(audio_path_parameter_name,"audio_path");
 
 CONSTANT_STRING(frequency_parameter_name,"frequency");
-const int frequency_min = 0;
-const int frequency_max = 22000;
+const long frequency_min = 0;
+const long frequency_max = 22000;
 
 CONSTANT_STRING(speaker_parameter_name,"speaker");
 CONSTANT_STRING(speaker_all,"ALL");
