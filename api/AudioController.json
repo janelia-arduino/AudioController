@@ -1,97 +1,99 @@
 {
-  "id":"getApi",
-  "result":{
-    "firmware":["AudioController"],
-    "verbosity":"GENERAL",
-    "functions":[
+  "id": "getApi",
+  "result": {
+    "firmware": [
+      "AudioController"
+    ],
+    "verbosity": "GENERAL",
+    "functions": [
       {
-        "name":"getAudioMemoryUsage",
-        "result_info":{
-          "type":"long"
+        "name": "getAudioMemoryUsage",
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"getAudioMemoryUsageMax",
-        "result_info":{
-          "type":"long"
+        "name": "getAudioMemoryUsageMax",
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"resetAudioMemoryUsageMax"
+        "name": "resetAudioMemoryUsageMax"
       },
       {
-        "name":"getAudioProcessorUsage",
-        "result_info":{
-          "type":"double"
+        "name": "getAudioProcessorUsage",
+        "result_info": {
+          "type": "double"
         }
       },
       {
-        "name":"getAudioProcessorUsageMax",
-        "result_info":{
-          "type":"double"
+        "name": "getAudioProcessorUsageMax",
+        "result_info": {
+          "type": "double"
         }
       },
       {
-        "name":"resetAudioProcessorUsageMax"
+        "name": "resetAudioProcessorUsageMax"
       },
       {
-        "name":"getSDCardInfo",
-        "result_info":{
-          "type":"object"
+        "name": "getSDCardInfo",
+        "result_info": {
+          "type": "object"
         }
       },
       {
-        "name":"getAudioPaths",
-        "result_info":{
-          "type":"array",
-          "array_element_type":"string"
+        "name": "getAudioPaths",
+        "result_info": {
+          "type": "array",
+          "array_element_type": "string"
         }
       },
       {
-        "name":"playPath",
-        "parameters":[
+        "name": "playPath",
+        "parameters": [
           "audio_path"
         ]
       },
       {
-        "name":"playTone",
-        "parameters":[
+        "name": "playTone",
+        "parameters": [
           "frequency",
           "speaker"
         ]
       },
       {
-        "name":"playToneAt",
-        "parameters":[
+        "name": "playToneAt",
+        "parameters": [
           "frequency",
           "speaker",
           "volume"
         ]
       },
       {
-        "name":"playNoise",
-        "parameters":[
+        "name": "playNoise",
+        "parameters": [
           "speaker"
         ]
       },
       {
-        "name":"playNoiseAt",
-        "parameters":[
+        "name": "playNoiseAt",
+        "parameters": [
           "speaker",
           "volume"
         ]
       },
       {
-        "name":"playFilteredNoise",
-        "parameters":[
+        "name": "playFilteredNoise",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker"
         ]
       },
       {
-        "name":"playFilteredNoiseAt",
-        "parameters":[
+        "name": "playFilteredNoiseAt",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker",
@@ -99,41 +101,41 @@
         ]
       },
       {
-        "name":"stop"
+        "name": "stop"
       },
       {
-        "name":"isPlaying",
-        "result_info":{
-          "type":"bool"
+        "name": "isPlaying",
+        "result_info": {
+          "type": "bool"
         }
       },
       {
-        "name":"getLastAudioPathPlayed",
-        "result_info":{
-          "type":"string"
+        "name": "getLastAudioPathPlayed",
+        "result_info": {
+          "type": "string"
         }
       },
       {
-        "name":"getPosition",
-        "result_info":{
-          "type":"long"
+        "name": "getPosition",
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"getLength",
-        "result_info":{
-          "type":"long"
+        "name": "getLength",
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"getPercentComplete",
-        "result_info":{
-          "type":"long"
+        "name": "getPercentComplete",
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addTonePwm",
-        "parameters":[
+        "name": "addTonePwm",
+        "parameters": [
           "frequency",
           "speaker",
           "delay",
@@ -141,13 +143,13 @@
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addTonePwmAt",
-        "parameters":[
+        "name": "addTonePwmAt",
+        "parameters": [
           "frequency",
           "speaker",
           "volume",
@@ -156,26 +158,26 @@
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startTonePwm",
-        "parameters":[
+        "name": "startTonePwm",
+        "parameters": [
           "frequency",
           "speaker",
           "delay",
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startTonePwmAt",
-        "parameters":[
+        "name": "startTonePwmAt",
+        "parameters": [
           "frequency",
           "speaker",
           "volume",
@@ -183,26 +185,26 @@
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addNoisePwm",
-        "parameters":[
+        "name": "addNoisePwm",
+        "parameters": [
           "speaker",
           "delay",
           "period",
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addNoisePwmAt",
-        "parameters":[
+        "name": "addNoisePwmAt",
+        "parameters": [
           "speaker",
           "volume",
           "delay",
@@ -210,38 +212,38 @@
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startNoisePwm",
-        "parameters":[
+        "name": "startNoisePwm",
+        "parameters": [
           "speaker",
           "delay",
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startNoisePwmAt",
-        "parameters":[
+        "name": "startNoisePwmAt",
+        "parameters": [
           "speaker",
           "volume",
           "delay",
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addFilteredNoisePwm",
-        "parameters":[
+        "name": "addFilteredNoisePwm",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker",
@@ -250,13 +252,13 @@
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"addFilteredNoisePwmAt",
-        "parameters":[
+        "name": "addFilteredNoisePwmAt",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker",
@@ -266,13 +268,13 @@
           "on_duration",
           "count"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startFilteredNoisePwm",
-        "parameters":[
+        "name": "startFilteredNoisePwm",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker",
@@ -280,13 +282,13 @@
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"startFilteredNoisePwmAt",
-        "parameters":[
+        "name": "startFilteredNoisePwmAt",
+        "parameters": [
           "frequency",
           "bandwidth",
           "speaker",
@@ -295,105 +297,105 @@
           "period",
           "on_duration"
         ],
-        "result_info":{
-          "type":"long"
+        "result_info": {
+          "type": "long"
         }
       },
       {
-        "name":"stopPwm",
-        "parameters":[
+        "name": "stopPwm",
+        "parameters": [
           "pwm_index"
         ]
       },
       {
-        "name":"stopAllPwm"
+        "name": "stopAllPwm"
       },
       {
-        "name":"isPulsing",
-        "result_info":{
-          "type":"bool"
+        "name": "isPulsing",
+        "result_info": {
+          "type": "bool"
         }
       }
     ],
-    "parameters":[
+    "parameters": [
       {
-        "name":"audio_path",
-        "type":"string"
+        "name": "audio_path",
+        "type": "string"
       },
       {
-        "name":"frequency",
-        "type":"long"
+        "name": "frequency",
+        "type": "long"
       },
       {
-        "name":"speaker",
-        "type":"string"
+        "name": "speaker",
+        "type": "string"
       },
       {
-        "name":"delay",
-        "type":"long"
+        "name": "delay",
+        "type": "long"
       },
       {
-        "name":"period",
-        "type":"long"
+        "name": "period",
+        "type": "long"
       },
       {
-        "name":"on_duration",
-        "type":"long"
+        "name": "on_duration",
+        "type": "long"
       },
       {
-        "name":"count",
-        "type":"long"
+        "name": "count",
+        "type": "long"
       },
       {
-        "name":"pwm_index",
-        "type":"long"
+        "name": "pwm_index",
+        "type": "long"
       },
       {
-        "name":"volume",
-        "type":"long"
+        "name": "volume",
+        "type": "long"
       },
       {
-        "name":"bandwidth",
-        "type":"double"
+        "name": "bandwidth",
+        "type": "double"
       }
     ],
-    "properties":[
+    "properties": [
       {
-        "name":"volume",
-        "type":"long",
-        "functions":[
+        "name": "volume",
+        "type": "long",
+        "functions": [
           {
-            "name":"getValue",
-            "result_info":{
-              "type":"long"
+            "name": "getValue",
+            "result_info": {
+              "type": "long"
             }
           },
           {
-            "name":"setValue",
-            "parameters":[
+            "name": "setValue",
+            "parameters": [
               "value"
             ],
-            "result_info":{
-              "type":"long"
+            "result_info": {
+              "type": "long"
             }
           },
           {
-            "name":"getDefaultValue",
-            "result_info":{
-              "type":"long"
+            "name": "getDefaultValue",
+            "result_info": {
+              "type": "long"
             }
           },
           {
-            "name":"setValueToDefault",
-            "result_info":{
-              "type":"long"
+            "name": "setValueToDefault",
+            "result_info": {
+              "type": "long"
             }
           }
         ],
-        "parameters":[
+        "parameters": [
           {
-            "name":"value",
-            "type":"long"
+            "name": "value",
+            "type": "long"
           }
         ]
       }

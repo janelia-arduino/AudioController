@@ -26,11 +26,13 @@ License:
 
 ```json
 {
-  "id":"getApi",
-  "result":{
-    "firmware":["AudioController"],
-    "verbosity":"NAMES",
-    "functions":[
+  "id": "getApi",
+  "result": {
+    "firmware": [
+      "AudioController"
+    ],
+    "verbosity": "NAMES",
+    "functions": [
       "getAudioMemoryUsage",
       "getAudioMemoryUsageMax",
       "resetAudioMemoryUsageMax",
@@ -68,7 +70,7 @@ License:
       "stopAllPwm",
       "isPulsing"
     ],
-    "parameters":[
+    "parameters": [
       "audio_path",
       "frequency",
       "speaker",
@@ -80,7 +82,7 @@ License:
       "volume",
       "bandwidth"
     ],
-    "properties":[
+    "properties": [
       "volume"
     ]
   }

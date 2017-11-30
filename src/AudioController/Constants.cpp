@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
     .name_ptr=&firmware_name,
     .version_major=2,
     .version_minor=0,
-    .version_patch=3,
+    .version_patch=4,
   };
 
 CONSTANT_STRING(hardware_name,"audio_controller");
