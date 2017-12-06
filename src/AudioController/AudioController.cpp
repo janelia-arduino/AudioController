@@ -58,6 +58,9 @@ void AudioController::setup()
   // Parent Setup
   ModularDeviceBase::setup();
 
+  // Reset Watchdog
+  resetWatchdog();
+
   // Audio Setup
   // Audio connections require memory to work.  For more
   // detailed information, see the MemoryAndCpuUsage example

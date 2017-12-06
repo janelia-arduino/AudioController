@@ -12,6 +12,7 @@
 #include <Functor.h>
 #include <IndexedContainer.h>
 #include <FunctorCallbacks.h>
+#include <Watchdog.h>
 
 #include <EventController.h>
 
