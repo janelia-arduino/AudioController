@@ -66,7 +66,7 @@ struct PulseInfo
 {
   size_t frequency;
   double bandwidth;
-  ConstantString * speaker_ptr;
+  const ConstantString * speaker_ptr;
   long volume;
   EventIdPair event_id_pair;
 };

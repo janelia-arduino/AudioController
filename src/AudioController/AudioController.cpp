@@ -436,7 +436,7 @@ bool AudioController::playPath(const char * path)
 }
 
 void AudioController::playTone(const size_t frequency,
-                               ConstantString * const speaker_ptr)
+                               const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -444,7 +444,7 @@ void AudioController::playTone(const size_t frequency,
 }
 
 void AudioController::playToneAt(const size_t frequency,
-                                 ConstantString * const speaker_ptr,
+                                 const ConstantString * const speaker_ptr,
                                  const long volume)
 {
   stop();
@@ -469,14 +469,14 @@ void AudioController::playToneAt(const size_t frequency,
   playing_ = true;
 }
 
-void AudioController::playNoise(ConstantString * const speaker_ptr)
+void AudioController::playNoise(const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   playNoiseAt(speaker_ptr,volume);
 }
 
-void AudioController::playNoiseAt(ConstantString * const speaker_ptr,
+void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
                                   const long volume)
 {
   stop();
@@ -501,7 +501,7 @@ void AudioController::playNoiseAt(ConstantString * const speaker_ptr,
 
 void AudioController::playFilteredNoise(const size_t frequency,
                                         const double bandwidth,
-                                        ConstantString * const speaker_ptr)
+                                        const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -510,7 +510,7 @@ void AudioController::playFilteredNoise(const size_t frequency,
 
 void AudioController::playFilteredNoiseAt(const size_t frequency,
                                           const double bandwidth,
-                                          ConstantString * const speaker_ptr,
+                                          const ConstantString * const speaker_ptr,
                                           const long volume)
 {
   stop();
@@ -679,7 +679,7 @@ bool AudioController::pathIsAudio(const char * path)
 }
 
 int AudioController::addTonePwm(const size_t frequency,
-                                ConstantString * const speaker_ptr,
+                                const ConstantString * const speaker_ptr,
                                 const long delay,
                                 const long period,
                                 const long on_duration,
@@ -691,7 +691,7 @@ int AudioController::addTonePwm(const size_t frequency,
 }
 
 int AudioController::addTonePwmAt(const size_t frequency,
-                                  ConstantString * const speaker_ptr,
+                                  const ConstantString * const speaker_ptr,
                                   const long volume,
                                   const long delay,
                                   const long period,
@@ -722,7 +722,7 @@ int AudioController::addTonePwmAt(const size_t frequency,
 }
 
 int AudioController::startTonePwm(const size_t frequency,
-                                  ConstantString * const speaker_ptr,
+                                  const ConstantString * const speaker_ptr,
                                   const long delay,
                                   const long period,
                                   const long on_duration)
@@ -733,7 +733,7 @@ int AudioController::startTonePwm(const size_t frequency,
 }
 
 int AudioController::startTonePwmAt(const size_t frequency,
-                                    ConstantString * const speaker_ptr,
+                                    const ConstantString * const speaker_ptr,
                                     const long volume,
                                     const long delay,
                                     const long period,
@@ -761,7 +761,7 @@ int AudioController::startTonePwmAt(const size_t frequency,
   return index;
 }
 
-int AudioController::addNoisePwm(ConstantString * const speaker_ptr,
+int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
                                  const long delay,
                                  const long period,
                                  const long on_duration,
@@ -772,7 +772,7 @@ int AudioController::addNoisePwm(ConstantString * const speaker_ptr,
   return addNoisePwmAt(speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addNoisePwmAt(ConstantString * const speaker_ptr,
+int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
                                    const long volume,
                                    const long delay,
                                    const long period,
@@ -801,7 +801,7 @@ int AudioController::addNoisePwmAt(ConstantString * const speaker_ptr,
   return index;
 }
 
-int AudioController::startNoisePwm(ConstantString * const speaker_ptr,
+int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
                                    const long delay,
                                    const long period,
                                    const long on_duration)
@@ -811,7 +811,7 @@ int AudioController::startNoisePwm(ConstantString * const speaker_ptr,
   return startNoisePwmAt(speaker_ptr,volume,delay,period,on_duration);
 }
 
-int AudioController::startNoisePwmAt(ConstantString * const speaker_ptr,
+int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
                                      const long volume,
                                      const long delay,
                                      const long period,
@@ -840,7 +840,7 @@ int AudioController::startNoisePwmAt(ConstantString * const speaker_ptr,
 
 int AudioController::addFilteredNoisePwm(const size_t frequency,
                                          const double bandwidth,
-                                         ConstantString * const speaker_ptr,
+                                         const ConstantString * const speaker_ptr,
                                          const long delay,
                                          const long period,
                                          const long on_duration,
@@ -853,7 +853,7 @@ int AudioController::addFilteredNoisePwm(const size_t frequency,
 
 int AudioController::addFilteredNoisePwmAt(const size_t frequency,
                                            const double bandwidth,
-                                           ConstantString * const speaker_ptr,
+                                           const ConstantString * const speaker_ptr,
                                            const long volume,
                                            const long delay,
                                            const long period,
@@ -886,7 +886,7 @@ int AudioController::addFilteredNoisePwmAt(const size_t frequency,
 
 int AudioController::startFilteredNoisePwm(const size_t frequency,
                                            const double bandwidth,
-                                           ConstantString * const speaker_ptr,
+                                           const ConstantString * const speaker_ptr,
                                            const long delay,
                                            const long period,
                                            const long on_duration)
@@ -898,7 +898,7 @@ int AudioController::startFilteredNoisePwm(const size_t frequency,
 
 int AudioController::startFilteredNoisePwmAt(const size_t frequency,
                                              const double bandwidth,
-                                             ConstantString * const speaker_ptr,
+                                             const ConstantString * const speaker_ptr,
                                              const long volume,
                                              const long delay,
                                              const long period,
@@ -1029,22 +1029,6 @@ void AudioController::addDirectoryToResponse(File dir, const char * pwd)
       addDirectoryToResponse(entry,full_path);
     }
     entry.close();
-  }
-}
-
-ConstantString * const AudioController::stringToSpeakerPtr(const char * string)
-{
-  if (string == constants::speaker_left)
-  {
-    return &constants::speaker_left;
-  }
-  else if (string == constants::speaker_right)
-  {
-    return &constants::speaker_right;
-  }
-  else
-  {
-    return &constants::speaker_all;
   }
 }
 
@@ -1198,9 +1182,8 @@ void AudioController::playToneHandler()
   }
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   playTone(frequency,speaker_ptr);
 }
 
@@ -1214,9 +1197,8 @@ void AudioController::playToneAtHandler()
   }
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   playToneAt(frequency,speaker_ptr,volume);
@@ -1230,9 +1212,8 @@ void AudioController::playNoiseHandler()
     response.returnError("No audio codec chip detected.");
     return;
   }
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   playNoise(speaker_ptr);
 }
 
@@ -1244,9 +1225,8 @@ void AudioController::playNoiseAtHandler()
     response.returnError("No audio codec chip detected.");
     return;
   }
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   playNoiseAt(speaker_ptr,volume);
@@ -1264,9 +1244,8 @@ void AudioController::playFilteredNoiseHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   playFilteredNoise(frequency,bandwidth,speaker_ptr);
 }
 
@@ -1282,9 +1261,8 @@ void AudioController::playFilteredNoiseAtHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
@@ -1329,9 +1307,8 @@ void AudioController::addTonePwmHandler()
 {
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1355,9 +1332,8 @@ void AudioController::addTonePwmAtHandler()
 {
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1383,9 +1359,8 @@ void AudioController::startTonePwmHandler()
 {
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1407,9 +1382,8 @@ void AudioController::startTonePwmAtHandler()
 {
   long frequency;
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1431,9 +1405,8 @@ void AudioController::startTonePwmAtHandler()
 
 void AudioController::addNoisePwmHandler()
 {
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1455,9 +1428,8 @@ void AudioController::addNoisePwmHandler()
 
 void AudioController::addNoisePwmAtHandler()
 {
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1481,9 +1453,8 @@ void AudioController::addNoisePwmAtHandler()
 
 void AudioController::startNoisePwmHandler()
 {
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1503,9 +1474,8 @@ void AudioController::startNoisePwmHandler()
 
 void AudioController::startNoisePwmAtHandler()
 {
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1531,9 +1501,8 @@ void AudioController::addFilteredNoisePwmHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1559,9 +1528,8 @@ void AudioController::addFilteredNoisePwmAtHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1589,9 +1557,8 @@ void AudioController::startFilteredNoisePwmHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long delay;
   modular_server_.parameter(constants::delay_parameter_name).getValue(delay);
   long period;
@@ -1615,9 +1582,8 @@ void AudioController::startFilteredNoisePwmAtHandler()
   modular_server_.parameter(constants::frequency_parameter_name).getValue(frequency);
   double bandwidth;
   modular_server_.parameter(constants::bandwidth_parameter_name).getValue(bandwidth);
-  const char * speaker_str;
-  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_str);
-  ConstantString * speaker_ptr = stringToSpeakerPtr(speaker_str);
+  const ConstantString * speaker_ptr;
+  modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
   long delay;
@@ -1658,14 +1624,14 @@ void AudioController::isPulsingHandler()
 void AudioController::playToneHandler(int index)
 {
   size_t frequency = indexed_pulses_[index].frequency;
-  ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
+  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
   long volume = indexed_pulses_[index].volume;
   playToneAt(frequency,speaker_ptr,volume);
 }
 
 void AudioController::playNoiseHandler(int index)
 {
-  ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
+  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
   long volume = indexed_pulses_[index].volume;
   playNoiseAt(speaker_ptr,volume);
 }
@@ -1674,7 +1640,7 @@ void AudioController::playFilteredNoiseHandler(int index)
 {
   size_t frequency = indexed_pulses_[index].frequency;
   double bandwidth = indexed_pulses_[index].bandwidth;
-  ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
+  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
   long volume = indexed_pulses_[index].volume;
   playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
 }
