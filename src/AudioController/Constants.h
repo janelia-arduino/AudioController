@@ -41,12 +41,12 @@ extern const char * const audio_ext_raw;
 extern const char * const audio_ext_wav;
 extern const char * const audio_exts[AUDIO_EXT_COUNT];
 enum audio_t
-  {
-    RAW_TYPE,
-    WAV_TYPE,
-    TONE_TYPE,
-    NOISE_TYPE,
-  };
+{
+  RAW_TYPE,
+  WAV_TYPE,
+  TONE_TYPE,
+  NOISE_TYPE,
+};
 
 extern const size_t pcb_speaker_enable_pin;
 
@@ -84,7 +84,7 @@ extern const int pcb_speaker_reference;
 extern const double pcb_speaker_channel_gain;
 extern const double pcb_speaker_pre_gain;
 
-// Interrupts
+// Pins
 
 // Units
 extern ConstantString ms_units;

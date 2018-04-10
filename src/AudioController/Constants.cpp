@@ -17,12 +17,12 @@ CONSTANT_STRING(device_name,"audio_controller");
 CONSTANT_STRING(firmware_name,"AudioController");
 // Use semantic versioning http://semver.org/
 const modular_server::FirmwareInfo firmware_info =
-  {
-    .name_ptr=&firmware_name,
-    .version_major=2,
-    .version_minor=0,
-    .version_patch=5,
-  };
+{
+  .name_ptr=&firmware_name,
+  .version_major=2,
+  .version_minor=0,
+  .version_patch=5,
+};
 
 CONSTANT_STRING(hardware_name,"audio_controller");
 
@@ -46,7 +46,7 @@ const int pcb_speaker_reference = INTERNAL;
 const double pcb_speaker_channel_gain = 0.5;
 const double pcb_speaker_pre_gain = 0.5;
 
-// Interrupts
+// Pins
 
 // Units
 CONSTANT_STRING(ms_units,"ms");
@@ -80,11 +80,11 @@ CONSTANT_STRING(speaker_all,"ALL");
 CONSTANT_STRING(speaker_left,"LEFT");
 CONSTANT_STRING(speaker_right,"RIGHT");
 modular_server::SubsetMemberType speaker_subset[SPEAKER_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&speaker_all},
-    {.cs_ptr=&speaker_left},
-    {.cs_ptr=&speaker_right},
-  };
+{
+  {.cs_ptr=&speaker_all},
+  {.cs_ptr=&speaker_left},
+  {.cs_ptr=&speaker_right},
+};
 
 CONSTANT_STRING(delay_parameter_name,"delay");
 const long delay_min = 0;
