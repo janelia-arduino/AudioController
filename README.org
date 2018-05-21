@@ -3,98 +3,106 @@
 #+EMAIL: peterpolidoro@gmail.com
 
 * Library Information
-  - Author :: Peter Polidoro
+  - Name :: AudioController
+  - Version :: 2.0.5
   - License :: BSD
+  - URL :: https://github.com/janelia-arduino/AudioController
+  - Author :: Peter Polidoro
+  - Email :: peterpolidoro@gmail.com
+
+** Description
+
+   Modular device audio controller library.
+
+* API NAMES
+
+  #+BEGIN_SRC js
+    {
+      "id": "getApi",
+      "result": {
+        "firmware": [
+          "AudioController"
+        ],
+        "verbosity": "NAMES",
+        "functions": [
+          "getAudioMemoryUsage",
+          "getAudioMemoryUsageMax",
+          "resetAudioMemoryUsageMax",
+          "getAudioProcessorUsage",
+          "getAudioProcessorUsageMax",
+          "resetAudioProcessorUsageMax",
+          "getSDCardInfo",
+          "getAudioPaths",
+          "playPath",
+          "playTone",
+          "playToneAt",
+          "playNoise",
+          "playNoiseAt",
+          "playFilteredNoise",
+          "playFilteredNoiseAt",
+          "stop",
+          "isPlaying",
+          "getLastAudioPathPlayed",
+          "getPosition",
+          "getLength",
+          "getPercentComplete",
+          "addTonePwm",
+          "addTonePwmAt",
+          "startTonePwm",
+          "startTonePwmAt",
+          "addNoisePwm",
+          "addNoisePwmAt",
+          "startNoisePwm",
+          "startNoisePwmAt",
+          "addFilteredNoisePwm",
+          "addFilteredNoisePwmAt",
+          "startFilteredNoisePwm",
+          "startFilteredNoisePwmAt",
+          "stopPwm",
+          "stopAllPwm",
+          "isPulsing"
+        ],
+        "parameters": [
+          "audio_path",
+          "frequency",
+          "speaker",
+          "delay",
+          "period",
+          "on_duration",
+          "count",
+          "pwm_index",
+          "volume",
+          "bandwidth"
+        ],
+        "properties": [
+          "volume"
+        ]
+      }
+    }
+  #+END_SRC
+
+* API GENERAL
+
+  [[./api/]]
 
 * Ancestors
 
-  [[https://github.com/janelia-arduino/ModularServer][ModularServer]]
+  [[https://github.com/janelia-arduino/ModularServer]]
 
-  [[https://github.com/janelia-arduino/ModularDeviceBase][ModularDeviceBase]]
+  [[https://github.com/janelia-arduino/ModularDeviceBase]]
 
 * Clients
 
 * Devices
 
-  [[https://github.com/janelia-modular-devices/modular_device_base.git][modular_device_base]]
+  [[https://github.com/janelia-modular-devices/modular_device_base.git]]
 
-  [[https://github.com/janelia-modular-devices/audio_controller.git][audio_controller]]
-
-* API NAMES
-
-  #+BEGIN_SRC js
-{
-  "id": "getApi",
-  "result": {
-    "firmware": [
-      "AudioController"
-    ],
-    "verbosity": "NAMES",
-    "functions": [
-      "getAudioMemoryUsage",
-      "getAudioMemoryUsageMax",
-      "resetAudioMemoryUsageMax",
-      "getAudioProcessorUsage",
-      "getAudioProcessorUsageMax",
-      "resetAudioProcessorUsageMax",
-      "getSDCardInfo",
-      "getAudioPaths",
-      "playPath",
-      "playTone",
-      "playToneAt",
-      "playNoise",
-      "playNoiseAt",
-      "playFilteredNoise",
-      "playFilteredNoiseAt",
-      "stop",
-      "isPlaying",
-      "getLastAudioPathPlayed",
-      "getPosition",
-      "getLength",
-      "getPercentComplete",
-      "addTonePwm",
-      "addTonePwmAt",
-      "startTonePwm",
-      "startTonePwmAt",
-      "addNoisePwm",
-      "addNoisePwmAt",
-      "startNoisePwm",
-      "startNoisePwmAt",
-      "addFilteredNoisePwm",
-      "addFilteredNoisePwmAt",
-      "startFilteredNoisePwm",
-      "startFilteredNoisePwmAt",
-      "stopPwm",
-      "stopAllPwm",
-      "isPulsing"
-    ],
-    "parameters": [
-      "audio_path",
-      "frequency",
-      "speaker",
-      "delay",
-      "period",
-      "on_duration",
-      "count",
-      "pwm_index",
-      "volume",
-      "bandwidth"
-    ],
-    "properties": [
-      "volume"
-    ]
-  }
-}
-  #+END_SRC
-
-* API GENERAL
-
-  [[./api/][API GENERAL]]
+  [[https://github.com/janelia-modular-devices/audio_controller.git]]
 
 * More Detailed Modular Device Information
 
-  [[https://github.com/janelia-modular-devices/modular-devices][modular-devices]]
+  [[https://github.com/janelia-modular-devices/modular-devices]]
 
-* Library Dependencies
+* Installation Instructions
 
-  [[https://github.com/janelia-arduino/arduino-libraries][arduino-libraries]]
+  [[https://github.com/janelia-arduino/arduino-libraries]]
