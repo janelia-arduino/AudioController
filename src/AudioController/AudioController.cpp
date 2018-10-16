@@ -435,7 +435,7 @@ bool AudioController::playPath(const char * path)
   return playing;
 }
 
-void AudioController::playTone(const size_t frequency,
+void AudioController::playTone(size_t frequency,
   const ConstantString * const speaker_ptr)
 {
   long volume;
@@ -443,9 +443,9 @@ void AudioController::playTone(const size_t frequency,
   playToneAt(frequency,speaker_ptr,volume);
 }
 
-void AudioController::playToneAt(const size_t frequency,
+void AudioController::playToneAt(size_t frequency,
   const ConstantString * const speaker_ptr,
-  const long volume)
+  long volume)
 {
   stop();
   if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
@@ -477,7 +477,7 @@ void AudioController::playNoise(const ConstantString * const speaker_ptr)
 }
 
 void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
-  const long volume)
+  long volume)
 {
   stop();
   if (volume <= 0)
@@ -499,8 +499,8 @@ void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
   playing_ = true;
 }
 
-void AudioController::playFilteredNoise(const size_t frequency,
-  const double bandwidth,
+void AudioController::playFilteredNoise(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr)
 {
   long volume;
@@ -508,10 +508,10 @@ void AudioController::playFilteredNoise(const size_t frequency,
   playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
 }
 
-void AudioController::playFilteredNoiseAt(const size_t frequency,
-  const double bandwidth,
+void AudioController::playFilteredNoiseAt(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr,
-  const long volume)
+  long volume)
 {
   stop();
   if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
@@ -678,25 +678,25 @@ bool AudioController::pathIsAudio(const char * path)
   return audio_path;
 }
 
-int AudioController::addTonePwm(const size_t frequency,
+int AudioController::addTonePwm(size_t frequency,
   const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return addTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addTonePwmAt(const size_t frequency,
+int AudioController::addTonePwmAt(size_t frequency,
   const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long volume,
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   if (indexed_pulses_.full())
   {
@@ -721,23 +721,23 @@ int AudioController::addTonePwmAt(const size_t frequency,
   return index;
 }
 
-int AudioController::startTonePwm(const size_t frequency,
+int AudioController::startTonePwm(size_t frequency,
   const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long delay,
+  long period,
+  long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return startTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration);
 }
 
-int AudioController::startTonePwmAt(const size_t frequency,
+int AudioController::startTonePwmAt(size_t frequency,
   const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long volume,
+  long delay,
+  long period,
+  long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -762,10 +762,10 @@ int AudioController::startTonePwmAt(const size_t frequency,
 }
 
 int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -773,11 +773,11 @@ int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long volume,
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   if (indexed_pulses_.full())
   {
@@ -802,9 +802,9 @@ int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long delay,
+  long period,
+  long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -812,10 +812,10 @@ int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long volume,
+  long delay,
+  long period,
+  long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -838,27 +838,27 @@ int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
   return index;
 }
 
-int AudioController::addFilteredNoisePwm(const size_t frequency,
-  const double bandwidth,
+int AudioController::addFilteredNoisePwm(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return addFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addFilteredNoisePwmAt(const size_t frequency,
-  const double bandwidth,
+int AudioController::addFilteredNoisePwmAt(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration,
-  const long count)
+  long volume,
+  long delay,
+  long period,
+  long on_duration,
+  long count)
 {
   if (indexed_pulses_.full())
   {
@@ -884,25 +884,25 @@ int AudioController::addFilteredNoisePwmAt(const size_t frequency,
   return index;
 }
 
-int AudioController::startFilteredNoisePwm(const size_t frequency,
-  const double bandwidth,
+int AudioController::startFilteredNoisePwm(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long delay,
+  long period,
+  long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return startFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration);
 }
 
-int AudioController::startFilteredNoisePwmAt(const size_t frequency,
-  const double bandwidth,
+int AudioController::startFilteredNoisePwmAt(size_t frequency,
+  double bandwidth,
   const ConstantString * const speaker_ptr,
-  const long volume,
-  const long delay,
-  const long period,
-  const long on_duration)
+  long volume,
+  long delay,
+  long period,
+  long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -927,7 +927,7 @@ int AudioController::startFilteredNoisePwmAt(const size_t frequency,
   return index;
 }
 
-void AudioController::stopPwm(const int pwm_index)
+void AudioController::stopPwm(int pwm_index)
 {
   if (pwm_index < 0)
   {
@@ -955,8 +955,8 @@ bool AudioController::isPulsing()
 
 void AudioController::enableAudioCodec()
 {
-  pinMode(SDA, INPUT);
-  pinMode(SCL, INPUT);
+  pinMode(SDA,INPUT);
+  pinMode(SCL,INPUT);
   if (digitalRead(SDA) && digitalRead(SCL))
   {
     // This may wait forever if the SDA & SCL pins lack
@@ -994,7 +994,8 @@ void AudioController::updatePlaying()
   }
 }
 
-void AudioController::addDirectoryToResponse(File dir, const char * pwd)
+void AudioController::addDirectoryToResponse(File dir,
+  const char * pwd)
 {
   while (true)
   {
@@ -1032,7 +1033,7 @@ void AudioController::addDirectoryToResponse(File dir, const char * pwd)
   }
 }
 
-void AudioController::setVolume(const long volume)
+void AudioController::setVolume(long volume)
 {
   double stereo_speaker_gain;
   modular_server_.property(constants::stereo_speaker_gain_property_name).getValue(stereo_speaker_gain);
