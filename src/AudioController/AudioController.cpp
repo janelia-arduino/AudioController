@@ -86,16 +86,16 @@ void AudioController::setup()
 
   // Add Hardware
   modular_server_.addHardware(constants::hardware_info,
-                              pins_);
+    pins_);
 
   // Pins
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
-                              properties_,
-                              parameters_,
-                              functions_,
-                              callbacks_);
+    properties_,
+    parameters_,
+    functions_,
+    callbacks_);
 
   // Properties
   modular_server::Property & volume_property = modular_server_.createProperty(constants::volume_property_name,constants::volume_default);
@@ -436,7 +436,7 @@ bool AudioController::playPath(const char * path)
 }
 
 void AudioController::playTone(const size_t frequency,
-                               const ConstantString * const speaker_ptr)
+  const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -444,8 +444,8 @@ void AudioController::playTone(const size_t frequency,
 }
 
 void AudioController::playToneAt(const size_t frequency,
-                                 const ConstantString * const speaker_ptr,
-                                 const long volume)
+  const ConstantString * const speaker_ptr,
+  const long volume)
 {
   stop();
   if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
@@ -477,7 +477,7 @@ void AudioController::playNoise(const ConstantString * const speaker_ptr)
 }
 
 void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
-                                  const long volume)
+  const long volume)
 {
   stop();
   if (volume <= 0)
@@ -500,8 +500,8 @@ void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
 }
 
 void AudioController::playFilteredNoise(const size_t frequency,
-                                        const double bandwidth,
-                                        const ConstantString * const speaker_ptr)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -509,9 +509,9 @@ void AudioController::playFilteredNoise(const size_t frequency,
 }
 
 void AudioController::playFilteredNoiseAt(const size_t frequency,
-                                          const double bandwidth,
-                                          const ConstantString * const speaker_ptr,
-                                          const long volume)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr,
+  const long volume)
 {
   stop();
   if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
@@ -679,11 +679,11 @@ bool AudioController::pathIsAudio(const char * path)
 }
 
 int AudioController::addTonePwm(const size_t frequency,
-                                const ConstantString * const speaker_ptr,
-                                const long delay,
-                                const long period,
-                                const long on_duration,
-                                const long count)
+  const ConstantString * const speaker_ptr,
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -691,12 +691,12 @@ int AudioController::addTonePwm(const size_t frequency,
 }
 
 int AudioController::addTonePwmAt(const size_t frequency,
-                                  const ConstantString * const speaker_ptr,
-                                  const long volume,
-                                  const long delay,
-                                  const long period,
-                                  const long on_duration,
-                                  const long count)
+  const ConstantString * const speaker_ptr,
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   if (indexed_pulses_.full())
   {
@@ -708,12 +708,12 @@ int AudioController::addTonePwmAt(const size_t frequency,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
-                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                 delay,
-                                                                 period,
-                                                                 on_duration,
-                                                                 count,
-                                                                 index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    count,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
@@ -722,10 +722,10 @@ int AudioController::addTonePwmAt(const size_t frequency,
 }
 
 int AudioController::startTonePwm(const size_t frequency,
-                                  const ConstantString * const speaker_ptr,
-                                  const long delay,
-                                  const long period,
-                                  const long on_duration)
+  const ConstantString * const speaker_ptr,
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -733,11 +733,11 @@ int AudioController::startTonePwm(const size_t frequency,
 }
 
 int AudioController::startTonePwmAt(const size_t frequency,
-                                    const ConstantString * const speaker_ptr,
-                                    const long volume,
-                                    const long delay,
-                                    const long period,
-                                    const long on_duration)
+  const ConstantString * const speaker_ptr,
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -749,11 +749,11 @@ int AudioController::startTonePwmAt(const size_t frequency,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
-                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                         delay,
-                                                                         period,
-                                                                         on_duration,
-                                                                         index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
@@ -762,10 +762,10 @@ int AudioController::startTonePwmAt(const size_t frequency,
 }
 
 int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
-                                 const long delay,
-                                 const long period,
-                                 const long on_duration,
-                                 const long count)
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -773,11 +773,11 @@ int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
-                                   const long volume,
-                                   const long delay,
-                                   const long period,
-                                   const long on_duration,
-                                   const long count)
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   if (indexed_pulses_.full())
   {
@@ -788,12 +788,12 @@ int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
-                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                 delay,
-                                                                 period,
-                                                                 on_duration,
-                                                                 count,
-                                                                 index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    count,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
@@ -802,9 +802,9 @@ int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
-                                   const long delay,
-                                   const long period,
-                                   const long on_duration)
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -812,10 +812,10 @@ int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
-                                     const long volume,
-                                     const long delay,
-                                     const long period,
-                                     const long on_duration)
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -826,11 +826,11 @@ int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
-                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                         delay,
-                                                                         period,
-                                                                         on_duration,
-                                                                         index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
@@ -839,12 +839,12 @@ int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
 }
 
 int AudioController::addFilteredNoisePwm(const size_t frequency,
-                                         const double bandwidth,
-                                         const ConstantString * const speaker_ptr,
-                                         const long delay,
-                                         const long period,
-                                         const long on_duration,
-                                         const long count)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr,
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -852,13 +852,13 @@ int AudioController::addFilteredNoisePwm(const size_t frequency,
 }
 
 int AudioController::addFilteredNoisePwmAt(const size_t frequency,
-                                           const double bandwidth,
-                                           const ConstantString * const speaker_ptr,
-                                           const long volume,
-                                           const long delay,
-                                           const long period,
-                                           const long on_duration,
-                                           const long count)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr,
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration,
+  const long count)
 {
   if (indexed_pulses_.full())
   {
@@ -871,12 +871,12 @@ int AudioController::addFilteredNoisePwmAt(const size_t frequency,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
-                                                                 makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                 delay,
-                                                                 period,
-                                                                 on_duration,
-                                                                 count,
-                                                                 index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    count,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
@@ -885,11 +885,11 @@ int AudioController::addFilteredNoisePwmAt(const size_t frequency,
 }
 
 int AudioController::startFilteredNoisePwm(const size_t frequency,
-                                           const double bandwidth,
-                                           const ConstantString * const speaker_ptr,
-                                           const long delay,
-                                           const long period,
-                                           const long on_duration)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr,
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
@@ -897,12 +897,12 @@ int AudioController::startFilteredNoisePwm(const size_t frequency,
 }
 
 int AudioController::startFilteredNoisePwmAt(const size_t frequency,
-                                             const double bandwidth,
-                                             const ConstantString * const speaker_ptr,
-                                             const long volume,
-                                             const long delay,
-                                             const long period,
-                                             const long on_duration)
+  const double bandwidth,
+  const ConstantString * const speaker_ptr,
+  const long volume,
+  const long delay,
+  const long period,
+  const long on_duration)
 {
   if (indexed_pulses_.full())
   {
@@ -915,11 +915,11 @@ int AudioController::startFilteredNoisePwmAt(const size_t frequency,
   pulse_info.volume = volume;
   int index = indexed_pulses_.add(pulse_info);
   EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
-                                                                         makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-                                                                         delay,
-                                                                         period,
-                                                                         on_duration,
-                                                                         index);
+    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
+    delay,
+    period,
+    on_duration,
+    index);
   event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
   event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
   indexed_pulses_[index].event_id_pair = event_id_pair;
