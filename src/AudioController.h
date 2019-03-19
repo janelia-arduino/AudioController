@@ -163,6 +163,7 @@ private:
   void addDirectoryToResponse(File dir,
     const char * pwd);
   void setVolume(long volume);
+  void setPlaying(bool playing);
 
   // Handlers
   void setVolumeHandler();

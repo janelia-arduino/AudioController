@@ -18,7 +18,7 @@ namespace audio_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=3};
+enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=10};
 enum{FUNCTION_COUNT_MAX=36};
 enum{CALLBACK_COUNT_MAX=1};
@@ -106,6 +106,14 @@ extern const double stereo_speaker_gain_default;
 
 extern ConstantString pcb_speaker_gain_property_name;
 extern const double pcb_speaker_gain_default;
+
+extern ConstantString playing_signal_property_name;
+enum{PLAYING_SIGNAL_SUBSET_LENGTH=3};
+extern ConstantString playing_signal_bnc_a;
+extern ConstantString playing_signal_bnc_b;
+extern ConstantString playing_signal_both;
+extern modular_server::SubsetMemberType playing_signal_subset[PLAYING_SIGNAL_SUBSET_LENGTH];
+extern const ConstantString * const playing_signal_ptr_default;
 
 // Parameters
 extern ConstantString audio_path_parameter_name;

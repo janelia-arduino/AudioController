@@ -20,8 +20,8 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=2,
-  .version_minor=0,
-  .version_patch=5,
+  .version_minor=1,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"audio_controller");
@@ -67,6 +67,18 @@ const double stereo_speaker_gain_default = 1.0;
 
 CONSTANT_STRING(pcb_speaker_gain_property_name,"pcbSpeakerGain");
 const double pcb_speaker_gain_default = 1.0;
+
+CONSTANT_STRING(playing_signal_property_name,"playingSignal");
+CONSTANT_STRING(playing_signal_bnc_a,"BNC_A");
+CONSTANT_STRING(playing_signal_bnc_b,"BNC_B");
+CONSTANT_STRING(playing_signal_both,"BOTH");
+modular_server::SubsetMemberType playing_signal_subset[PLAYING_SIGNAL_SUBSET_LENGTH] =
+{
+  {.cs_ptr=&playing_signal_bnc_a},
+  {.cs_ptr=&playing_signal_bnc_b},
+  {.cs_ptr=&playing_signal_both},
+};
+const ConstantString * const playing_signal_ptr_default = &playing_signal_bnc_a;
 
 // Parameters
 CONSTANT_STRING(audio_path_parameter_name,"audio_path");

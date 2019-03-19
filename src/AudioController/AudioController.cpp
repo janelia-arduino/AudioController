@@ -89,6 +89,13 @@ void AudioController::setup()
     pins_);
 
   // Pins
+  modular_server::Pin & bnc_a_pin = modular_server_.pin(modular_device_base::constants::bnc_a_pin_name);
+  bnc_a_pin.setModeDigitalOutput();
+  bnc_a_pin.setValue(LOW);
+
+  modular_server::Pin & bnc_b_pin = modular_server_.pin(modular_device_base::constants::bnc_b_pin_name);
+  bnc_b_pin.setModeDigitalOutput();
+  bnc_b_pin.setValue(LOW);
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
@@ -112,6 +119,9 @@ void AudioController::setup()
   pcb_speaker_gain_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
 
   setVolumeHandler();
+
+  modular_server::Property & playing_signal_property = modular_server_.createProperty(constants::playing_signal_property_name,constants::playing_signal_ptr_default);
+  playing_signal_property.setSubset(constants::playing_signal_subset);
 
   // Parameters
   modular_server::Parameter & audio_path_parameter = modular_server_.createParameter(constants::audio_path_parameter_name);
@@ -426,7 +436,7 @@ bool AudioController::playPath(const char * path)
     }
   }
 
-  playing_ = playing;
+  setPlaying(playing);
   if (playing)
   {
     path_played_[0] = 0;
@@ -466,7 +476,8 @@ void AudioController::playToneAt(size_t frequency,
     g_tone_right.amplitude(1);
   }
   setVolume(volume);
-  playing_ = true;
+  setPlaying(true);
+
 }
 
 void AudioController::playNoise(const ConstantString * const speaker_ptr)
@@ -496,7 +507,8 @@ void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
     g_noise_right.amplitude(1);
   }
   setVolume(volume);
-  playing_ = true;
+  setPlaying(true);
+
 }
 
 void AudioController::playFilteredNoise(size_t frequency,
@@ -530,7 +542,7 @@ void AudioController::playFilteredNoiseAt(size_t frequency,
     g_noise_right.amplitude(1);
   }
   setVolume(volume);
-  playing_ = true;
+  setPlaying(true);
 }
 
 void AudioController::stop()
@@ -560,7 +572,7 @@ void AudioController::stop()
         g_noise_right.amplitude(0);
       }
     }
-    playing_ = false;
+    setPlaying(false);
   }
 }
 
@@ -974,12 +986,12 @@ void AudioController::updatePlaying()
     {
       case constants::RAW_TYPE:
       {
-        playing_ = g_play_sd_raw.isPlaying();
+        setPlaying(g_play_sd_raw.isPlaying());
         break;
       }
       case constants::WAV_TYPE:
       {
-        playing_ = g_play_sd_wav.isPlaying();
+        setPlaying(g_play_sd_wav.isPlaying());
         break;
       }
       case constants::TONE_TYPE:
@@ -1049,6 +1061,39 @@ void AudioController::setVolume(long volume)
   double pcb_speaker_total_gain = (constants::pcb_speaker_channel_gain*constants::pcb_speaker_pre_gain*(double)volume*pcb_speaker_gain)/100.0;
   g_mixer_dac.gain(0,pcb_speaker_total_gain);
   g_mixer_dac.gain(1,pcb_speaker_total_gain);
+}
+
+void AudioController::setPlaying(bool playing)
+{
+  playing_ = playing;
+
+  modular_server::Pin & bnc_a_pin = modular_server_.pin(modular_device_base::constants::bnc_a_pin_name);
+  modular_server::Pin & bnc_b_pin = modular_server_.pin(modular_device_base::constants::bnc_b_pin_name);
+
+  const ConstantString * playing_signal_ptr;
+  modular_server_.property(constants::playing_signal_property_name).getValue(playing_signal_ptr);
+
+  if (playing)
+  {
+    if (playing_signal_ptr == &constants::playing_signal_both)
+    {
+      bnc_a_pin.setValue(HIGH);
+      bnc_b_pin.setValue(HIGH);
+    }
+    if (playing_signal_ptr == &constants::playing_signal_bnc_b)
+    {
+      bnc_b_pin.setValue(HIGH);
+    }
+    else
+    {
+      bnc_a_pin.setValue(HIGH);
+    }
+  }
+  else
+  {
+    bnc_a_pin.setValue(LOW);
+    bnc_b_pin.setValue(LOW);
+  }
 }
 
 // Handlers must be non-blocking (avoid 'delay')

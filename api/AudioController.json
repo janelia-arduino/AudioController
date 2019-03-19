@@ -398,6 +398,123 @@
             "type": "long"
           }
         ]
+      },
+      {
+        "name": "stereoSpeakerGain",
+        "type": "double",
+        "functions": [
+          {
+            "name": "getValue",
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "setValue",
+            "parameters": [
+              "value"
+            ],
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "getDefaultValue",
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "setValueToDefault",
+            "result_info": {
+              "type": "double"
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "double"
+          }
+        ]
+      },
+      {
+        "name": "pcbSpeakerGain",
+        "type": "double",
+        "functions": [
+          {
+            "name": "getValue",
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "setValue",
+            "parameters": [
+              "value"
+            ],
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "getDefaultValue",
+            "result_info": {
+              "type": "double"
+            }
+          },
+          {
+            "name": "setValueToDefault",
+            "result_info": {
+              "type": "double"
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "double"
+          }
+        ]
+      },
+      {
+        "name": "playingSignal",
+        "type": "string",
+        "functions": [
+          {
+            "name": "getValue",
+            "result_info": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "setValue",
+            "parameters": [
+              "value"
+            ],
+            "result_info": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "getDefaultValue",
+            "result_info": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "setValueToDefault",
+            "result_info": {
+              "type": "string"
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "string"
+          }
+        ]
       }
     ]
   }
