@@ -3,7 +3,7 @@
 //
 //
 // Authors:
-// Peter Polidoro peterpolidoro@gmail.com
+// Peter Polidoro peter@polidoro.io
 // ----------------------------------------------------------------------------
 #ifndef AUDIO_CONTROLLER_3X2_CONSTANTS_H
 #define AUDIO_CONTROLLER_3X2_CONSTANTS_H
