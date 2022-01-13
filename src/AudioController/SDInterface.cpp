@@ -22,6 +22,7 @@ SDInterface::SDInterface()
 
 void SDInterface::setup()
 {
+#if !defined(__IMXRT1062__)
   if (!constants::sd_exists)
   {
     return;
@@ -81,6 +82,7 @@ void SDInterface::setup()
   {
     initialized_ = true;
   }
+#endif
 }
 
 bool SDInterface::getDetected()

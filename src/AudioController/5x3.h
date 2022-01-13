@@ -19,6 +19,17 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PIN_COUNT_MAX=1};
 
+extern const int pcb_speaker_reference;
+extern const double pcb_speaker_channel_gain;
+extern const double pcb_speaker_pre_gain;
+extern const size_t pcb_speaker_enable_pin;
+
+extern const bool sd_exists;
+extern const char * const sd_prefix;
+extern const size_t sd_card_cs_pin;
+extern const size_t sd_card_mosi_pin;
+extern const size_t sd_card_sck_pin;
+
 // Pins
 
 // Units

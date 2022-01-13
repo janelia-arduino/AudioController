@@ -12,6 +12,8 @@
 
 #include <EventController.h>
 
+#include <Audio.h>
+
 
 namespace audio_controller
 {
@@ -48,15 +50,6 @@ enum audio_t
   NOISE_TYPE,
 };
 
-extern const size_t pcb_speaker_enable_pin;
-
-extern const char * const sd_prefix;
-
-extern const bool sd_exists;
-extern const size_t sd_card_cs_pin;
-extern const size_t sd_card_mosi_pin;
-extern const size_t sd_card_sck_pin;
-
 enum{EVENT_COUNT_MAX=8};
 enum{INDEXED_PULSES_COUNT_MAX=4};
 
@@ -79,10 +72,6 @@ enum {FILTER_COEF_COUNT=5};
 extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
 extern const size_t frequency_stop_threshold;
-
-extern const int pcb_speaker_reference;
-extern const double pcb_speaker_channel_gain;
-extern const double pcb_speaker_pre_gain;
 
 // Pins
 
@@ -197,6 +186,8 @@ extern ConstantString is_pulsing_function_name;
 extern ConstantString pwm_error;
 }
 }
+#include "TEENSY40.h"
+#include "TEENSY41.h"
 #include "5x3.h"
 #include "3x2.h"
 #endif

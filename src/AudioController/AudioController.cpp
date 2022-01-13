@@ -15,30 +15,46 @@ AudioSynthNoiseWhite     g_noise_left;   //xy=85,251
 AudioSynthNoiseWhite     g_noise_right;  //xy=89,288
 AudioSynthWaveformSine   g_tone_left;    //xy=250,176
 AudioSynthWaveformSine   g_tone_right;   //xy=256,215
+#if !defined(__IMXRT1062__)
 AudioPlaySdWav           g_play_sd_wav;  //xy=263,102
+#endif
 AudioFilterBiquad        g_biquad_left;  //xy=263,251
+#if !defined(__IMXRT1062__)
 AudioPlaySdRaw           g_play_sd_raw;  //xy=264,139
+#endif
 AudioFilterBiquad        g_biquad_right; //xy=265,289
 AudioMixer4              g_mixer_left;   //xy=500,111
 AudioMixer4              g_mixer_right;  //xy=506,187
+#if !defined(__IMXRT1062__)
 AudioMixer4              g_mixer_dac;    //xy=702,188
+#endif
 AudioOutputI2S           g_stereo_speaker; //xy=717,126
+#if !defined(__IMXRT1062__)
 AudioOutputAnalog        g_pcb_speaker;  //xy=890,188
+#endif
 AudioConnection          patchCord1(g_noise_left, g_biquad_left);
 AudioConnection          patchCord2(g_noise_right, g_biquad_right);
 AudioConnection          patchCord3(g_tone_left, 0, g_mixer_left, 2);
 AudioConnection          patchCord4(g_tone_right, 0, g_mixer_right, 2);
+#if !defined(__IMXRT1062__)
 AudioConnection          patchCord5(g_play_sd_wav, 0, g_mixer_left, 0);
 AudioConnection          patchCord6(g_play_sd_wav, 1, g_mixer_right, 0);
+#endif
 AudioConnection          patchCord7(g_biquad_left, 0, g_mixer_left, 3);
+#if !defined(__IMXRT1062__)
 AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_left, 1);
 AudioConnection          patchCord9(g_play_sd_raw, 0, g_mixer_right, 1);
+#endif
 AudioConnection          patchCord10(g_biquad_right, 0, g_mixer_right, 3);
 AudioConnection          patchCord11(g_mixer_left, 0, g_stereo_speaker, 0);
+#if !defined(__IMXRT1062__)
 AudioConnection          patchCord12(g_mixer_left, 0, g_mixer_dac, 0);
+#endif
 AudioConnection          patchCord13(g_mixer_right, 0, g_stereo_speaker, 1);
+#if !defined(__IMXRT1062__)
 AudioConnection          patchCord14(g_mixer_right, 0, g_mixer_dac, 1);
 AudioConnection          patchCord15(g_mixer_dac, g_pcb_speaker);
+#endif
 AudioControlSGTL5000     g_sgtl5000;     //xy=498,36
 // GUItool: end automatically generated code
 }
@@ -69,17 +85,23 @@ void AudioController::setup()
 
   enableAudioCodec();
 
+#if !defined(__IMXRT1062__)
   g_pcb_speaker.analogReference(constants::pcb_speaker_reference);
+#endif
 
   // Setup SD Card
+#if !defined(__IMXRT1062__)
   sd_interface_.setup();
+#endif
 
   // Event Controller Setup
   event_controller_.setup();
 
   // Pin Setup
+#if !defined(__IMXRT1062__)
   pinMode(constants::pcb_speaker_enable_pin,OUTPUT);
   digitalWrite(constants::pcb_speaker_enable_pin,HIGH);
+#endif
 
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
@@ -89,6 +111,7 @@ void AudioController::setup()
     pins_);
 
   // Pins
+#if !defined(__IMXRT1062__)
   modular_server::Pin & bnc_a_pin = modular_server_.pin(modular_device_base::constants::bnc_a_pin_name);
   bnc_a_pin.setModeDigitalOutput();
   bnc_a_pin.setValue(LOW);
@@ -96,6 +119,7 @@ void AudioController::setup()
   modular_server::Pin & bnc_b_pin = modular_server_.pin(modular_device_base::constants::bnc_b_pin_name);
   bnc_b_pin.setModeDigitalOutput();
   bnc_b_pin.setValue(LOW);
+#endif
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
@@ -114,9 +138,11 @@ void AudioController::setup()
   stereo_speaker_gain_property.setRange(constants::gain_min,constants::gain_max);
   stereo_speaker_gain_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
 
+#if !defined(__IMXRT1062__)
   modular_server::Property & pcb_speaker_gain_property = modular_server_.createProperty(constants::pcb_speaker_gain_property_name,constants::pcb_speaker_gain_default);
   pcb_speaker_gain_property.setRange(constants::gain_min,constants::gain_max);
   pcb_speaker_gain_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::setVolumeHandler));
+#endif
 
   setVolumeHandler();
 
@@ -184,6 +210,7 @@ void AudioController::setup()
   modular_server::Function & reset_audio_processor_usage_max_function = modular_server_.createFunction(constants::reset_audio_processor_usage_max_function_name);
   reset_audio_processor_usage_max_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::resetAudioProcessorUsageMaxHandler));
 
+#if !defined(__IMXRT1062__)
   modular_server::Function & get_sd_card_info_function = modular_server_.createFunction(constants::get_sd_card_info_function_name);
   get_sd_card_info_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::getSDCardInfoHandler));
   get_sd_card_info_function.setResultTypeObject();
@@ -196,6 +223,7 @@ void AudioController::setup()
   modular_server::Function & play_path_function = modular_server_.createFunction(constants::play_path_function_name);
   play_path_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playPathHandler));
   play_path_function.addParameter(audio_path_parameter);
+#endif
 
   modular_server::Function & play_tone_function = modular_server_.createFunction(constants::play_tone_function_name);
   play_tone_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&AudioController::playToneHandler));
@@ -390,6 +418,8 @@ void AudioController::setup()
 
 bool AudioController::playPath(const char * path)
 {
+  bool playing = false;
+#if !defined(__IMXRT1062__)
   char path_upper[constants::STRING_LENGTH_PATH];
   String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
 
@@ -411,7 +441,6 @@ bool AudioController::playPath(const char * path)
   }
 
   stop();
-  bool playing = false;
 
   char * raw_ext = strstr(path_upper,constants::audio_ext_raw);
   if (raw_ext != NULL)
@@ -442,6 +471,7 @@ bool AudioController::playPath(const char * path)
     path_played_[0] = 0;
     strcpy(path_played_,path_upper);
   }
+#endif
   return playing;
 }
 
@@ -553,12 +583,16 @@ void AudioController::stop()
     {
       case constants::RAW_TYPE:
       {
+#if !defined(__IMXRT1062__)
         g_play_sd_raw.stop();
+#endif
         break;
       }
       case constants::WAV_TYPE:
       {
+#if !defined(__IMXRT1062__)
         g_play_sd_wav.stop();
+#endif
         break;
       }
       case constants::TONE_TYPE:
@@ -595,12 +629,16 @@ long AudioController::getPosition()
     {
       case constants::RAW_TYPE:
       {
+#if !defined(__IMXRT1062__)
         position = g_play_sd_raw.positionMillis();
+#endif
         break;
       }
       case constants::WAV_TYPE:
       {
+#if !defined(__IMXRT1062__)
         position = g_play_sd_wav.positionMillis();
+#endif
         break;
       }
       case constants::TONE_TYPE:
@@ -625,12 +663,16 @@ long AudioController::getLength()
     {
       case constants::RAW_TYPE:
       {
+#if !defined(__IMXRT1062__)
         length = g_play_sd_raw.lengthMillis();
+#endif
         break;
       }
       case constants::WAV_TYPE:
       {
+#if !defined(__IMXRT1062__)
         length = g_play_sd_wav.lengthMillis();
+#endif
         break;
       }
       case constants::TONE_TYPE:
@@ -986,12 +1028,16 @@ void AudioController::updatePlaying()
     {
       case constants::RAW_TYPE:
       {
+#if !defined(__IMXRT1062__)
         setPlaying(g_play_sd_raw.isPlaying());
+#endif
         break;
       }
       case constants::WAV_TYPE:
       {
+#if !defined(__IMXRT1062__)
         setPlaying(g_play_sd_wav.isPlaying());
+#endif
         break;
       }
       case constants::TONE_TYPE:
@@ -1055,12 +1101,14 @@ void AudioController::setVolume(long volume)
     g_sgtl5000.volume(((double)volume*stereo_speaker_gain)/100.0);
   }
 
+#if !defined(__IMXRT1062__)
   double pcb_speaker_gain;
   modular_server_.property(constants::pcb_speaker_gain_property_name).getValue(pcb_speaker_gain);
 
   double pcb_speaker_total_gain = (constants::pcb_speaker_channel_gain*constants::pcb_speaker_pre_gain*(double)volume*pcb_speaker_gain)/100.0;
   g_mixer_dac.gain(0,pcb_speaker_total_gain);
   g_mixer_dac.gain(1,pcb_speaker_total_gain);
+#endif
 }
 
 void AudioController::setPlaying(bool playing)
@@ -1162,11 +1210,13 @@ void AudioController::getSDCardInfoHandler()
 
 void AudioController::getAudioPathsHandler()
 {
-  File root = SD.open("/");
   modular_server::Response & response = modular_server_.response();
   response.writeResultKey();
   response.beginArray();
+#if !defined(__IMXRT1062__)
+  File root = SD.open("/");
   addDirectoryToResponse(root,constants::sd_prefix);
+#endif
   response.endArray();
 }
 
