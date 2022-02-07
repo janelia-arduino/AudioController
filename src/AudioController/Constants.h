@@ -42,27 +42,6 @@ enum{AUDIO_MEMORY_BLOCK_COUNT=50};
 extern const char * const audio_ext_raw;
 extern const char * const audio_ext_wav;
 extern const char * const audio_exts[AUDIO_EXT_COUNT];
-enum audio_t
-{
-  RAW_TYPE,
-  WAV_TYPE,
-  TONE_TYPE,
-  NOISE_TYPE,
-};
-
-enum{EVENT_COUNT_MAX=8};
-enum{INDEXED_PULSES_COUNT_MAX=4};
-
-extern const int bad_index;
-
-struct PulseInfo
-{
-  size_t frequency;
-  double bandwidth;
-  const ConstantString * speaker_ptr;
-  long volume;
-  EventIdPair event_id_pair;
-};
 
 enum {FILTER_STAGE_0=0};
 enum {FILTER_STAGE_1=1};

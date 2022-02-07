@@ -8,66 +8,7 @@
 #include "../AudioController.h"
 
 
-namespace audio_controller
-{
-// GUItool: begin automatically generated code
-AudioSynthNoiseWhite     g_noise_left;   //xy=85,251
-AudioSynthNoiseWhite     g_noise_right;  //xy=89,288
-AudioSynthWaveformSine   g_tone_left;    //xy=250,176
-AudioSynthWaveformSine   g_tone_right;   //xy=256,215
-#if !defined(__IMXRT1062__)
-AudioPlaySdWav           g_play_sd_wav;  //xy=263,102
-#endif
-AudioFilterBiquad        g_biquad_left;  //xy=263,251
-#if !defined(__IMXRT1062__)
-AudioPlaySdRaw           g_play_sd_raw;  //xy=264,139
-#endif
-AudioFilterBiquad        g_biquad_right; //xy=265,289
-AudioMixer4              g_mixer_left;   //xy=500,111
-AudioMixer4              g_mixer_right;  //xy=506,187
-#if !defined(__IMXRT1062__)
-AudioMixer4              g_mixer_dac;    //xy=702,188
-#endif
-AudioOutputI2S           g_stereo_speaker; //xy=717,126
-#if !defined(__IMXRT1062__)
-AudioOutputAnalog        g_pcb_speaker;  //xy=890,188
-#endif
-AudioConnection          patchCord1(g_noise_left, g_biquad_left);
-AudioConnection          patchCord2(g_noise_right, g_biquad_right);
-AudioConnection          patchCord3(g_tone_left, 0, g_mixer_left, 2);
-AudioConnection          patchCord4(g_tone_right, 0, g_mixer_right, 2);
-#if !defined(__IMXRT1062__)
-AudioConnection          patchCord5(g_play_sd_wav, 0, g_mixer_left, 0);
-AudioConnection          patchCord6(g_play_sd_wav, 1, g_mixer_right, 0);
-#endif
-AudioConnection          patchCord7(g_biquad_left, 0, g_mixer_left, 3);
-#if !defined(__IMXRT1062__)
-AudioConnection          patchCord8(g_play_sd_raw, 0, g_mixer_left, 1);
-AudioConnection          patchCord9(g_play_sd_raw, 0, g_mixer_right, 1);
-#endif
-AudioConnection          patchCord10(g_biquad_right, 0, g_mixer_right, 3);
-AudioConnection          patchCord11(g_mixer_left, 0, g_stereo_speaker, 0);
-#if !defined(__IMXRT1062__)
-AudioConnection          patchCord12(g_mixer_left, 0, g_mixer_dac, 0);
-#endif
-AudioConnection          patchCord13(g_mixer_right, 0, g_stereo_speaker, 1);
-#if !defined(__IMXRT1062__)
-AudioConnection          patchCord14(g_mixer_right, 0, g_mixer_dac, 1);
-AudioConnection          patchCord15(g_mixer_dac, g_pcb_speaker);
-#endif
-AudioControlSGTL5000     g_sgtl5000;     //xy=498,36
-// GUItool: end automatically generated code
-}
-
 using namespace audio_controller;
-
-AudioController::AudioController()
-{
-  codec_enabled_ = false;
-  playing_ = false;
-  path_played_[0] = 0;
-  pulsing_ = false;
-}
 
 void AudioController::setup()
 {
@@ -76,32 +17,6 @@ void AudioController::setup()
 
   // Reset Watchdog
   resetWatchdog();
-
-  // Audio Setup
-  // Audio connections require memory to work.  For more
-  // detailed information, see the MemoryAndCpuUsage example
-  AudioMemory(constants::AUDIO_MEMORY_BLOCK_COUNT);
-  AudioMemoryUsageMaxReset();
-
-  enableAudioCodec();
-
-#if !defined(__IMXRT1062__)
-  g_pcb_speaker.analogReference(constants::pcb_speaker_reference);
-#endif
-
-  // Setup SD Card
-#if !defined(__IMXRT1062__)
-  sd_interface_.setup();
-#endif
-
-  // Event Controller Setup
-  event_controller_.setup();
-
-  // Pin Setup
-#if !defined(__IMXRT1062__)
-  pinMode(constants::pcb_speaker_enable_pin,OUTPUT);
-  digitalWrite(constants::pcb_speaker_enable_pin,HIGH);
-#endif
 
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
@@ -416,98 +331,12 @@ void AudioController::setup()
 
 }
 
-bool AudioController::playPath(const char * path)
-{
-  bool playing = false;
-#if !defined(__IMXRT1062__)
-  char path_upper[constants::STRING_LENGTH_PATH];
-  String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
-
-  bool sd_specified = false;
-  char * sd_path;
-  sd_path = strstr(path_upper,constants::sd_prefix);
-  if (sd_path == path_upper)
-  {
-    sd_specified = true;
-    // remove "/SD" from path
-    sd_path = sd_path+strlen(constants::sd_prefix)-1;
-  }
-
-  // default to SD card if none specified
-  if (!sd_specified)
-  {
-    sd_specified = true;
-    sd_path = path_upper;
-  }
-
-  stop();
-
-  char * raw_ext = strstr(path_upper,constants::audio_ext_raw);
-  if (raw_ext != NULL)
-  {
-    audio_type_playing_ = constants::RAW_TYPE;
-    if (sd_specified)
-    {
-      playing = g_play_sd_raw.play(sd_path);
-    }
-  }
-
-  if (!playing)
-  {
-    char * wav_ext = strstr(path_upper,constants::audio_ext_wav);
-    if (wav_ext != NULL)
-    {
-      audio_type_playing_ = constants::WAV_TYPE;
-      if (sd_specified)
-      {
-        playing = g_play_sd_wav.play(sd_path);
-      }
-    }
-  }
-
-  setPlaying(playing);
-  if (playing)
-  {
-    path_played_[0] = 0;
-    strcpy(path_played_,path_upper);
-  }
-#endif
-  return playing;
-}
-
 void AudioController::playTone(size_t frequency,
   const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   playToneAt(frequency,speaker_ptr,volume);
-}
-
-void AudioController::playToneAt(size_t frequency,
-  const ConstantString * const speaker_ptr,
-  long volume)
-{
-  stop();
-  if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
-  {
-    return;
-  }
-  audio_type_playing_ = constants::TONE_TYPE;
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
-  {
-    g_tone_left.amplitude(0);
-    g_tone_left.frequency(frequency);
-    g_tone_left.amplitude(1);
-  }
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
-  {
-    g_tone_right.amplitude(0);
-    g_tone_right.frequency(frequency);
-    g_tone_right.amplitude(1);
-  }
-  setVolume(volume);
-  setPlaying(true);
-
 }
 
 void AudioController::playNoise(const ConstantString * const speaker_ptr)
@@ -517,30 +346,6 @@ void AudioController::playNoise(const ConstantString * const speaker_ptr)
   playNoiseAt(speaker_ptr,volume);
 }
 
-void AudioController::playNoiseAt(const ConstantString * const speaker_ptr,
-  long volume)
-{
-  stop();
-  if (volume <= 0)
-  {
-    return;
-  }
-  audio_type_playing_ = constants::NOISE_TYPE;
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
-  {
-    g_biquad_left.setCoefficients(constants::FILTER_STAGE_0,constants::allpass_filter_coefs);
-    g_noise_left.amplitude(1);
-  }
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
-  {
-    g_biquad_right.setCoefficients(constants::FILTER_STAGE_0,constants::allpass_filter_coefs);
-    g_noise_right.amplitude(1);
-  }
-  setVolume(volume);
-  setPlaying(true);
-
-}
-
 void AudioController::playFilteredNoise(size_t frequency,
   double bandwidth,
   const ConstantString * const speaker_ptr)
@@ -548,188 +353,6 @@ void AudioController::playFilteredNoise(size_t frequency,
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
-}
-
-void AudioController::playFilteredNoiseAt(size_t frequency,
-  double bandwidth,
-  const ConstantString * const speaker_ptr,
-  long volume)
-{
-  stop();
-  if ((volume <= 0) || (frequency < constants::frequency_stop_threshold))
-  {
-    return;
-  }
-  audio_type_playing_ = constants::NOISE_TYPE;
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_left))
-  {
-    g_biquad_left.setBandpass(constants::FILTER_STAGE_0,frequency,bandwidth);
-    g_noise_left.amplitude(1);
-  }
-  if ((speaker_ptr == &constants::speaker_all) || (speaker_ptr == &constants::speaker_right))
-  {
-    g_biquad_right.setBandpass(constants::FILTER_STAGE_0,frequency,bandwidth);
-    g_noise_right.amplitude(1);
-  }
-  setVolume(volume);
-  setPlaying(true);
-}
-
-void AudioController::stop()
-{
-  if (playing_)
-  {
-    switch (audio_type_playing_)
-    {
-      case constants::RAW_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        g_play_sd_raw.stop();
-#endif
-        break;
-      }
-      case constants::WAV_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        g_play_sd_wav.stop();
-#endif
-        break;
-      }
-      case constants::TONE_TYPE:
-      {
-        g_tone_left.amplitude(0);
-        g_tone_right.amplitude(0);
-      }
-      case constants::NOISE_TYPE:
-      {
-        g_noise_left.amplitude(0);
-        g_noise_right.amplitude(0);
-      }
-    }
-    setPlaying(false);
-  }
-}
-
-bool AudioController::isPlaying()
-{
-  return playing_;
-}
-
-const char * AudioController::getLastAudioPathPlayed()
-{
-  return path_played_;
-}
-
-long AudioController::getPosition()
-{
-  long position = 0;
-  if (playing_)
-  {
-    switch (audio_type_playing_)
-    {
-      case constants::RAW_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        position = g_play_sd_raw.positionMillis();
-#endif
-        break;
-      }
-      case constants::WAV_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        position = g_play_sd_wav.positionMillis();
-#endif
-        break;
-      }
-      case constants::TONE_TYPE:
-      {
-        break;
-      }
-      case constants::NOISE_TYPE:
-      {
-        break;
-      }
-    }
-  }
-  return position;
-}
-
-long AudioController::getLength()
-{
-  long length = 0;
-  if (playing_)
-  {
-    switch (audio_type_playing_)
-    {
-      case constants::RAW_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        length = g_play_sd_raw.lengthMillis();
-#endif
-        break;
-      }
-      case constants::WAV_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        length = g_play_sd_wav.lengthMillis();
-#endif
-        break;
-      }
-      case constants::TONE_TYPE:
-      {
-        break;
-      }
-      case constants::NOISE_TYPE:
-      {
-        break;
-      }
-    }
-  }
-  return length;
-}
-
-int AudioController::getPercentComplete()
-{
-  long position = getPosition();
-  long length = getLength();
-  long percent_complete;
-  if (length > 0)
-  {
-    percent_complete = (100*position)/length;
-  }
-  else if (isPlaying())
-  {
-    percent_complete = 0;
-  }
-  else
-  {
-    percent_complete = 100;
-  }
-  return percent_complete;
-}
-
-bool AudioController::codecEnabled()
-{
-  return codec_enabled_;
-}
-
-bool AudioController::pathIsAudio(const char * path)
-{
-  char path_upper[constants::STRING_LENGTH_PATH];
-  String(path).toUpperCase().toCharArray(path_upper,constants::STRING_LENGTH_PATH);
-
-  bool audio_path = false;
-  for (unsigned int i=0;i<constants::AUDIO_EXT_COUNT;++i)
-  {
-    const char * audio_ext = constants::audio_exts[i];
-    char * audio_ext_path = strstr(path_upper,audio_ext);
-    if (audio_ext_path != NULL)
-    {
-      audio_path = true;
-      break;
-    }
-  }
-  return audio_path;
 }
 
 int AudioController::addTonePwm(size_t frequency,
@@ -744,37 +367,6 @@ int AudioController::addTonePwm(size_t frequency,
   return addTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addTonePwmAt(size_t frequency,
-  const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration,
-  long count)
-{
-  if (indexed_pulses_.full())
-  {
-    return constants::bad_index;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.frequency = frequency;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    count,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
-}
-
 int AudioController::startTonePwm(size_t frequency,
   const ConstantString * const speaker_ptr,
   long delay,
@@ -784,35 +376,6 @@ int AudioController::startTonePwm(size_t frequency,
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return startTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration);
-}
-
-int AudioController::startTonePwmAt(size_t frequency,
-  const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration)
-{
-  if (indexed_pulses_.full())
-  {
-    return -1;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.frequency = frequency;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playToneHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
 }
 
 int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
@@ -826,35 +389,6 @@ int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
   return addNoisePwmAt(speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addNoisePwmAt(const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration,
-  long count)
-{
-  if (indexed_pulses_.full())
-  {
-    return constants::bad_index;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    count,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
-}
-
 int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
   long delay,
   long period,
@@ -863,33 +397,6 @@ int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return startNoisePwmAt(speaker_ptr,volume,delay,period,on_duration);
-}
-
-int AudioController::startNoisePwmAt(const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration)
-{
-  if (indexed_pulses_.full())
-  {
-    return -1;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playNoiseHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
 }
 
 int AudioController::addFilteredNoisePwm(size_t frequency,
@@ -905,39 +412,6 @@ int AudioController::addFilteredNoisePwm(size_t frequency,
   return addFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration,count);
 }
 
-int AudioController::addFilteredNoisePwmAt(size_t frequency,
-  double bandwidth,
-  const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration,
-  long count)
-{
-  if (indexed_pulses_.full())
-  {
-    return constants::bad_index;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.frequency = frequency;
-  pulse_info.bandwidth = bandwidth;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addPwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    count,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
-}
-
 int AudioController::startFilteredNoisePwm(size_t frequency,
   double bandwidth,
   const ConstantString * const speaker_ptr,
@@ -948,108 +422,6 @@ int AudioController::startFilteredNoisePwm(size_t frequency,
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
   return startFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration);
-}
-
-int AudioController::startFilteredNoisePwmAt(size_t frequency,
-  double bandwidth,
-  const ConstantString * const speaker_ptr,
-  long volume,
-  long delay,
-  long period,
-  long on_duration)
-{
-  if (indexed_pulses_.full())
-  {
-    return -1;
-  }
-  audio_controller::constants::PulseInfo pulse_info;
-  pulse_info.frequency = frequency;
-  pulse_info.bandwidth = bandwidth;
-  pulse_info.speaker_ptr = speaker_ptr;
-  pulse_info.volume = volume;
-  int index = indexed_pulses_.add(pulse_info);
-  EventIdPair event_id_pair = event_controller_.addInfinitePwmUsingDelay(makeFunctor((Functor1<int> *)0,*this,&AudioController::playFilteredNoiseHandler),
-    makeFunctor((Functor1<int> *)0,*this,&AudioController::stopHandler),
-    delay,
-    period,
-    on_duration,
-    index);
-  event_controller_.addStartFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::startPwmHandler));
-  event_controller_.addStopFunctor(event_id_pair,makeFunctor((Functor1<int> *)0,*this,&AudioController::stopPwmHandler));
-  indexed_pulses_[index].event_id_pair = event_id_pair;
-  event_controller_.enable(event_id_pair);
-  return index;
-}
-
-void AudioController::stopPwm(int pwm_index)
-{
-  if (pwm_index < 0)
-  {
-    return;
-  }
-  if (indexed_pulses_.indexHasValue(pwm_index))
-  {
-    constants::PulseInfo pulse_info = indexed_pulses_[pwm_index];
-    event_controller_.remove(pulse_info.event_id_pair);
-  }
-}
-
-void AudioController::stopAllPwm()
-{
-  for (size_t i=0; i<constants::INDEXED_PULSES_COUNT_MAX; ++i)
-  {
-    stopPwm(i);
-  }
-}
-
-bool AudioController::isPulsing()
-{
-  return pulsing_;
-}
-
-void AudioController::enableAudioCodec()
-{
-  pinMode(SDA,INPUT);
-  pinMode(SCL,INPUT);
-  if (digitalRead(SDA) && digitalRead(SCL))
-  {
-    // This may wait forever if the SDA & SCL pins lack
-    // pullup resistors so check first
-    codec_enabled_ = true;
-    g_sgtl5000.enable();
-  }
-}
-
-void AudioController::updatePlaying()
-{
-  if (playing_)
-  {
-    switch (audio_type_playing_)
-    {
-      case constants::RAW_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        setPlaying(g_play_sd_raw.isPlaying());
-#endif
-        break;
-      }
-      case constants::WAV_TYPE:
-      {
-#if !defined(__IMXRT1062__)
-        setPlaying(g_play_sd_wav.isPlaying());
-#endif
-        break;
-      }
-      case constants::TONE_TYPE:
-      {
-        break;
-      }
-      case constants::NOISE_TYPE:
-      {
-        break;
-      }
-    }
-  }
 }
 
 void AudioController::addDirectoryToResponse(File dir,
@@ -1142,18 +514,6 @@ void AudioController::setPlaying(bool playing)
     bnc_a_pin.setValue(LOW);
     bnc_b_pin.setValue(LOW);
   }
-}
-
-void AudioController::startPwmHandler(int index)
-{
-  pulsing_ = true;
-}
-
-void AudioController::stopPwmHandler(int index)
-{
-  stop();
-  indexed_pulses_.remove(index);
-  pulsing_ = !indexed_pulses_.empty();
 }
 
 void AudioController::setVolumeHandler()
@@ -1697,33 +1057,4 @@ void AudioController::isPulsingHandler()
 {
   bool pulsing = isPulsing();
   modular_server_.response().returnResult(pulsing);
-}
-
-void AudioController::playToneHandler(int index)
-{
-  size_t frequency = indexed_pulses_[index].frequency;
-  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
-  long volume = indexed_pulses_[index].volume;
-  playToneAt(frequency,speaker_ptr,volume);
-}
-
-void AudioController::playNoiseHandler(int index)
-{
-  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
-  long volume = indexed_pulses_[index].volume;
-  playNoiseAt(speaker_ptr,volume);
-}
-
-void AudioController::playFilteredNoiseHandler(int index)
-{
-  size_t frequency = indexed_pulses_[index].frequency;
-  double bandwidth = indexed_pulses_[index].bandwidth;
-  const ConstantString * speaker_ptr = indexed_pulses_[index].speaker_ptr;
-  long volume = indexed_pulses_[index].volume;
-  playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
-}
-
-void AudioController::stopHandler(int index)
-{
-  stop();
 }
