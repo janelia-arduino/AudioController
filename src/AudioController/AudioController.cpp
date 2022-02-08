@@ -93,7 +93,7 @@ void AudioController::setup()
   count_parameter.setRange(constants::count_min,constants::count_max);
 
   modular_server::Parameter & pwm_index_parameter = modular_server_.createParameter(constants::pwm_index_parameter_name);
-  pwm_index_parameter.setRange(0,constants::INDEXED_PULSES_COUNT_MAX-1);
+  pwm_index_parameter.setRange(0,audio_apparatus::constants::INDEXED_PULSES_COUNT_MAX-1);
 
   modular_server::Parameter & volume_parameter = modular_server_.createParameter(constants::volume_parameter_name);
   volume_parameter.setRange(constants::volume_min,constants::volume_max);
@@ -425,16 +425,16 @@ int AudioController::startFilteredNoisePwm(size_t frequency,
   return startFilteredNoisePwmAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
 }
 
-audio_controller::constants::speaker_t AudioController::speakerPtrToSpeaker(const ConstantString * const speaker_ptr)
+audio_apparatus::constants::speaker_t AudioController::speakerPtrToSpeaker(const ConstantString * const speaker_ptr)
 {
-  constants::speaker_t speaker = constants::SPEAKER_ALL;
+  audio_apparatus::constants::speaker_t speaker = audio_apparatus::constants::SPEAKER_ALL;
   if (speaker_ptr == &constants::speaker_left)
   {
-    speaker = constants::SPEAKER_LEFT;
+    speaker = audio_apparatus::constants::SPEAKER_LEFT;
   }
   else if (speaker_ptr == &constants::speaker_right)
   {
-    speaker = constants::SPEAKER_RIGHT;
+    speaker = audio_apparatus::constants::SPEAKER_RIGHT;
   }
   return speaker;
 }
@@ -450,16 +450,16 @@ void AudioController::addDirectoryToResponse(File dir,
       // no more files
       break;
     }
-    char full_path[constants::STRING_LENGTH_PATH];
+    char full_path[audio_apparatus::constants::STRING_LENGTH_PATH];
     full_path[0] = 0;
     strcat(full_path,pwd);
     strcat(full_path,entry.name());
     if (!entry.isDirectory())
     {
       bool audio_file = false;
-      for (unsigned int i=0;i<constants::AUDIO_EXT_COUNT;++i)
+      for (unsigned int i=0;i<audio_apparatus::constants::AUDIO_EXT_COUNT;++i)
       {
-        if (strstr(full_path,constants::audio_exts[i]) != NULL)
+        if (strstr(full_path,audio_apparatus::constants::audio_exts[i]) != NULL)
         {
           audio_file = true;
         }

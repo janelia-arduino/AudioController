@@ -8,7 +8,7 @@
 #include "../AudioApparatus.h"
 
 
-namespace audio_controller
+namespace audio_apparatus
 {
 // GUItool: begin automatically generated code
 AudioSynthNoiseWhite     g_noise_left;   //xy=85,251
@@ -59,7 +59,7 @@ AudioControlSGTL5000     g_sgtl5000;     //xy=498,36
 // GUItool: end automatically generated code
 }
 
-using namespace audio_controller;
+using namespace audio_apparatus;
 
 AudioApparatus::AudioApparatus()
 {

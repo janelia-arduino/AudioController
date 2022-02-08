@@ -15,6 +15,48 @@
 #include <Audio.h>
 
 
+namespace audio_apparatus
+{
+namespace constants
+{
+enum speaker_t
+{
+  SPEAKER_ALL,
+  SPEAKER_LEFT,
+  SPEAKER_RIGHT,
+};
+
+enum audio_t
+{
+  RAW_TYPE,
+  WAV_TYPE,
+  TONE_TYPE,
+  NOISE_TYPE,
+};
+
+enum{EVENT_COUNT_MAX=8};
+enum{INDEXED_PULSES_COUNT_MAX=4};
+enum{STRING_LENGTH_PATH=255};
+enum{AUDIO_MEMORY_BLOCK_COUNT=50};
+
+enum{AUDIO_EXT_COUNT=2};
+
+extern const char * const audio_ext_raw;
+extern const char * const audio_ext_wav;
+extern const char * const audio_exts[AUDIO_EXT_COUNT];
+
+extern const size_t frequency_stop_threshold;
+
+enum {FILTER_STAGE_0=0};
+enum {FILTER_STAGE_1=1};
+enum {FILTER_STAGE_2=2};
+enum {FILTER_STAGE_3=3};
+enum {FILTER_COEF_COUNT=5};
+extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
+
+}
+}
+
 namespace audio_controller
 {
 namespace constants
@@ -33,42 +75,7 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
-enum{EVENT_COUNT_MAX=8};
-enum{INDEXED_PULSES_COUNT_MAX=4};
-
-enum{STRING_LENGTH_PATH=255};
 enum{STRING_LENGTH_ERROR_MESSAGE=257};
-
-enum speaker_t
-{
-  SPEAKER_ALL,
-  SPEAKER_LEFT,
-  SPEAKER_RIGHT,
-};
-
-enum{AUDIO_EXT_COUNT=2};
-enum{AUDIO_MEMORY_BLOCK_COUNT=50};
-
-enum audio_t
-{
-  RAW_TYPE,
-  WAV_TYPE,
-  TONE_TYPE,
-  NOISE_TYPE,
-};
-
-extern const char * const audio_ext_raw;
-extern const char * const audio_ext_wav;
-extern const char * const audio_exts[AUDIO_EXT_COUNT];
-
-enum {FILTER_STAGE_0=0};
-enum {FILTER_STAGE_1=1};
-enum {FILTER_STAGE_2=2};
-enum {FILTER_STAGE_3=3};
-enum {FILTER_COEF_COUNT=5};
-extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
-
-extern const size_t frequency_stop_threshold;
 
 // Pins
 

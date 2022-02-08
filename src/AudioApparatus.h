@@ -26,13 +26,13 @@ public:
 
   bool playPath(const char * path);
   void playToneAt(size_t frequency,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume);
-  void playNoiseAt(audio_controller::constants::speaker_t speaker,
+  void playNoiseAt(audio_apparatus::constants::speaker_t speaker,
     long volume);
   void playFilteredNoiseAt(size_t frequency,
     double bandwidth,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume);
   void stop();
   bool isPlaying();
@@ -44,32 +44,32 @@ public:
   bool pathIsAudio(const char * path);
 
   int addTonePwmAt(size_t frequency,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration,
     long count);
   int startTonePwmAt(size_t frequency,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration);
-  int addNoisePwmAt(audio_controller::constants::speaker_t speaker,
+  int addNoisePwmAt(audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration,
     long count);
-  int startNoisePwmAt(audio_controller::constants::speaker_t speaker,
+  int startNoisePwmAt(audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration);
   int addFilteredNoisePwmAt(size_t frequency,
     double bandwidth,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
@@ -77,7 +77,7 @@ public:
     long count);
   int startFilteredNoisePwmAt(size_t frequency,
     double bandwidth,
-    audio_controller::constants::speaker_t speaker,
+    audio_apparatus::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
@@ -101,24 +101,24 @@ protected:
 private:
   const static int8_t BAD_INDEX = -1;
 
-  EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
+  EventController<audio_apparatus::constants::EVENT_COUNT_MAX> event_controller_;
 
   struct PulseInfo
   {
     size_t frequency;
     double bandwidth;
-    audio_controller::constants::speaker_t speaker;
+    audio_apparatus::constants::speaker_t speaker;
     long volume;
     EventIdPair event_id_pair;
   };
 
   IndexedContainer<PulseInfo,
-    audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+    audio_apparatus::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   bool codec_enabled_;
-  audio_controller::constants::audio_t audio_type_playing_;
+  audio_apparatus::constants::audio_t audio_type_playing_;
   bool playing_;
-  char path_played_[audio_controller::constants::STRING_LENGTH_PATH];
+  char path_played_[audio_apparatus::constants::STRING_LENGTH_PATH];
   bool pulsing_;
 
   void enableAudioCodec();

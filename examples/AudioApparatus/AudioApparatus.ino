@@ -4,24 +4,24 @@
 const long BAUD = 115200;
 const int DELAY = 2000;
 const uint16_t FREQUENCY_MIN = 1000;
-const uint16_t FREQUENCY_MAX = 22000;
+const uint16_t FREQUENCY_MAX = 10000;
 const uint16_t FREQUENCY_INC = 1000;
 
 uint16_t frequency = FREQUENCY_MIN;
 
-AudioApparatus audio_apparatus;
+AudioApparatus aa;
 
 void setup()
 {
-  audio_apparatus.setup();
+  aa.setup();
 }
 
 void loop()
 {
-  Serial.print("audio_apparatus.playToneAt(");
+  Serial.print("aa.playToneAt(");
   Serial.print(frequency);
   Serial.println(")");
-  audio_apparatus.playToneAt(frequency,audio_controller::constants::SPEAKER_ALL,25);
+  aa.playToneAt(frequency,audio_apparatus::constants::SPEAKER_ALL,25);
   delay(DELAY);
   Serial.println("");
 

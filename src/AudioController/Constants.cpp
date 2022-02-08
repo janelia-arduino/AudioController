@@ -8,6 +8,24 @@
 #include "Constants.h"
 
 
+namespace audio_apparatus
+{
+namespace constants
+{
+const char * const audio_ext_raw = ".RAW";
+const char * const audio_ext_wav = ".WAV";
+const char * const audio_exts[AUDIO_EXT_COUNT] = {audio_ext_raw, audio_ext_wav};
+
+const size_t frequency_stop_threshold = 200;
+
+const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
+                                                        0.0,
+                                                        1.0,
+                                                        0.0,
+                                                        1.0};
+
+}
+}
 namespace audio_controller
 {
 namespace constants
@@ -25,18 +43,6 @@ const modular_server::FirmwareInfo firmware_info =
 };
 
 CONSTANT_STRING(hardware_name,"audio_controller");
-
-const char * const audio_ext_raw = ".RAW";
-const char * const audio_ext_wav = ".WAV";
-const char * const audio_exts[AUDIO_EXT_COUNT] = {audio_ext_raw, audio_ext_wav};
-
-const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
-                                                        0.0,
-                                                        1.0,
-                                                        0.0,
-                                                        1.0};
-
-const size_t frequency_stop_threshold = 200;
 
 // Pins
 
