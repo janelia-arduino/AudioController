@@ -14,6 +14,7 @@ void AudioController::setup()
 {
   // Parent Setup
   ModularDeviceBase::setup();
+  AudioApparatus::setup();
 
   // Reset Watchdog
   resetWatchdog();
@@ -336,14 +337,14 @@ void AudioController::playTone(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  playToneAt(frequency,speaker_ptr,volume);
+  playToneAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 void AudioController::playNoise(const ConstantString * const speaker_ptr)
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  playNoiseAt(speaker_ptr,volume);
+  playNoiseAt(speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 void AudioController::playFilteredNoise(size_t frequency,
@@ -352,7 +353,7 @@ void AudioController::playFilteredNoise(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
+  playFilteredNoiseAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 int AudioController::addTonePwm(size_t frequency,
@@ -364,7 +365,7 @@ int AudioController::addTonePwm(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return addTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration,count);
+  return addTonePwmAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
 }
 
 int AudioController::startTonePwm(size_t frequency,
@@ -375,7 +376,7 @@ int AudioController::startTonePwm(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return startTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration);
+  return startTonePwmAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
 }
 
 int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
@@ -386,7 +387,7 @@ int AudioController::addNoisePwm(const ConstantString * const speaker_ptr,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return addNoisePwmAt(speaker_ptr,volume,delay,period,on_duration,count);
+  return addNoisePwmAt(speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
 }
 
 int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
@@ -396,7 +397,7 @@ int AudioController::startNoisePwm(const ConstantString * const speaker_ptr,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return startNoisePwmAt(speaker_ptr,volume,delay,period,on_duration);
+  return startNoisePwmAt(speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
 }
 
 int AudioController::addFilteredNoisePwm(size_t frequency,
@@ -409,7 +410,7 @@ int AudioController::addFilteredNoisePwm(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return addFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration,count);
+  return addFilteredNoisePwmAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
 }
 
 int AudioController::startFilteredNoisePwm(size_t frequency,
@@ -421,7 +422,21 @@ int AudioController::startFilteredNoisePwm(size_t frequency,
 {
   long volume;
   modular_server_.property(constants::volume_property_name).getValue(volume);
-  return startFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration);
+  return startFilteredNoisePwmAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
+}
+
+audio_controller::constants::speaker_t AudioController::speakerPtrToSpeaker(const ConstantString * const speaker_ptr)
+{
+  constants::speaker_t speaker = constants::SPEAKER_ALL;
+  if (speaker_ptr == &constants::speaker_left)
+  {
+    speaker = constants::SPEAKER_LEFT;
+  }
+  else if (speaker_ptr == &constants::speaker_right)
+  {
+    speaker = constants::SPEAKER_RIGHT;
+  }
+  return speaker;
 }
 
 void AudioController::addDirectoryToResponse(File dir,
@@ -468,24 +483,18 @@ void AudioController::setVolume(long volume)
   double stereo_speaker_gain;
   modular_server_.property(constants::stereo_speaker_gain_property_name).getValue(stereo_speaker_gain);
 
-  if (codecEnabled())
-  {
-    g_sgtl5000.volume(((double)volume*stereo_speaker_gain)/100.0);
-  }
+  double pcb_speaker_gain = 1.0;
 
 #if !defined(__IMXRT1062__)
-  double pcb_speaker_gain;
   modular_server_.property(constants::pcb_speaker_gain_property_name).getValue(pcb_speaker_gain);
-
-  double pcb_speaker_total_gain = (constants::pcb_speaker_channel_gain*constants::pcb_speaker_pre_gain*(double)volume*pcb_speaker_gain)/100.0;
-  g_mixer_dac.gain(0,pcb_speaker_total_gain);
-  g_mixer_dac.gain(1,pcb_speaker_total_gain);
 #endif
+
+  AudioApparatus::setVolume(volume,stereo_speaker_gain,pcb_speaker_gain);
 }
 
 void AudioController::setPlaying(bool playing)
 {
-  playing_ = playing;
+  AudioApparatus::setPlaying(playing);
 
   modular_server::Pin & bnc_a_pin = modular_server_.pin(modular_device_base::constants::bnc_a_pin_name);
   modular_server::Pin & bnc_b_pin = modular_server_.pin(modular_device_base::constants::bnc_b_pin_name);
@@ -639,7 +648,7 @@ void AudioController::playToneAtHandler()
   modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
-  playToneAt(frequency,speaker_ptr,volume);
+  playToneAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 void AudioController::playNoiseHandler()
@@ -667,7 +676,7 @@ void AudioController::playNoiseAtHandler()
   modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
-  playNoiseAt(speaker_ptr,volume);
+  playNoiseAt(speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 void AudioController::playFilteredNoiseHandler()
@@ -703,7 +712,7 @@ void AudioController::playFilteredNoiseAtHandler()
   modular_server_.parameter(constants::speaker_parameter_name).getValue(speaker_ptr);
   long volume;
   modular_server_.parameter(constants::volume_parameter_name).getValue(volume);
-  playFilteredNoiseAt(frequency,bandwidth,speaker_ptr,volume);
+  playFilteredNoiseAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume);
 }
 
 void AudioController::stopHandler()
@@ -782,7 +791,7 @@ void AudioController::addTonePwmAtHandler()
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
   long count;
   modular_server_.parameter(constants::count_parameter_name).getValue(count);
-  int index = addTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration,count);
+  int index = addTonePwmAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);
@@ -830,7 +839,7 @@ void AudioController::startTonePwmAtHandler()
   modular_server_.parameter(constants::period_parameter_name).getValue(period);
   long on_duration;
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  int index = startTonePwmAt(frequency,speaker_ptr,volume,delay,period,on_duration);
+  int index = startTonePwmAt(frequency,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);
@@ -878,7 +887,7 @@ void AudioController::addNoisePwmAtHandler()
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
   long count;
   modular_server_.parameter(constants::count_parameter_name).getValue(count);
-  int index = addNoisePwmAt(speaker_ptr,volume,delay,period,on_duration,count);
+  int index = addNoisePwmAt(speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);
@@ -922,7 +931,7 @@ void AudioController::startNoisePwmAtHandler()
   modular_server_.parameter(constants::period_parameter_name).getValue(period);
   long on_duration;
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  int index = startNoisePwmAt(speaker_ptr,volume,delay,period,on_duration);
+  int index = startNoisePwmAt(speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);
@@ -978,7 +987,7 @@ void AudioController::addFilteredNoisePwmAtHandler()
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
   long count;
   modular_server_.parameter(constants::count_parameter_name).getValue(count);
-  int index = addFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration,count);
+  int index = addFilteredNoisePwmAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration,count);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);
@@ -1030,7 +1039,7 @@ void AudioController::startFilteredNoisePwmAtHandler()
   modular_server_.parameter(constants::period_parameter_name).getValue(period);
   long on_duration;
   modular_server_.parameter(constants::on_duration_parameter_name).getValue(on_duration);
-  int index = startFilteredNoisePwmAt(frequency,bandwidth,speaker_ptr,volume,delay,period,on_duration);
+  int index = startFilteredNoisePwmAt(frequency,bandwidth,speakerPtrToSpeaker(speaker_ptr),volume,delay,period,on_duration);
   if (index >= 0)
   {
     modular_server_.response().returnResult(index);

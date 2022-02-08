@@ -23,7 +23,7 @@
 #include "AudioController/SDInterface.h"
 
 
-class AudioController : public ModularDeviceBase
+class AudioController : public ModularDeviceBase, AudioApparatus
 {
 public:
   virtual void setup();
@@ -77,6 +77,7 @@ private:
   modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[audio_controller::constants::CALLBACK_COUNT_MAX];
 
+  audio_controller::constants::speaker_t speakerPtrToSpeaker(const ConstantString * const speaker_ptr);
   void addDirectoryToResponse(File dir,
     const char * pwd);
   void setVolume(long volume);

@@ -14,6 +14,10 @@
 
 #include <Audio.h>
 
+#include "AudioController/Constants.h"
+#include "AudioController/SDInterface.h"
+
+
 class AudioApparatus
 {
 public:
@@ -21,20 +25,14 @@ public:
   virtual void setup();
 
   bool playPath(const char * path);
-  enum speaker_t
-  {
-    SPEAKER_ALL,
-    SPEAKER_LEFT,
-    SPEAKER_RIGHT,
-  };
   void playToneAt(size_t frequency,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume);
-  void playNoiseAt(speaker_t speaker,
+  void playNoiseAt(audio_controller::constants::speaker_t speaker,
     long volume);
   void playFilteredNoiseAt(size_t frequency,
     double bandwidth,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume);
   void stop();
   bool isPlaying();
@@ -46,32 +44,32 @@ public:
   bool pathIsAudio(const char * path);
 
   int addTonePwmAt(size_t frequency,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration,
     long count);
   int startTonePwmAt(size_t frequency,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration);
-  int addNoisePwmAt(speaker_t speaker,
+  int addNoisePwmAt(audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration,
     long count);
-  int startNoisePwmAt(speaker_t speaker,
+  int startNoisePwmAt(audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
     long on_duration);
   int addFilteredNoisePwmAt(size_t frequency,
     double bandwidth,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
@@ -79,7 +77,7 @@ public:
     long count);
   int startFilteredNoisePwmAt(size_t frequency,
     double bandwidth,
-    speaker_t speaker,
+    audio_controller::constants::speaker_t speaker,
     long volume,
     long delay,
     long period,
@@ -92,45 +90,39 @@ public:
   virtual void startPwmHandler(int index);
   virtual void stopPwmHandler(int index);
 
-private:
-  enum{EVENT_COUNT_MAX=8};
-  enum{INDEXED_PULSES_COUNT_MAX=4};
+protected:
+  SDInterface sd_interface_;
 
+  void setVolume(long volume,
+    double stereo_speaker_gain = 1.0,
+    double pcb_speaker_gain = 1.0);
+  void setPlaying(bool playing);
+
+private:
   const static int8_t BAD_INDEX = -1;
 
-  EventController<EVENT_COUNT_MAX> event_controller_;
+  EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
   struct PulseInfo
   {
     size_t frequency;
     double bandwidth;
-    speaker_t speaker;
+    audio_controller::constants::speaker_t speaker;
     long volume;
     EventIdPair event_id_pair;
   };
 
   IndexedContainer<PulseInfo,
-    INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
-
-  enum audio_t
-  {
-    RAW_TYPE,
-    WAV_TYPE,
-    TONE_TYPE,
-    NOISE_TYPE,
-  };
+    audio_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   bool codec_enabled_;
-  audio_t audio_type_playing_;
+  audio_controller::constants::audio_t audio_type_playing_;
   bool playing_;
-  char path_played_[STRING_LENGTH_PATH];
-  SDInterface sd_interface_;
+  char path_played_[audio_controller::constants::STRING_LENGTH_PATH];
   bool pulsing_;
 
   void enableAudioCodec();
   void updatePlaying();
-  void setVolume(long volume);
-  void setPlaying(bool playing);
 
   // Handlers
   void playToneHandler(int index);

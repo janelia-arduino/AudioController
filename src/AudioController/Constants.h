@@ -33,11 +33,29 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
-enum{AUDIO_EXT_COUNT=2};
+enum{EVENT_COUNT_MAX=8};
+enum{INDEXED_PULSES_COUNT_MAX=4};
+
 enum{STRING_LENGTH_PATH=255};
 enum{STRING_LENGTH_ERROR_MESSAGE=257};
 
+enum speaker_t
+{
+  SPEAKER_ALL,
+  SPEAKER_LEFT,
+  SPEAKER_RIGHT,
+};
+
+enum{AUDIO_EXT_COUNT=2};
 enum{AUDIO_MEMORY_BLOCK_COUNT=50};
+
+enum audio_t
+{
+  RAW_TYPE,
+  WAV_TYPE,
+  TONE_TYPE,
+  NOISE_TYPE,
+};
 
 extern const char * const audio_ext_raw;
 extern const char * const audio_ext_wav;

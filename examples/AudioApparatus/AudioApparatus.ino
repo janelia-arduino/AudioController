@@ -7,7 +7,7 @@ const uint16_t FREQUENCY_MIN = 1000;
 const uint16_t FREQUENCY_MAX = 22000;
 const uint16_t FREQUENCY_INC = 1000;
 
-const uint16_t frequency = FREQUENCY_MIN;
+uint16_t frequency = FREQUENCY_MIN;
 
 AudioApparatus audio_apparatus;
 
@@ -21,7 +21,7 @@ void loop()
   Serial.print("audio_apparatus.playToneAt(");
   Serial.print(frequency);
   Serial.println(")");
-  audio_apparatus.playToneAt(frequency,AudioApparatus::SPEAKER_ALL,25);
+  audio_apparatus.playToneAt(frequency,audio_controller::constants::SPEAKER_ALL,25);
   delay(DELAY);
   Serial.println("");
 
