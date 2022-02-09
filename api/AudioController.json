@@ -1,8 +1,15 @@
 {
   "id": "getApi",
   "result": {
+    "ancestors": [
+      "ModularServer",
+      "ModularDeviceBase"
+    ],
     "firmware": [
-      "AudioController"
+      {
+        "name": "AudioController",
+        "version": "3.0.0"
+      }
     ],
     "verbosity": "GENERAL",
     "functions": [
@@ -35,25 +42,6 @@
       },
       {
         "name": "resetAudioProcessorUsageMax"
-      },
-      {
-        "name": "getSDCardInfo",
-        "result_info": {
-          "type": "object"
-        }
-      },
-      {
-        "name": "getAudioPaths",
-        "result_info": {
-          "type": "array",
-          "array_element_type": "string"
-        }
-      },
-      {
-        "name": "playPath",
-        "parameters": [
-          "audio_path"
-        ]
       },
       {
         "name": "playTone",
@@ -401,45 +389,6 @@
       },
       {
         "name": "stereoSpeakerGain",
-        "type": "double",
-        "functions": [
-          {
-            "name": "getValue",
-            "result_info": {
-              "type": "double"
-            }
-          },
-          {
-            "name": "setValue",
-            "parameters": [
-              "value"
-            ],
-            "result_info": {
-              "type": "double"
-            }
-          },
-          {
-            "name": "getDefaultValue",
-            "result_info": {
-              "type": "double"
-            }
-          },
-          {
-            "name": "setValueToDefault",
-            "result_info": {
-              "type": "double"
-            }
-          }
-        ],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "double"
-          }
-        ]
-      },
-      {
-        "name": "pcbSpeakerGain",
         "type": "double",
         "functions": [
           {

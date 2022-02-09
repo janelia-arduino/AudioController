@@ -16,73 +16,78 @@
 
 * API NAMES
 
-  #+BEGIN_SRC js
-    {
-      "id": "getApi",
-      "result": {
-        "firmware": [
-          "AudioController"
-        ],
-        "verbosity": "NAMES",
-        "functions": [
-          "getAudioMemoryUsage",
-          "getAudioMemoryUsageMax",
-          "resetAudioMemoryUsageMax",
-          "getAudioProcessorUsage",
-          "getAudioProcessorUsageMax",
-          "resetAudioProcessorUsageMax",
-          "getSDCardInfo",
-          "getAudioPaths",
-          "playPath",
-          "playTone",
-          "playToneAt",
-          "playNoise",
-          "playNoiseAt",
-          "playFilteredNoise",
-          "playFilteredNoiseAt",
-          "stop",
-          "isPlaying",
-          "getLastAudioPathPlayed",
-          "getPosition",
-          "getLength",
-          "getPercentComplete",
-          "addTonePwm",
-          "addTonePwmAt",
-          "startTonePwm",
-          "startTonePwmAt",
-          "addNoisePwm",
-          "addNoisePwmAt",
-          "startNoisePwm",
-          "startNoisePwmAt",
-          "addFilteredNoisePwm",
-          "addFilteredNoisePwmAt",
-          "startFilteredNoisePwm",
-          "startFilteredNoisePwmAt",
-          "stopPwm",
-          "stopAllPwm",
-          "isPulsing"
-        ],
-        "parameters": [
-          "audio_path",
-          "frequency",
-          "speaker",
-          "delay",
-          "period",
-          "on_duration",
-          "count",
-          "pwm_index",
-          "volume",
-          "bandwidth"
-        ],
-        "properties": [
-          "volume",
-          "stereoSpeakerGain",
-          "pcbSpeakerGain",
-          "playingSignal"
-        ]
+#+BEGIN_SRC js
+
+{
+  "id": "getApi",
+  "result": {
+    "ancestors": [
+      "ModularServer",
+      "ModularDeviceBase"
+    ],
+    "firmware": [
+      {
+        "name": "AudioController",
+        "version": "3.0.0"
       }
-    }
-  #+END_SRC
+    ],
+    "verbosity": "NAMES",
+    "functions": [
+      "getAudioMemoryUsage",
+      "getAudioMemoryUsageMax",
+      "resetAudioMemoryUsageMax",
+      "getAudioProcessorUsage",
+      "getAudioProcessorUsageMax",
+      "resetAudioProcessorUsageMax",
+      "playTone",
+      "playToneAt",
+      "playNoise",
+      "playNoiseAt",
+      "playFilteredNoise",
+      "playFilteredNoiseAt",
+      "stop",
+      "isPlaying",
+      "getLastAudioPathPlayed",
+      "getPosition",
+      "getLength",
+      "getPercentComplete",
+      "addTonePwm",
+      "addTonePwmAt",
+      "startTonePwm",
+      "startTonePwmAt",
+      "addNoisePwm",
+      "addNoisePwmAt",
+      "startNoisePwm",
+      "startNoisePwmAt",
+      "addFilteredNoisePwm",
+      "addFilteredNoisePwmAt",
+      "startFilteredNoisePwm",
+      "startFilteredNoisePwmAt",
+      "stopPwm",
+      "stopAllPwm",
+      "isPulsing"
+    ],
+    "parameters": [
+      "audio_path",
+      "frequency",
+      "speaker",
+      "delay",
+      "period",
+      "on_duration",
+      "count",
+      "pwm_index",
+      "volume",
+      "bandwidth"
+    ],
+    "properties": [
+      "volume",
+      "stereoSpeakerGain",
+      "playingSignal"
+    ]
+  }
+}
+
+#+END_SRC
 
 * API GENERAL
 
