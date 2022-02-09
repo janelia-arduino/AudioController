@@ -14,6 +14,8 @@
 #include <ConstantVariable.h>
 #include <Functor.h>
 
+#include <EventController.h>
+
 #include <AudioApparatus.h>
 
 #include <ModularServer.h>
@@ -23,7 +25,7 @@
 #include "AudioController/SDInterface.h"
 
 
-class AudioController : public ModularDeviceBase, AudioApparatus
+class AudioController : public ModularDeviceBase
 {
 public:
   virtual void setup();
@@ -76,6 +78,9 @@ private:
   modular_server::Parameter parameters_[audio_controller::constants::PARAMETER_COUNT_MAX];
   modular_server::Function functions_[audio_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[audio_controller::constants::CALLBACK_COUNT_MAX];
+
+  EventController<audio_controller::constants::EVENT_COUNT_MAX> event_controller_;
+  AudioApparatus<audio_controller::constants::EVENT_COUNT_MAX> audio_apparatus_;
 
   audio_apparatus::constants::speaker_t speakerPtrToSpeaker(const ConstantString * const speaker_ptr);
   void addDirectoryToResponse(File dir,

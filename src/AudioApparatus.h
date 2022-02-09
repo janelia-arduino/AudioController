@@ -18,11 +18,38 @@
 #include "AudioController/SDInterface.h"
 
 
+namespace audio_apparatus
+{
+extern AudioSynthNoiseWhite     g_noise_left;
+extern AudioSynthNoiseWhite     g_noise_right;
+extern AudioSynthWaveformSine   g_tone_left;
+extern AudioSynthWaveformSine   g_tone_right;
+#if !defined(__IMXRT1062__)
+extern AudioPlaySdWav           g_play_sd_wav;
+#endif
+extern AudioFilterBiquad        g_biquad_left;
+#if !defined(__IMXRT1062__)
+extern AudioPlaySdRaw           g_play_sd_raw;
+#endif
+extern AudioFilterBiquad        g_biquad_right;
+extern AudioMixer4              g_mixer_left;
+extern AudioMixer4              g_mixer_right;
+#if !defined(__IMXRT1062__)
+extern AudioMixer4              g_mixer_dac;
+#endif
+extern AudioOutputI2S           g_stereo_speaker;
+#if !defined(__IMXRT1062__)
+extern AudioOutputAnalog        g_pcb_speaker;
+#endif
+extern AudioControlSGTL5000     g_sgtl5000;
+}
+
+template <uint8_t EVENT_COUNT_MAX>
 class AudioApparatus
 {
 public:
   AudioApparatus();
-  virtual void setup();
+  void setup(EventController<EVENT_COUNT_MAX> & event_controller);
 
   bool playPath(const char * path);
   void playToneAt(size_t frequency,
@@ -86,22 +113,30 @@ public:
   void stopAllPwm();
   bool isPulsing();
 
-  // Handlers
-  virtual void startPwmHandler(int index);
-  virtual void stopPwmHandler(int index);
-
-protected:
-  SDInterface sd_interface_;
-
   void setVolume(long volume,
-    double stereo_speaker_gain = 1.0,
-    double pcb_speaker_gain = 1.0);
+    double stereo_speaker_gain = audio_apparatus::constants::stereo_speaker_gain_default,
+    double pcb_speaker_gain = audio_apparatus::constants::pcb_speaker_gain_default);
   void setPlaying(bool playing);
+
+  SDInterface & getSDInterface();
+
+  long getAudioMemoryUsage();
+  long getAudioMemoryUsageMax();
+  void resetAudioMemoryUsageMax();
+  double getAudioProcessorUsage();
+  double getAudioProcessorUsageMax();
+  void resetAudioProcessorUsageMax();
+
+  // Handlers
+  void startPwmHandler(int index);
+  void stopPwmHandler(int index);
 
 private:
   const static int8_t BAD_INDEX = -1;
 
-  EventController<audio_apparatus::constants::EVENT_COUNT_MAX> event_controller_;
+  EventController<EVENT_COUNT_MAX> * event_controller_ptr_;
+
+  SDInterface sd_interface_;
 
   struct PulseInfo
   {
@@ -131,5 +166,7 @@ private:
   void stopHandler(int index);
 
 };
+
+#include "AudioController/AudioApparatusDefinitions.h"
 
 #endif

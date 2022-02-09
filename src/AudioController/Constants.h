@@ -10,8 +10,6 @@
 #include <ConstantVariable.h>
 #include <ModularServer.h>
 
-#include <EventController.h>
-
 #include <Audio.h>
 
 
@@ -34,7 +32,6 @@ enum audio_t
   NOISE_TYPE,
 };
 
-enum{EVENT_COUNT_MAX=8};
 enum{INDEXED_PULSES_COUNT_MAX=4};
 enum{STRING_LENGTH_PATH=255};
 enum{AUDIO_MEMORY_BLOCK_COUNT=50};
@@ -54,6 +51,9 @@ enum {FILTER_STAGE_3=3};
 enum {FILTER_COEF_COUNT=5};
 extern const double allpass_filter_coefs[FILTER_COEF_COUNT];
 
+extern const long volume_default;
+extern const double stereo_speaker_gain_default;
+extern const double pcb_speaker_gain_default;
 }
 }
 
@@ -75,6 +75,8 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
+enum{EVENT_COUNT_MAX=8};
+
 enum{STRING_LENGTH_ERROR_MESSAGE=257};
 
 // Pins
@@ -90,15 +92,12 @@ extern ConstantString percent_units;
 extern ConstantString volume_property_name;
 extern const long volume_min;
 extern const long volume_max;
-extern const long volume_default;
 
 extern ConstantString stereo_speaker_gain_property_name;
 extern const double gain_min;
 extern const double gain_max;
-extern const double stereo_speaker_gain_default;
 
 extern ConstantString pcb_speaker_gain_property_name;
-extern const double pcb_speaker_gain_default;
 
 extern ConstantString playing_signal_property_name;
 enum{PLAYING_SIGNAL_SUBSET_LENGTH=3};

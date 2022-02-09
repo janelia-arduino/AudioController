@@ -24,8 +24,13 @@ const double allpass_filter_coefs[FILTER_COEF_COUNT] = {1.0,
                                                         0.0,
                                                         1.0};
 
+const long volume_default = 25;
+const double stereo_speaker_gain_default = 1.0;
+const double pcb_speaker_gain_default = 1.0;
+
 }
 }
+
 namespace audio_controller
 {
 namespace constants
@@ -56,15 +61,12 @@ CONSTANT_STRING(percent_units,"%");
 CONSTANT_STRING(volume_property_name,"volume");
 const long volume_min = 0;
 const long volume_max = 100;
-const long volume_default = 25;
 
 CONSTANT_STRING(stereo_speaker_gain_property_name,"stereoSpeakerGain");
 const double gain_min = 0.0;
 const double gain_max = 1.0;
-const double stereo_speaker_gain_default = 1.0;
 
 CONSTANT_STRING(pcb_speaker_gain_property_name,"pcbSpeakerGain");
-const double pcb_speaker_gain_default = 1.0;
 
 CONSTANT_STRING(playing_signal_property_name,"playingSignal");
 CONSTANT_STRING(playing_signal_bnc_a,"BNC_A");
