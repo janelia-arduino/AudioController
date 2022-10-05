@@ -548,6 +548,7 @@ void AudioApparatus<EVENT_COUNT_MAX>::stopPwm(int pwm_index)
     PulseInfo pulse_info = indexed_pulses_[pwm_index];
     event_controller_ptr_->remove(pulse_info.event_id_pair);
   }
+  stopPwmHandler(pwm_index);
 }
 
 template <uint8_t EVENT_COUNT_MAX>
